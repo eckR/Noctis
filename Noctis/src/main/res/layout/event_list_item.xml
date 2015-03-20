@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="66.67dp"
+              android:layout_marginBottom="13.33dp"
+              android:background="@color/g4"
+              android:orientation="horizontal" >
+    <ImageView
+            android:layout_height="66.67dp"
+            android:layout_width="66.67dp"
+            android:src="@drawable/kalender"
+            android:scaleType="centerCrop"
+            android:id="@+id/itemImage"
+            android:contentDescription="Flyer"></ImageView>
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="6.67dp"
+            android:layout_marginTop="6.67dp"
+            android:orientation="vertical"
+            >
+
+        <TextView
+                android:id="@+id/itemTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="17dp"
+                android:text="EVENT"
+                android:textColor="@color/s"
+                android:textSize="15dp" />
+
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                android:paddingTop="8dp" >
+
+            <TextView
+                    android:id="@+id/itemAttendance"
+                    android:text="356"
+                    android:layout_height="26.67dp"
+                    android:minWidth="26.67dp"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/w"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:background="@color/g3"/>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="6.67dp"
+                    android:orientation="vertical" >
+
+                <TextView
+                        android:id="@+id/itemLocation"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="10dp"
+                        android:text="Location"
+                        android:textColor="@color/s"></TextView>
+                <TextView
+                        android:id="@+id/itemDistance"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="10dp"
+                        android:text="1.2 km entfernt"
+                        android:textColor="@color/s"></TextView>
+
+            </LinearLayout>"
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
