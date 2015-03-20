@@ -20,12 +20,21 @@ public class NoctisEvent {
     private int attending;
     private String description;
     private String pictureBigUrl;
+    private float distance;
 
     public NoctisEvent() {
 
     }
 
-    public NoctisEvent(long fbID, String name, Date start, Date end, String location, Double Lat, Double Lng, String url, int attending, String description, String pictureBigUrl, String pictureSmallUrl){
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    public NoctisEvent(long fbID, String name, Date start, Date end, String location, Double Lat, Double Lng, String url, int attending, String description, String pictureBigUrl, String pictureSmallUrl, float distance){
         this.fbID=fbID;
         this.name=name;
         this.start=start;
@@ -39,6 +48,8 @@ public class NoctisEvent {
         this.pictureBigUrl=pictureBigUrl;
         this.description=description.replaceAll("\\\\n", System.getProperty("line.separator"));
         this.pictureSmallUrl = pictureSmallUrl;
+        this.distance = distance;
+
     }
 
     public void setFbID(Long fbID) {

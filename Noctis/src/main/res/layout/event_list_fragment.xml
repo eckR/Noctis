@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.eckR.noctis.EventListFragment">
+
+    android:id="@+id/swipe_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/srl_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ScrollView
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:fillViewport="true"
+                >
+            <LinearLayout
+                    android:id="@+id/ScrollEvents"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:padding="13.33dp"
+                    >
+            </LinearLayout>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</FrameLayout>
