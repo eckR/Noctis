@@ -4,6 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        //classpath 'com.facebook.android:facebook-android-sdk:2.2'
         classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }

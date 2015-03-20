@@ -16,12 +16,15 @@ public class SplashScreenActivity extends FragmentActivity {
     @AfterInject
     public void afterInject() {
         EventBus.getDefault().register(this);
+
+    }
+
+    @AfterViews
+    public void afterLoad(){
         EventBus.getDefault().post(new FragmentChangeEvent(new LoginFragement_(), false));
     }
 
     public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
-        this.getSupportFragmentManager();
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragementBase, fragmentChangeEvent.fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
