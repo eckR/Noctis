@@ -1,5 +1,6 @@
 package at.rosinen.Noctis;
 
+import com.facebook.Session;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,10 +21,7 @@ public class LoginFragement extends Fragment {
 
     @AfterInject
     public void afterInject(){
-        fragementTest.setText("cool");
-    }
 
-    @ViewById
-    TextView fragementTest;
+    }
 }
 
