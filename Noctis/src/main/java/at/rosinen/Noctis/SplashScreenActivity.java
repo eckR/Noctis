@@ -10,8 +10,16 @@ import at.rosinen.Noctis.events.FragmentChangeEvent;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.*;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+
 @EActivity(R.layout.activity_splash_screen)
 public class SplashScreenActivity extends FragmentActivity {
+
 
     @AfterInject
     public void afterInject() {

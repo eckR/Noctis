@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="at.rosinen.Noctis.LoginFragement"
     >
@@ -13,6 +14,13 @@
         android:layout_gravity="center">
 
 
+        <com.facebook.widget.LoginButton
+            android:id="@+id/loginBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            facebook:confirm_logout="false"
+            facebook:fetch_user_info="true" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

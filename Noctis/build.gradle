@@ -4,7 +4,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        //classpath 'com.facebook.android:facebook-android-sdk:2.2'
         classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
@@ -83,5 +82,5 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.google.android.gms:play-services:7.0.0'
-
+    compile 'com.facebook.android:facebook-android-sdk:3.23.0'
 }
