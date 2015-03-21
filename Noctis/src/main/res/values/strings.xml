@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Noctis</string>
-    <string name="hello_world">Hello world!</string>
+
+<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">724164557649527</string>
+    <string name="distanceString">" km entfernt"</string>
 </resources>

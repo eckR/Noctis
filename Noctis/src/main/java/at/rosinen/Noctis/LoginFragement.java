@@ -23,9 +23,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import android.support.v4.app.Fragment;
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
 
 import java.security.MessageDigest;
@@ -37,31 +40,46 @@ import java.util.Arrays;
 @EFragment(R.layout.fragment_login_fragement)
 public class LoginFragement extends Fragment {
 
-    private View login_view;
     private static final String TAG="LoginFragment";
+
+    @ViewById
+    public LoginButton loginBtn;
+
     private UiLifecycleHelper uihelper;
-    private LoginButton authbutton;
+
+    @InstanceState
+    public Bundle state;
 
     private Session.StatusCallback callback=new Session.StatusCallback() {
 
         @Override
         public void call(Session session, SessionState state, Exception exception) {
-            // TODO Auto-generated method stub
             onSessionStatechange(session, state, exception);
         }
     };
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        login_view=inflater.inflate(R.layout.fragment_login_fragement, container,false);
+    @AfterViews
+    public void AfterViews(){
+        loginBtn.setReadPermissions(Arrays.asList("public_profile", "user_events"));
 
-        authbutton=(LoginButton) login_view.findViewById(R.id.loginBtn);
-        authbutton.setFragment(this);
-        authbutton.setReadPermissions(Arrays.asList("public_profile", "user_events"));
-        return login_view;
+        uihelper=new UiLifecycleHelper(getActivity(), callback);
+        uihelper.onCreate(state);
+        try {
+            PackageInfo info = getActivity().getPackageManager().getPackageInfo(
+                    "at.rosinen.Noctis",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (Exception e){
+            Log.d("KeyHas:", "unable to get get keyhas");
+        }
+
+        printHashKey(state);
     }
+
 
     private void onSessionStatechange(Session session,SessionState state,Exception exception)
     {
@@ -90,25 +108,6 @@ public class LoginFragement extends Fragment {
         else
         {
             Log.i(TAG, "LOGGED OUT....");
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        uihelper=new UiLifecycleHelper(getActivity(), callback);
-        uihelper.onCreate(savedInstanceState);
-        try {
-            PackageInfo info = getActivity().getPackageManager().getPackageInfo(
-                    "at.rosinen.Noctis",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (Exception e){
-            Log.d("KeyHas:", "unable to get get keyhas");
         }
     }
 
@@ -168,10 +167,6 @@ public class LoginFragement extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         uihelper.onActivityResult(requestCode, resultCode, data);
     }
-
-
-    @ViewById
-    Button button2;
 
     /*
     @ViewById

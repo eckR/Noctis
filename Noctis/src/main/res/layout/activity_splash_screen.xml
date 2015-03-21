@@ -6,11 +6,30 @@
     android:background="@color/secondary_text_default_material_light"
     tools:context="${relativePackage}.${activityClass}">
 
-    <Button
 
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/button"
         android:layout_gravity="left|top" />
+    <FrameLayout
+            android:id="@+id/swipeUpPanel"
+            android:layout_width="fill_parent"
+            android:layout_gravity="bottom"
+            android:background="#f000f0"
+            android:layout_height="@dimen/EventListHeight">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/dragHandleSwipeUp"
+                android:layout_gravity="top"
+                android:layout_width="fill_parent"
+                android:background="#90ffffff"
+                android:layout_height="52dp">
+
+        </LinearLayout>
+
+    </FrameLayout>
+
 </FrameLayout>
