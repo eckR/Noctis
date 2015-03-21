@@ -31,7 +31,7 @@ import org.androidannotations.annotations.ViewById;
 public class MapsFragment extends Fragment implements OnMapReadyCallback ,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-//    @ViewById
+
     GoogleMap map;
 
     GoogleApiClient mGoogleApiClient;
@@ -83,6 +83,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback ,
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             map.setMyLocationEnabled(true);
             map.getUiSettings().setCompassEnabled(true);
+            map.getUiSettings().setZoomControlsEnabled(true);
         }
     }
 

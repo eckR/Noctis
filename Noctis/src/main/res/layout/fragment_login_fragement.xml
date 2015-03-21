@@ -7,25 +7,88 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
+    <FrameLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center">
 
 
-        <com.facebook.widget.LoginButton
-            android:id="@+id/loginBtn"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:backgroundTintMode="add"
+            android:scaleType="centerCrop"
+            android:src="@drawable/startscreen5" />
+
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            facebook:confirm_logout="false"
-            facebook:fetch_user_info="true" />
-        <Button
+            android:layout_height="fill_parent"
+            android:layout_gravity="left|bottom"
+            android:background="#46000000">
+
+            <TextView
+                android:textColor="@android:color/white"
+                android:textSize="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="we promise we won&apos;t post anything to your wall, unless you ask us to."
+                android:id="@+id/textView"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="95dp" />
+
+            <FrameLayout
+                android:layout_height="50dp"
+                android:layout_width="250dp"
+                android:background="@drawable/back"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="110dp">
+
+                <Button
+                    android:background="#06ffffff"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Login with Facebook"
+                    android:id="@+id/button2"
+                    android:clickable="true"
+                    android:capitalize="none"
+                    android:enabled="true"
+                    android:textColor="#ffffffff"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:textSize="80dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
-            android:layout_gravity="center_horizontal" />
-    </LinearLayout>
+            android:text="Noctis"
+            android:id="@+id/NoctisFont"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="50dp" />
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="a good night starts here"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="140dp" />
+
+
+    </FrameLayout>
+
+    <com.facebook.widget.LoginButton
+        android:id="@+id/loginBtn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        facebook:confirm_logout="false"
+        facebook:fetch_user_info="true"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginBottom="50dp" />
+
 </FrameLayout>
