@@ -1,32 +1,31 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/fragementBase"
-    android:background="@color/secondary_text_default_material_light"
-    tools:context="${relativePackage}.${activityClass}">
+    android:layout_height="match_parent">
 
+    <FrameLayout
+            android:id="@+id/fragmentBase"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ff0000">
+    </FrameLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_gravity="left|top" />
     <FrameLayout
             android:id="@+id/swipeUpPanel"
             android:layout_width="fill_parent"
             android:layout_gravity="bottom"
-            android:background="#f000f0"
-            android:layout_height="@dimen/EventListHeight">
+            android:background="@color/g5"
+            android:layout_height="@dimen/EventListHeight"
+            android:visibility="visible">
 
         <LinearLayout
                 android:orientation="vertical"
                 android:id="@+id/dragHandleSwipeUp"
                 android:layout_gravity="top"
+                android:translationZ="5dp"
+                android:clickable="true"
                 android:layout_width="fill_parent"
-                android:background="#90ffffff"
-                android:layout_height="52dp">
+                android:background="#22ffffff"
+                android:layout_height="63dp">
 
         </LinearLayout>
 

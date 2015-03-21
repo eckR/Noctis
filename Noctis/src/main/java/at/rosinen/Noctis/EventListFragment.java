@@ -65,5 +65,8 @@ public class EventListFragment extends Fragment{
             EventBus.getDefault().post(new NoctisEventsQueryEvent(NoctisQueryEnum.START_QUERY));
         }
     }
+
+
+
 }
 
