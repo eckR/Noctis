@@ -53,11 +53,6 @@ public class SplashScreenActivity extends FragmentActivity {
 
     }
 
-//    @Click
-//    public void dragHandleSwipeUp(){
-//        Log.d("XXXX", "hallo :)");
-//    }
-
     public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 

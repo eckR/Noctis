@@ -5,7 +5,6 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">724164557649527</string>
     <string name="distanceString">" km entfernt"</string>
-
-    <string name="facebook_app_id">551671634964919</string>
 </resources>
