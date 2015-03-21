@@ -9,9 +9,11 @@ public class FragmentChangeEvent {
 
     public final Fragment fragment;
     public final boolean addToBackstack;
+    public final int placeholderFragmentId;
 
-    public FragmentChangeEvent(Fragment fragment, boolean addToBackstack){
+    public FragmentChangeEvent(Fragment fragment, boolean addToBackstack, int placeholderFragmentId){
         this.fragment = fragment;
         this.addToBackstack = addToBackstack;
+        this.placeholderFragmentId = placeholderFragmentId;
     }
 }

@@ -35,7 +35,7 @@ public class EventListItemView extends LinearLayout{
     public void bind(NoctisEvent event) {
         itemTitle.setText(event.getName());
         itemLocation.setText(event.getLocation());
-        itemAttendance.setText(event.getAttending());
+        itemAttendance.setText(event.getAttending()+"");
         itemDistance.setText(event.getDistance() + getContext().getString(R.string.distanceString));
         
     }

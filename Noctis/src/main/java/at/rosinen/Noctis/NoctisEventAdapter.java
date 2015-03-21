@@ -1,6 +1,7 @@
 package at.rosinen.Noctis;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,11 +10,12 @@ import at.rosinen.Noctis.Service.INoctisEventObtainer;
 import at.rosinen.Noctis.Service.Impl.MockNoctisEventObtainer;
 import at.rosinen.Noctis.View.EventListItemView;
 import at.rosinen.Noctis.View.EventListItemView_;
-import org.androidannotations.annotations.AfterInject;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
+import at.rosinen.Noctis.events.NoctisEventsQueryEvent;
+import at.rosinen.Noctis.events.NoctisQueryEnum;
+import de.greenrobot.event.EventBus;
+import org.androidannotations.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ import java.util.List;
 @EBean
 public class NoctisEventAdapter extends BaseAdapter {
 
-    private List<NoctisEvent> noctisEventList;
+    private List<NoctisEvent> noctisEventList = new ArrayList<NoctisEvent>();
 
     @Bean(MockNoctisEventObtainer.class)
     INoctisEventObtainer noctisEventObtainer;
@@ -30,9 +32,19 @@ public class NoctisEventAdapter extends BaseAdapter {
     @RootContext
     Context context;
 
-    @AfterInject
-    void initAdapter() {
+    @AfterViews
+    void afterInject(){
+        Log.d("XXX", "after inject");
+        refreshListData();
+//        EventBus.getDefault().post(new NoctisEventsQueryEvent(NoctisQueryEnum.START_QUERY));
+    }
+
+    @Background
+    void refreshListData() {
+        Log.d("XXXX","refreshListData()");
         noctisEventList = noctisEventObtainer.obtainNoctisEvents();
+        Log.d("XXXX","send query finished event");
+        EventBus.getDefault().post(new NoctisEventsQueryEvent(NoctisQueryEnum.QUERY_FINISHED));
     }
 
     @Override
@@ -61,6 +73,5 @@ public class NoctisEventAdapter extends BaseAdapter {
         }
         eventListItemView.bind(getItem(position));
         return eventListItemView;
-
     }
 }

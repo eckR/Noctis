@@ -9,23 +9,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v4.widget.SwipeRefreshLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/srl_main"
+            android:id="@+id/eventListRefresher"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <ScrollView
-                android:layout_height="fill_parent"
+                                                  android:layout_height="match_parent">
+
+        <ListView
+                android:id="@+id/listViewEvents"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:fillViewport="true"
+                android:padding="13.33dp"
                 >
-            <LinearLayout
-                    android:id="@+id/ScrollEvents"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content"
-                    android:layout_width="fill_parent"
-                    android:padding="13.33dp"
-                    >
-            </LinearLayout>
-        </ScrollView>
+        </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
+
 </FrameLayout>
