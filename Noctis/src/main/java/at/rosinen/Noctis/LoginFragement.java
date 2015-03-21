@@ -11,7 +11,7 @@ import com.facebook.widget.LoginButton;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -20,50 +20,88 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import android.support.v4.app.Fragment;
-import org.androidannotations.annotations.AfterInject;
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import android.content.pm.Signature;
+import android.widget.Button;
+import android.widget.TextView;
+
 import java.util.Arrays;
 
 
 @EFragment(R.layout.fragment_login_fragement)
 public class LoginFragement extends Fragment {
-
     private static final String TAG="LoginFragment";
 
-    @ViewById
-    public LoginButton loginBtn;
+    private View loginView;
+    private UiLifecycleHelper uiHelper;
+    private LoginButton loginButton;
 
-    private UiLifecycleHelper uihelper;
+    @ViewById(R.id.button2)
+    public Button button2;
 
-    @InstanceState
-    public Bundle state;
-
+    @Click(R.id.button2)
+    public void Click(){
+        if(loginButton != null) loginButton.performClick();
+    }
     private Session.StatusCallback callback=new Session.StatusCallback() {
-
         @Override
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStatechange(session, state, exception);
         }
     };
 
-    @AfterViews
-    public void AfterViews(){
-        loginBtn.setReadPermissions(Arrays.asList("public_profile", "user_events"));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        loginView = inflater.inflate(R.layout.fragment_login_fragement, container, false);
 
-        uihelper=new UiLifecycleHelper(getActivity(), callback);
-        uihelper.onCreate(state);
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand_Book.ttf");
+        TextView tv = (TextView) loginView.findViewById(R.id.NoctisFont);
+        tv.setTypeface(tf);
+
+        loginButton = (LoginButton) loginView.findViewById(R.id.loginBtn);
+        loginButton.setFragment(this);
+        loginButton.setReadPermissions(Arrays.asList("user_events")); //"rsvp_event",
+        return loginView;
+    }
+
+    private void onSessionStatechange(Session session,SessionState state,Exception exception)
+    {
+        if(state.isOpened()){
+            Log.i(TAG, "LOGGED IN....");
+
+            Log.i(TAG,session.getAccessToken());
+            Session s = Session.getActiveSession();
+
+            Request.newMeRequest(session, new Request.GraphUserCallback() {
+                @Override
+                public void onCompleted(GraphUser user, Response response) {
+                    if (user != null) {
+                        Log.d(TAG, user.toString());
+                        Log.d(TAG, response.toString());
+                        Log.i(TAG, "Email " + user.asMap().get("email"));
+                        button2.setText("logged in");
+                        //Todo: Navigate to other fragment
+                    }
+                }
+            }).executeAsync();
+        }
+        else
+        {
+            Log.i(TAG, "LOGGED OUT....");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        uiHelper =new UiLifecycleHelper(getActivity(), callback);
+        uiHelper.onCreate(savedInstanceState);
         try {
             PackageInfo info = getActivity().getPackageManager().getPackageInfo(
                     "at.rosinen.Noctis",
@@ -76,59 +114,6 @@ public class LoginFragement extends Fragment {
         } catch (Exception e){
             Log.d("KeyHas:", "unable to get get keyhas");
         }
-
-        printHashKey(state);
-    }
-
-
-    private void onSessionStatechange(Session session,SessionState state,Exception exception)
-    {
-        boolean open = state.isClosed();
-
-
-        if(state.isOpened()){
-            Log.i(TAG, "LOGGED IN....");
-
-            Log.i(TAG,session.getAccessToken());
-            Session s = Session.getActiveSession();
-
-            Request.newMeRequest(session, new Request.GraphUserCallback() {
-
-                // callback after Graph API response with user
-                // object
-                @Override
-                public void onCompleted(GraphUser user, Response response) {
-                    if (user != null) {
-                        Log.d(TAG, user.toString());
-                        // Set view visibility to true
-                    }
-                }
-            }).executeAsync();
-        }
-        else
-        {
-            Log.i(TAG, "LOGGED OUT....");
-        }
-    }
-
-    public void printHashKey(Bundle savedInstanceState) {
-
-        Session session = Session.getActiveSession();
-        if (session == null) {
-            if (savedInstanceState != null) {
-                Log.i(TAG, "Restoring session");
-                session = Session.restoreSession(getActivity().getApplicationContext(), null, callback, savedInstanceState);
-            }
-            if (session == null) {
-                Log.i(TAG,"Creating new session");
-                session = new Session(getActivity().getApplicationContext());
-            }
-            Log.i(TAG,"Active session");
-            Session.setActiveSession(session);
-        } else {
-            Log.i(TAG,"Session is null --> " + session.getState().toString());
-        }
-
     }
 
     @Override
@@ -140,97 +125,36 @@ public class LoginFragement extends Fragment {
             onSessionStatechange(session, session.getState(), null);
 
         }
-        uihelper.onResume();
+        else{
+//            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("user_events"));
+//            session.requestNewReadPermissions(newPermissionsRequest);
+        }
+        uiHelper.onResume();
     }
 
     @Override
     public void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        uihelper.onPause();
+        uiHelper.onPause();
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // TODO Auto-generated method stub
         super.onSaveInstanceState(outState);
-        uihelper.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
     }
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        uihelper.onDestroy();
+        uiHelper.onDestroy();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        uihelper.onActivityResult(requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);
     }
 
-    /*
-    @ViewById
-    LoginButton loginBtn;
-
-    private final String TAG = "LoginForm";
-    private UiLifecycleHelper uiHelper;
-
-    @Click(R.id.button2)
-    void updateBookmarksClicked() {
-        Session session = Session.getActiveSession();
-        String i = session.getAccessToken();
-        String f = "test";
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // To maintain FB Login session
-
-        uiHelper = new UiLifecycleHelper(getActivity(), callback);
-        uiHelper.onCreate(savedInstanceState);
-    }
-
-    // Called when session changes
-    private Session.StatusCallback callback = new Session.StatusCallback() {
-        @Override
-        public void call(Session session, SessionState state,
-                         Exception exception) {
-            onSessionStateChange(session, state, exception);
-        }
-    };
-
-    // When session is changed, this method is called from callback method
-    private void onSessionStateChange(Session session, SessionState state,
-                                      Exception exception) {
-
-        session.getAccessToken();
-        if (state.isOpened()) {
-            Log.i(TAG, "Logged in...");
-            // make request to the /me API to get Graph user
-            Request.newMeRequest(session, new Request.GraphUserCallback() {
-
-                // callback after Graph API response with user
-                // object
-                @Override
-                public void onCompleted(GraphUser user, Response response) {
-                    if (user != null) {
-                        // Set view visibility to true
-                        button2.setText("Your Current Location: "
-                                + user.getLocation().getProperty("name")
-                                .toString());
-                    }
-                }
-            }).executeAsync();
-        } else if (state.isClosed()) {
-            Log.i(TAG, "Logged out...");
-            button2.setText("Logged out");
-        }
-    }
-    @AfterInject
-    public void afterInject(){
-
-    }
-    */
 }
-
