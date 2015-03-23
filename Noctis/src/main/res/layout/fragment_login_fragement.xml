@@ -20,7 +20,7 @@
             android:id="@+id/imageView"
             android:backgroundTintMode="add"
             android:scaleType="centerCrop"
-            android:src="@drawable/startscreen5" />
+            android:src="@drawable/startscreen6" />
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -43,7 +43,7 @@
                 android:layout_width="250dp"
                 android:background="@drawable/back"
                 android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="110dp">
+                android:layout_marginBottom="50dp">
 
                 <Button
                     android:background="#06ffffff"
@@ -90,5 +90,10 @@
         facebook:fetch_user_info="true"
         android:layout_gravity="right|center_vertical"
         android:layout_marginBottom="50dp" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right|center_vertical"></RelativeLayout>
 
 </FrameLayout>
