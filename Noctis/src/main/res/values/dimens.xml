@@ -4,5 +4,8 @@
     <dimen name="activity_horizontal_margin">13.33dp</dimen>
     <dimen name="activity_vertical_margin">13.33dp</dimen>
     <dimen name="eventCountDimen">25dp</dimen>
+
+    <!--Eventlist-->
     <dimen name="EventListHeight">400dp</dimen>
+    <dimen name="EventListHeaderHeight">63dp</dimen>
 </resources>

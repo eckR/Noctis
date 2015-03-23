@@ -1,23 +1,31 @@
 package at.rosinen.Noctis;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 
-import android.view.animation.Animation;
-import android.view.animation.OvershootInterpolator;
-import at.rosinen.Noctis.View.EventpagerFragment;
+import android.widget.Toast;
+import at.rosinen.Noctis.Service.ServiceHandler;
 import at.rosinen.Noctis.View.EventpagerFragment_;
 import at.rosinen.Noctis.View.Maps.MapsFragment_;
 import at.rosinen.Noctis.View.Slider.SlidingUpPanelApplier;
+import at.rosinen.Noctis.events.AlertDialogEvent;
 import at.rosinen.Noctis.events.FragmentChangeEvent;
+import at.rosinen.Noctis.events.StartActivityEvent;
+import at.rosinen.Noctis.events.ToastMeEvent;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.*;
 
 @EActivity(R.layout.activity_splash_screen)
 public class SplashScreenActivity extends FragmentActivity {
 
+    private EventBus mEventBus = EventBus.getDefault();
+
+    @Bean
+    ServiceHandler serviceHandler;
 
     @ViewById
     View swipeUpPanel;
@@ -30,14 +38,13 @@ public class SplashScreenActivity extends FragmentActivity {
 
     @AfterInject
     public void afterInject() {
-        EventBus.getDefault().register(this);
-
+//        EventBus.getDefault().register(this);
     }
 
     @AfterViews
-    public void afterLoad(){
-        EventBus.getDefault().post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
-        EventBus.getDefault().post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
+    public void afterLoad() {
+        mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
+        mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
 
         new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
@@ -53,6 +60,9 @@ public class SplashScreenActivity extends FragmentActivity {
 
     }
 
+    /**
+     * @param fragmentChangeEvent
+     */
     public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -63,22 +73,42 @@ public class SplashScreenActivity extends FragmentActivity {
         }
         ft.commit();
 
-        dragHandleSwipeUp.bringToFront();
-        swipeUpPanel.bringToFront();
-        swipeUpPanel.invalidate();
+//        dragHandleSwipeUp.bringToFront();
+//        swipeUpPanel.bringToFront();
+//        swipeUpPanel.invalidate();
     }
-//void test(){
-//    OvershootInterpolator overshootInterpolator = new OvershootInterpolator();
-//    int mediumAnimTime = 10;
-//
-//    int tY = 52;
-//
-//
-//}
-//    @Override
-//    public void onBackPressed() {
-//
-//        super.onBackPressed();
-//
-//    }
+
+    public void onEventMainThread(final AlertDialogEvent alertDialogEvent) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(alertDialogEvent.title)
+                .setMessage(alertDialogEvent.message)
+                .setCancelable(false)
+                .setPositiveButton(alertDialogEvent.yesString, alertDialogEvent.onYesListener)
+                .setNegativeButton(alertDialogEvent.noString, alertDialogEvent.onNoListener);
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void onEventMainThread(final StartActivityEvent startActivityEvent) {
+        startActivity(startActivityEvent.intent);
+    }
+
+    public void onEventMainThread(final ToastMeEvent toastMeEvent) {
+        Toast.makeText(this,toastMeEvent.message, toastMeEvent.length).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mEventBus.register(this);
+        serviceHandler.startServices();
+        afterLoad();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mEventBus.unregister(this);
+        serviceHandler.stopServices();
+    }
 }

@@ -34,9 +34,9 @@ public class NoctisEventAdapter extends BaseAdapter {
 
     @AfterViews
     void afterInject(){
-        Log.d("XXX", "after inject");
+//        Log.d("XXX", "after inject");
         refreshListData();
-//        EventBus.getDefault().post(new NoctisEventsQueryEvent(NoctisQueryEnum.START_QUERY));
+
     }
 
     @Background
@@ -73,5 +73,9 @@ public class NoctisEventAdapter extends BaseAdapter {
         }
         eventListItemView.bind(getItem(position));
         return eventListItemView;
+    }
+
+    public List<NoctisEvent> getNoctisEventList() {
+        return noctisEventList;
     }
 }

@@ -5,8 +5,7 @@
     <FrameLayout
             android:id="@+id/fragmentBase"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ff0000">
+            android:layout_height="match_parent">
     </FrameLayout>
 
     <FrameLayout
@@ -14,8 +13,7 @@
             android:layout_width="fill_parent"
             android:layout_gravity="bottom"
             android:background="@color/g5"
-            android:layout_height="@dimen/EventListHeight"
-            android:visibility="visible">
+            android:layout_height="@dimen/EventListHeight">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -25,7 +23,7 @@
                 android:clickable="true"
                 android:layout_width="fill_parent"
                 android:background="#22ffffff"
-                android:layout_height="63dp">
+                android:layout_height="@dimen/EventListHeaderHeight">
 
         </LinearLayout>
 

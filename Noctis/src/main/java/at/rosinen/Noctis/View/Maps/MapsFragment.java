@@ -1,100 +1,94 @@
 package at.rosinen.Noctis.View.Maps;
 
 
-import android.content.Context;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.View;
+import at.rosinen.Noctis.Model.NoctisEvent;
 import at.rosinen.Noctis.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
+import at.rosinen.Noctis.View.Base.EventFragment;
+import at.rosinen.Noctis.events.GoogleAPIClientEvent;
+import at.rosinen.Noctis.events.MarkEventsOnMapEvent;
+import at.rosinen.Noctis.events.NewLocationEvent;
+import at.rosinen.Noctis.events.RequestLocationEvent;
 import com.google.android.gms.maps.CameraUpdateFactory;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 @EFragment(R.layout.fragment_maps)
-public class MapsFragment extends Fragment implements OnMapReadyCallback ,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsFragment extends EventFragment implements OnMapReadyCallback {
 
+    private static final int ZOOM_DEFAULT = 12;
 
-    GoogleMap map;
+    private GoogleMap map;
 
-    GoogleApiClient mGoogleApiClient;
 
     @AfterViews
-    void afterViews(){
-
+    void afterViews() {
         SupportMapFragment fragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.gMap));
-
         fragment.getMapAsync(this);
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mEventBus.post(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
+    }
+
+    private void moveMapCameraToLocation(LatLng coordinate, int zoom) {
+        CameraPosition cameraPosition = new CameraPosition.Builder() // Creates a CameraPosition from the builder
+                .target(coordinate)
+                .zoom(zoom)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        Log.d("XXX", "found map");
-
-        map.setMyLocationEnabled(true);
-
-
-
-
-
-         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mGoogleApiClient.connect();
-
-}
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (lastLocation != null) {
-            LatLng coordinate = new LatLng((lastLocation.getLatitude()-0.033)  ,    lastLocation.getLongitude());
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(coordinate)      // Sets the center of the map to Mountain View
-                    .zoom(12)                   // Sets the zoom
-//                    .bearing(0)                // Sets the orientation of the camera to east
-//                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            map.setMyLocationEnabled(true);
-            map.getUiSettings().setCompassEnabled(true);
-            map.getUiSettings().setZoomControlsEnabled(true);
+    public void onEventMainThread(MarkEventsOnMapEvent event) {
+        if (map == null) {
+            //TODO handle that maybe with a list that gets added when the map is ready again?
+            return;
+        }
+        map.clear();
+        for (NoctisEvent noctisEvent : event.events) {
+            map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.kalender))
+                    .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                    .position(noctisEvent.getCoords()));
         }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
+    public void onEventMainThread(NewLocationEvent newLocationEvent){
+        moveMapCameraToLocation(newLocationEvent.coordinate, ZOOM_DEFAULT);
     }
 
+    /**
+     * Mapcallback
+     *
+     * @param googleMap
+     */
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onMapReady(GoogleMap googleMap) {
+        Log.v(getClass().getCanonicalName(), "Found map");
+        mEventBus.post(new RequestLocationEvent());
+        map = googleMap;
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
+    }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mEventBus.post(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
     }
 }
-//}
+

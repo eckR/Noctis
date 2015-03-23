@@ -1,9 +1,12 @@
 package at.rosinen.Noctis;
 
+import android.app.usage.UsageEvents;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ListView;
+import at.rosinen.Noctis.events.MarkEventsOnMapEvent;
 import at.rosinen.Noctis.events.NoctisEventsQueryEvent;
 import at.rosinen.Noctis.events.NoctisQueryEnum;
 import de.greenrobot.event.EventBus;
@@ -21,8 +24,8 @@ public class EventListFragment extends Fragment{
         EventBus.getDefault().register(this);
     }
 
-    @ViewById
-    ListView listViewEvents;
+    @ViewById(android.R.id.list)
+    ListView list;
 
     @ViewById
     SwipeRefreshLayout eventListRefresher;
@@ -34,7 +37,7 @@ public class EventListFragment extends Fragment{
 
     @AfterViews
     void bindAdapter() {
-        listViewEvents.setAdapter(adapter);
+        list.setAdapter(adapter);
         eventListRefresher.setOnRefreshListener(new EventRefreshListener());
 
         // workaround to show the loading circle
@@ -44,10 +47,18 @@ public class EventListFragment extends Fragment{
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("XXXX","resume me");
+        EventBus.getDefault().post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
+    }
+
     public void onEventMainThread(NoctisEventsQueryEvent event) {
         if (event.getQueryEnum() == NoctisQueryEnum.QUERY_FINISHED) {
             adapter.notifyDataSetChanged();
             eventListRefresher.setRefreshing(false);
+            EventBus.getDefault().post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
         }
         else if(event.getQueryEnum() == NoctisQueryEnum.START_QUERY) {
 
@@ -62,7 +73,7 @@ public class EventListFragment extends Fragment{
     private class EventRefreshListener implements  SwipeRefreshLayout.OnRefreshListener{
         @Override
         public void onRefresh() {
-            EventBus.getDefault().post(new NoctisEventsQueryEvent(NoctisQueryEnum.START_QUERY));
+//            EventBus.getDefault().post(new NoctisEventsQueryEvent(NoctisQueryEnum.START_QUERY));
         }
     }
 

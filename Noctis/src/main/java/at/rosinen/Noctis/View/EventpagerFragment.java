@@ -1,20 +1,17 @@
 package at.rosinen.Noctis.View;
 
 
-
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import at.rosinen.Noctis.EventListFragment_;
 import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.View.Slider.EventPagerAdapter;
 import com.astuetz.PagerSlidingTabStrip;
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.

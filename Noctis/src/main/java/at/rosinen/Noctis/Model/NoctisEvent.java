@@ -14,8 +14,8 @@ public class NoctisEvent {
     private Date start;
     private Date end;
     private String location;
-    private Double Lat;
-    private Double Lng;
+    private Double lat;
+    private Double lng;
     private String pictureSmallUrl;
     private int attending;
     private String description;
@@ -34,14 +34,14 @@ public class NoctisEvent {
         this.distance = distance;
     }
 
-    public NoctisEvent(long fbID, String name, Date start, Date end, String location, Double Lat, Double Lng, String url, int attending, String description, String pictureBigUrl, String pictureSmallUrl, float distance){
+    public NoctisEvent(long fbID, String name, Date start, Date end, String location, Double lat, Double lng, String url, int attending, String description, String pictureBigUrl, String pictureSmallUrl, float distance){
         this.fbID=fbID;
         this.name=name;
         this.start=start;
         this.end=end;
         this.location=location;
-        this.Lat=Lat;
-        this.Lng=Lng;
+        this.lat =lat;
+        this.lng =lng;
         this.pictureSmallUrl=url;
         this.attending=attending;
         this.description=description;
@@ -73,11 +73,11 @@ public class NoctisEvent {
     }
 
     public void setLat(Double lat) {
-        Lat = lat;
+        this.lat = lat;
     }
 
     public void setLng(Double lng) {
-        Lng = lng;
+        this.lng = lng;
     }
 
     public void setPictureSmallUrl(String pictureSmallUrl) {
@@ -112,7 +112,7 @@ public class NoctisEvent {
         return location;
     }
     public LatLng getCoords(){
-        return new LatLng(Lat,Lng);
+        return new LatLng(lat, lng);
     }
     public String getSmallPicUrl(){
         return pictureSmallUrl;
