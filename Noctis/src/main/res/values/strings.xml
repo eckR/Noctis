@@ -18,6 +18,10 @@
     <string name="connectionFailed">Verbindung fehlgeschlagen</string>
     <string name="connectionSuspended">Verbindung temporär unterbrochen</string>
 
+    <string name="needLocationFirst">Das Gerät muss zuerst lokalisiert werden</string>
+
+
+
     <!--AlertDialog-->
     <string name="locatingError">Ortungsfehler</string>
     <string name="noGpsAskToEnable">Ihr GPS scheint deaktiviert zu sein, möchten Sie es einschalten?</string>

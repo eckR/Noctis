@@ -16,44 +16,23 @@
                 android:layout_width="fill_parent"
                 android:padding="13.33dp"
                 />
-        <!--
-        The view to use when the list is empty.
-        It has two widgets, a progress "bar" and the "no data" indicator.
-        -->
-        <RelativeLayout
-                android:id="@id/android:empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
-            <!--
-            The progress bar widget
-            Set invisible if no items are available on completion of async. load.
-            Defaults to visible so is automatically shown on start up/initial search/load.
-            -->
-            <ProgressBar
-                    android:id="@+id/busyIndicator"
-                    android:layout_centerInParent="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
+    <!--
+    The view to use when the list is empty.
+    It has one  widgets,the "no data" indicator.
+    -->
+    <RelativeLayout
+            android:id="@+id/emptyIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
 
-            <!--
-            The "no data" indicator
-            Set visible if no items are available on completion of async. load.
-            Defaults to hidden so isn't shown until initial load/search is complete
-            and has failed to find any items.
-            -->
-            <TextView
-                    android:id="@+id/emptyIndicator"
-                    android:text="there are no items"
-                    android:textIsSelectable="false"
-                    android:layout_centerInParent="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    />
-        </RelativeLayout>
+                android:text="there are no items"
+                android:textIsSelectable="false"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
     </android.support.v4.widget.SwipeRefreshLayout>
-
 </FrameLayout>
