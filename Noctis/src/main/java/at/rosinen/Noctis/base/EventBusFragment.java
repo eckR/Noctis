@@ -10,10 +10,12 @@ public class EventBusFragment extends Fragment {
 
     protected EventBus mEventBus = EventBus.getDefault();
 
+
     @Override
     public void onStart() {
         super.onStart();
         mEventBus.register(this);
+
 //        mEventBus.registerSticky(this);
     }
 

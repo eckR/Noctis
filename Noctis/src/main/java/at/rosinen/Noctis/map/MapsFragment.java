@@ -1,14 +1,14 @@
 package at.rosinen.Noctis.map;
 
 
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import at.rosinen.Noctis.Model.NoctisEvent;
 import at.rosinen.Noctis.R;
-import at.rosinen.Noctis.base.EventBusFragment;
 import at.rosinen.Noctis.location.event.GoogleAPIClientEvent;
-import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
 import at.rosinen.Noctis.location.event.NewLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
+import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,16 +17,21 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 
 
 @EFragment(R.layout.fragment_maps)
-public class MapsFragment extends EventBusFragment implements OnMapReadyCallback {
+public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int ZOOM_DEFAULT = 12;
-
+    private EventBus mEventBus = EventBus.getDefault();
     private GoogleMap map;
+
+    @Bean
+    MapEventBus mapEventBus;
 
 
     @AfterViews
@@ -88,6 +93,7 @@ public class MapsFragment extends EventBusFragment implements OnMapReadyCallback
         });
         map.getUiSettings().setCompassEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
+        mapEventBus.getEventBus().register(this);
     }
 
 
