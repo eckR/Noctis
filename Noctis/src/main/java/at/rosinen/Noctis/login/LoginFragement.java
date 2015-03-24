@@ -83,6 +83,7 @@ public class LoginFragement extends Fragment {
                 @Override
                 public void onCompleted(GraphUser user, Response response) {
                     if (user != null) {
+
                         Log.d(TAG, user.toString());
                         Log.d(TAG, response.toString());
                         Log.i(TAG, "Email " + user.asMap().get("email"));

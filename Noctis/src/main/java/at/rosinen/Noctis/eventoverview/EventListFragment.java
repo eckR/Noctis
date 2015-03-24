@@ -12,10 +12,7 @@ import at.rosinen.Noctis.location.event.NewLocationEvent;
 import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
 import at.rosinen.Noctis.noctisevents.event.NoctisEventsAvailableEvent;
 import at.rosinen.Noctis.noctisevents.event.RequestEventsEvent;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
 /**
  * Created by Harald on 20.03.2015.
@@ -24,6 +21,8 @@ import org.androidannotations.annotations.ViewById;
 @EFragment(R.layout.event_list_fragment)
 public class EventListFragment extends EventBusFragment {
 
+
+    private static final int DEFAULT_RADIUS = 100;
 
     @ViewById(android.R.id.list)
     ListView list;
@@ -37,7 +36,8 @@ public class EventListFragment extends EventBusFragment {
     @ViewById
     RelativeLayout emptyIndicator;
 
-    private int day;
+    @FragmentArg
+    public int day;
 
     @AfterViews
     void bindAdapter() {
@@ -60,9 +60,8 @@ public class EventListFragment extends EventBusFragment {
 //        mEventBus.post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
     }
 
-//    public void onEventMainThread(NoctisEventsQueryEvent event) {
 
-    private static final int DEFAULT_RADIUS = 100;
+
 
     public void onEvent(NewLocationEvent newLocationEvent) {
         mEventBus.post(new RequestEventsEvent(newLocationEvent.coordinate, DEFAULT_RADIUS, day));
@@ -94,16 +93,6 @@ public class EventListFragment extends EventBusFragment {
             }
         }
     }
-    //    }
-//        }
-//            adapter.refreshListData();
-//            eventListRefresher.setRefreshing(true);
-//
-//        } else if(event.getQueryEnum() == NoctisQueryEnum.START_QUERY) {
-//            mEventBus.post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
-//            eventListRefresher.setRefreshing(false);
-//            adapter.notifyDataSetChanged();
-//        if (event.getQueryEnum() == NoctisQueryEnum.QUERY_FINISHED) {
 
 
     public void setDay(int day) {

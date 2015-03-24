@@ -34,9 +34,9 @@ public class EventpagerFragment extends Fragment {
                 ,new ArrayList<Fragment>()
                 {
                     {
-                        add(new EventListFragment_());
-                        add(new EventListFragment_());
-                        add(new EventListFragment_());
+                        add(EventListFragment_.builder().day(0).build());
+                        add(EventListFragment_.builder().day(1).build());
+                        add(EventListFragment_.builder().day(2).build());
                     }
                 });
         viewPager.setAdapter(eventPagerAdapter);

@@ -12,6 +12,9 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
 
+    <string name="today">Heute</string>
+    <string name="tomorrow">Morgen</string>
+
 
 
     <!--Error strings-->
