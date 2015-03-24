@@ -1,6 +1,13 @@
 package at.rosinen.Noctis.login;
 
 import at.rosinen.Noctis.R;
+import at.rosinen.Noctis.activity.event.FragmentChangeEvent;
+import at.rosinen.Noctis.activity.event.LoginNavigationEvent;
+import at.rosinen.Noctis.base.EventBusFragment;
+import at.rosinen.Noctis.base.ReceiverOnlyEventBusFragment;
+import at.rosinen.Noctis.eventoverview.EventpagerFragment_;
+import at.rosinen.Noctis.map.MapsFragment_;
+
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -13,6 +20,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.opengl.Visibility;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -36,7 +44,7 @@ import java.util.Arrays;
 
 
 @EFragment(R.layout.fragment_login_fragement)
-public class LoginFragement extends Fragment {
+public class LoginFragement extends ReceiverOnlyEventBusFragment {
     private static final String TAG="LoginFragment";
 
     private View loginView;
@@ -50,12 +58,24 @@ public class LoginFragement extends Fragment {
     public void Click(){
         if(loginButton != null) loginButton.performClick();
     }
+
+    @Click(R.id.skipBtn)
+    public void skipBtnClick(){
+        goToMapScreen();
+    }
+
     private Session.StatusCallback callback=new Session.StatusCallback() {
         @Override
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStatechange(session, state, exception);
         }
     };
+
+    private void goToMapScreen(){
+        mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
+        mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
+        mEventBus.post(new LoginNavigationEvent(false));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,8 +107,8 @@ public class LoginFragement extends Fragment {
                         Log.d(TAG, user.toString());
                         Log.d(TAG, response.toString());
                         Log.i(TAG, "Email " + user.asMap().get("email"));
-                        button2.setText("logged in");
-                        //Todo: Navigate to other fragment
+                        button2.setText("Loading...");
+                        goToMapScreen();
                     }
                 }
             }).executeAsync();

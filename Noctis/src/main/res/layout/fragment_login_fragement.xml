@@ -30,13 +30,13 @@
 
             <TextView
                 android:textColor="@android:color/white"
-                android:textSize="8dp"
+                android:textSize="8sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="we promise we won&apos;t post anything to your wall, unless you ask us to."
                 android:id="@+id/textView"
                 android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="95dp" />
+                android:layout_marginBottom="25dp" />
 
             <FrameLayout
                 android:layout_height="50dp"
@@ -57,11 +57,20 @@
                     android:textColor="#ffffffff"
                     android:layout_gravity="center" />
             </FrameLayout>
+
+            <TextView
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="skip"
+                android:id="@+id/skipBtn"
+                android:layout_gravity="center" />
         </FrameLayout>
 
         <TextView
             android:textColor="@android:color/white"
-            android:textSize="80dp"
+            android:textSize="80sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Noctis"
@@ -71,7 +80,7 @@
 
         <TextView
             android:textColor="@android:color/white"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="a good night starts here"
@@ -90,10 +99,5 @@
         facebook:fetch_user_info="true"
         android:layout_gravity="right|center_vertical"
         android:layout_marginBottom="50dp" />
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="right|center_vertical"></RelativeLayout>
 
 </FrameLayout>
