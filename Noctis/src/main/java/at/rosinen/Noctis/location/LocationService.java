@@ -8,20 +8,22 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import at.rosinen.Noctis.activity.NoctisApplication;
 import at.rosinen.Noctis.R;
-import at.rosinen.Noctis.base.AbstractService;
+import at.rosinen.Noctis.activity.NoctisApplication;
 import at.rosinen.Noctis.activity.event.AlertDialogEvent;
 import at.rosinen.Noctis.activity.event.StartActivityEvent;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
+import at.rosinen.Noctis.base.AbstractService;
 import at.rosinen.Noctis.location.event.GoogleAPIClientEvent;
 import at.rosinen.Noctis.location.event.NewLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
+import at.rosinen.Noctis.map.MapEventBus;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SystemService;
 
@@ -31,6 +33,9 @@ import org.androidannotations.annotations.SystemService;
 @EBean
 public class LocationService extends AbstractService implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    @Bean
+    MapEventBus mapEventBus;
 
     @SystemService
     LocationManager locationManager;
@@ -98,6 +103,7 @@ public class LocationService extends AbstractService implements
         mRequestedLocationUpdate = true;
         if(mLastLocation != null){
             mRequestedLocationUpdate = false;
+            mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
             mEventBus.postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
         }else{
             getLocation();
@@ -120,6 +126,7 @@ public class LocationService extends AbstractService implements
 
             if(mRequestedLocationUpdate){
                 mRequestedLocationUpdate = false;
+                mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude() ) ));
                 mEventBus.postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude() ) ));
             }
 
