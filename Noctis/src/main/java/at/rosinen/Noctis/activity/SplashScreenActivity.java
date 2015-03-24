@@ -7,14 +7,14 @@ import android.view.View;
 
 import android.widget.Toast;
 import at.rosinen.Noctis.R;
+import at.rosinen.Noctis.activity.event.LoginNavigationEvent;
 import at.rosinen.Noctis.base.ServiceHandler;
 import at.rosinen.Noctis.View.Slider.SlidingUpPanelApplier;
 import at.rosinen.Noctis.activity.event.AlertDialogEvent;
 import at.rosinen.Noctis.activity.event.FragmentChangeEvent;
 import at.rosinen.Noctis.activity.event.StartActivityEvent;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
-import at.rosinen.Noctis.eventoverview.EventpagerFragment_;
-import at.rosinen.Noctis.map.MapsFragment_;
+import at.rosinen.Noctis.login.LoginFragement_;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.*;
 
@@ -30,6 +30,9 @@ public class SplashScreenActivity extends FragmentActivity {
     View swipeUpPanel;
 
     @ViewById
+    View loginFragment;
+
+    @ViewById
     View dragHandleSwipeUp;
 
     @ViewById
@@ -42,8 +45,7 @@ public class SplashScreenActivity extends FragmentActivity {
 
     @AfterViews
     public void afterLoad() {
-        mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
-        mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
+        mEventBus.post(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
 
         new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
@@ -86,6 +88,16 @@ public class SplashScreenActivity extends FragmentActivity {
                 .setNegativeButton(alertDialogEvent.noString, alertDialogEvent.onNoListener);
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void onEventMainThread(final LoginNavigationEvent changeFragmentVisibilityEvent)
+    {
+        if(changeFragmentVisibilityEvent.show){
+            loginFragment.setVisibility(View.VISIBLE);
+        }
+        else{
+            loginFragment.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void onEventMainThread(final StartActivityEvent startActivityEvent) {
