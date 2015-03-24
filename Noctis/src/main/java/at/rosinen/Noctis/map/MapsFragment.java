@@ -8,6 +8,7 @@ import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.location.event.GoogleAPIClientEvent;
 import at.rosinen.Noctis.location.event.NewLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
+import at.rosinen.Noctis.map.event.ChangeBottomPaddingMapEvent;
 import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -71,6 +72,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     public void onEventMainThread(NewLocationEvent newLocationEvent){
         moveMapCameraToLocation(newLocationEvent.coordinate, ZOOM_DEFAULT);
+    }
+
+    public void onEventMainThread(ChangeBottomPaddingMapEvent event) {
+        CameraPosition position = map.getCameraPosition();
+        map.setPadding(0,0,0, event.bottomPadding);
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+
     }
 
     /**

@@ -14,7 +14,9 @@ import at.rosinen.Noctis.activity.event.FragmentChangeEvent;
 import at.rosinen.Noctis.activity.event.StartActivityEvent;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
 import at.rosinen.Noctis.eventoverview.EventpagerFragment_;
+import at.rosinen.Noctis.map.MapEventBus;
 import at.rosinen.Noctis.map.MapsFragment_;
+import at.rosinen.Noctis.map.event.ChangeBottomPaddingMapEvent;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.*;
 
@@ -35,6 +37,9 @@ public class SplashScreenActivity extends FragmentActivity {
     @ViewById
     View fragmentBase;
 
+    @Bean
+    MapEventBus mapEventBus;
+
     @AfterInject
     public void afterInject() {
 //        EventBus.getDefault().register(this);
@@ -45,17 +50,21 @@ public class SplashScreenActivity extends FragmentActivity {
         mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
         mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
 
-        new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
+
+        SlidingUpPanelApplier applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
             public void onExpand() {
-
+                ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMaxHeight());
+                mapEventBus.getEventBus().post(event);
             }
 
             @Override
             public void onCollapse() {
-
+                ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMinHeight());
+                mapEventBus.getEventBus().post(event);
             }
         };
+        mapEventBus.getEventBus().post(new ChangeBottomPaddingMapEvent(applier.getMaxHeight()));
 
     }
 
