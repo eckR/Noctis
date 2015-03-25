@@ -1,45 +1,32 @@
 package at.rosinen.Noctis.login;
 
-import at.rosinen.Noctis.R;
-import at.rosinen.Noctis.activity.event.FragmentChangeEvent;
-import at.rosinen.Noctis.activity.event.LoginNavigationEvent;
-import at.rosinen.Noctis.base.EventBusFragment;
-import at.rosinen.Noctis.base.ReceiverOnlyEventBusFragment;
-import at.rosinen.Noctis.eventoverview.EventpagerFragment_;
-import at.rosinen.Noctis.map.MapsFragment_;
-
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.LoginButton;
-
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
-import android.opengl.Visibility;
 import android.os.Bundle;
-
-import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Button;
+import android.widget.TextView;
+import at.rosinen.Noctis.R;
+import at.rosinen.Noctis.activity.event.FragmentChangeEvent;
+import at.rosinen.Noctis.activity.event.LoginNavigationEvent;
+import at.rosinen.Noctis.base.ReceiverOnlyEventBusFragment;
+import at.rosinen.Noctis.eventoverview.EventpagerFragment_;
+import at.rosinen.Noctis.map.MapsFragment_;
+import com.facebook.*;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import java.security.MessageDigest;
-
-import android.content.pm.Signature;
-import android.widget.Button;
-import android.widget.TextView;
-
 import java.util.Arrays;
 
 
