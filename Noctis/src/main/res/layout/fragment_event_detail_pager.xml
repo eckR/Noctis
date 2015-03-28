@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                tools:context="at.rosinen.Noctis.eventoverview.EventpagerFragment">
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="62dp"
+              android:background="@color/g1"/>
+    <ImageView android:layout_width="100dp" android:layout_height="100dp"
+               android:layout_margin="13.33dp"
+               android:src="@drawable/kalender"
+               android:text="999"
+               android:textSize="22dp"
+               android:background="@color/w"
+               android:gravity="center" android:id="@+id/eventImage"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/eventLocation"
+              android:layout_marginTop="13.33dp"
+              android:layout_toRightOf="@id/eventImage"
+              android:text="Location"
+              android:textSize="14sp"
+              android:textColor="@color/g3"
+              android:gravity="center"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventLocation"
+            android:textSize="17sp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@id/eventImage"
+            android:text="EventTitle"
+            android:textColor="@color/w"
+
+            />
+
+
+    
+    <TextView android:layout_width="wrap_content" android:layout_height="34dp"
+            android:text="ZUSAGEN"
+            android:textColor="@color/w"
+            android:textSize="17sp"
+            android:layout_toRightOf="@id/eventImage"
+            android:layout_alignBottom="@id/eventImage"
+            android:padding="7dp"
+            android:background="@color/g3"
+            android:id="@+id/textViewJoin"
+            />
+    <TextView android:layout_width="wrap_content" android:layout_height="34dp"
+            android:text="ROUTE"
+            android:textColor="@color/w"
+            android:background="@color/g2"
+            android:layout_toRightOf="@id/textViewJoin"
+            android:layout_alignBottom="@id/textViewJoin"
+            android:padding="7dp"
+            android:textSize="17sp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/textViewRoute"/>
+    <ImageView android:layout_width="34dp" android:layout_height="34dp"
+            android:background="@color/com_facebook_blue"
+            android:layout_toRightOf="@id/textViewRoute"
+            android:layout_alignBottom="@id/textViewRoute"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/facebook"/>
+    <View android:layout_width="match_parent" android:layout_height="62dp"
+            android:id="@+id/slider"></View>
+    <android.support.v4.view.ViewPager
+            android:id="@+id/detailViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="62dp"
+            android:paddingTop="50dp">
+
+
+
+    </android.support.v4.view.ViewPager>
+</RelativeLayout>

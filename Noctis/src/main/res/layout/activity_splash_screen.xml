@@ -9,6 +9,8 @@
             android:layout_height="match_parent">
     </FrameLayout>
 
+
+
     <FrameLayout
             android:id="@+id/swipeUpPanel"
             android:layout_width="fill_parent"
