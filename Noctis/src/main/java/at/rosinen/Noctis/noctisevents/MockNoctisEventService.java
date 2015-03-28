@@ -5,6 +5,7 @@ import at.rosinen.Noctis.base.AbstractService;
 import at.rosinen.Noctis.noctisevents.event.NoctisEventsAvailableEvent;
 import at.rosinen.Noctis.noctisevents.event.RequestEventsEvent;
 import com.google.android.gms.maps.model.LatLng;
+import com.squareup.picasso.Picasso;
 import org.androidannotations.annotations.EBean;
 
 import java.util.*;
@@ -71,8 +72,11 @@ public class MockNoctisEventService extends AbstractService implements INoctisEv
                 "https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-xfa1/v/t1.0-9/11041763_686504998125104_100975474360033640_n.jpg?oh=64e213161129ba7b03ae8971b141ff87&oe=55B83F2B&__gda__=1437562235_30aa0ca336c45e65abc328452ea397fa",
                 "https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-xfp1/v/t1.0-9/10984284_445289895634434_6812078693844205424_n.png?oh=9ec8c709f7e06be94157824e1d704826&oe=55738288&__gda__=1434431745_13021f23ee78ac7512b3b608b355447b",
                 5.0f);
-        events.add(event1);
 
+
+
+
+        events.add(event1);
         events.add(event2);
         events.add(event3);
         events.add(event4);

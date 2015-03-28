@@ -23,6 +23,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 
+import java.util.HashMap;
+
 
 @EFragment(R.layout.fragment_maps)
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -37,8 +39,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     @AfterViews
     void afterViews() {
-        SupportMapFragment fragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.gMap));
-        fragment.getMapAsync(this);
+        SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.gMap));
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -56,27 +58,43 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+
     public void onEventMainThread(MarkEventsOnMapEvent event) {
-        if (map == null) {
-            //TODO handle that maybe with a list that gets added when the map is ready again?
-            return;
-        }
+        //this check should be obsolete because of the mapeventbus!
+//        if (map == null) {
+//            //TODO handle that maybe with a list that gets added when the map is ready again?
+//            return;
+//        }
+
+
+
+
+
         map.clear();
+        markerOptionsHashMap.clear();
+
         for (NoctisEvent noctisEvent : event.events) {
-            map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.kalender))
+
+
+           MarkerOptions marker = new MarkerOptions()
+                    .alpha(0.8f)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mask))
                     .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                    .position(noctisEvent.getCoords()));
+                    .position(noctisEvent.getCoords());
+            map.addMarker(marker);
+            markerOptionsHashMap.put(noctisEvent.getFBID(), marker);
         }
     }
+    HashMap<Long,MarkerOptions> markerOptionsHashMap = new HashMap<Long, MarkerOptions>();
 
-    public void onEventMainThread(NewLocationEvent newLocationEvent){
+
+    public void onEventMainThread(NewLocationEvent newLocationEvent) {
         moveMapCameraToLocation(newLocationEvent.coordinate, ZOOM_DEFAULT);
     }
 
     public void onEventMainThread(ChangeBottomPaddingMapEvent event) {
         CameraPosition position = map.getCameraPosition();
-        map.setPadding(0,0,0, event.bottomPadding);
+        map.setPadding(0, 0, 0, event.bottomPadding);
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position));
 
     }

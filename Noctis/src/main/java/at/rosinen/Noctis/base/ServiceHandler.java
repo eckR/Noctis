@@ -2,6 +2,7 @@ package at.rosinen.Noctis.base;
 
 import at.rosinen.Noctis.base.AbstractService;
 import at.rosinen.Noctis.location.LocationService;
+import at.rosinen.Noctis.noctisevents.ImageService;
 import at.rosinen.Noctis.noctisevents.MockNoctisEventService;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
@@ -23,12 +24,16 @@ public class ServiceHandler {
     @Bean
     MockNoctisEventService mockNoctisEventService;
 
+    @Bean
+    ImageService imageService;
+
     private List<AbstractService> services = new ArrayList<AbstractService>();
 
     @AfterInject
     public void loadServices(){
         services.add(locationService);
         services.add(mockNoctisEventService);
+        services.add(imageService);
     }
 
 

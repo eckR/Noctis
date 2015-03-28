@@ -1,5 +1,10 @@
 package at.rosinen.Noctis.Model;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import at.rosinen.Noctis.R;
+import at.rosinen.Noctis.activity.NoctisApplication;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
@@ -22,7 +27,21 @@ public class NoctisEvent {
     private String pictureBigUrl;
     private float distance;
 
+    /**
+     * used to store the thumbnail
+     */
+    private Bitmap pictureSmall;
+    /**
+     * stores the thumbnail too if no fullscale picture is available
+     * so it is safe to access this even if there is no picture available
+     */
+    private Bitmap pictureBig;
+
+    private Bitmap mapMarkerBitmap;
+
     public NoctisEvent() {
+        Context ctx = NoctisApplication.getContext();
+        pictureBig = BitmapFactory.decodeResource(ctx.getResources(),R.drawable.kalender); // default init with "no event img available" picture so no nullchecks are neccessary
 
     }
 
@@ -49,6 +68,9 @@ public class NoctisEvent {
         this.description=description.replaceAll("\\\\n", System.getProperty("line.separator"));
         this.pictureSmallUrl = pictureSmallUrl;
         this.distance = distance;
+
+        Context ctx = NoctisApplication.getContext();
+        pictureBig = BitmapFactory.decodeResource(ctx.getResources(),R.drawable.kalender); // default init with "no event img available" picture so no nullchecks are neccessary
 
     }
 
@@ -126,5 +148,29 @@ public class NoctisEvent {
     }
     public String getPictureBigUrl(){
         return pictureBigUrl;
+    }
+
+    public Bitmap getPictureSmall() {
+        return pictureSmall;
+    }
+
+    public void setPictureSmall(Bitmap pictureSmall) {
+        this.pictureSmall = pictureSmall;
+    }
+
+    public Bitmap getPictureBig() {
+        return pictureBig;
+    }
+
+    public void setPictureBig(Bitmap pictureBig) {
+        this.pictureBig = pictureBig;
+    }
+
+    public Bitmap getMapMarkerBitmap() {
+        return mapMarkerBitmap;
+    }
+
+    public void setMapMarkerBitmap(Bitmap mapMarkerBitmap) {
+        this.mapMarkerBitmap = mapMarkerBitmap;
     }
 }

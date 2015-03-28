@@ -1,6 +1,7 @@
 package at.rosinen.Noctis.eventoverview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +34,8 @@ public class EventListItemView extends LinearLayout{
     }
 
     public void bind(NoctisEvent event) {
+        //TODO check for null if it cant be loaded usefully in the noctisevent
+        itemImage.setImageBitmap(event.getPictureBig());
         itemTitle.setText(event.getName());
         itemLocation.setText(event.getLocation());
         itemAttendance.setText(event.getAttending()+"");

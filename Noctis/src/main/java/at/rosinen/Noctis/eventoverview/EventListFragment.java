@@ -9,7 +9,9 @@ import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
 import at.rosinen.Noctis.base.EventBusFragment;
 import at.rosinen.Noctis.location.event.NewLocationEvent;
+import at.rosinen.Noctis.map.MapEventBus;
 import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
+import at.rosinen.Noctis.noctisevents.event.ImageDownloadAvailableEvent;
 import at.rosinen.Noctis.noctisevents.event.NoctisEventsAvailableEvent;
 import at.rosinen.Noctis.noctisevents.event.RequestEventsEvent;
 import org.androidannotations.annotations.*;
@@ -21,6 +23,7 @@ import org.androidannotations.annotations.*;
 @EFragment(R.layout.event_list_fragment)
 public class EventListFragment extends EventBusFragment {
 
+    private static String TAG = EventListFragment.class.getName();
 
     private static final int DEFAULT_RADIUS = 100;
 
@@ -35,6 +38,9 @@ public class EventListFragment extends EventBusFragment {
 
     @ViewById
     RelativeLayout emptyIndicator;
+
+    @Bean
+    MapEventBus mapEventBus;
 
     @FragmentArg
     public int day;
@@ -75,7 +81,8 @@ public class EventListFragment extends EventBusFragment {
         adapter.setNoctisEventList(noctisEventsAvailableEvent.eventList);
         adapter.notifyDataSetChanged();
         eventListRefresher.setRefreshing(false);
-        mEventBus.post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
+
+        mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
 
     }
 
@@ -94,6 +101,10 @@ public class EventListFragment extends EventBusFragment {
         }
     }
 
+    public void onEventMainThread(ImageDownloadAvailableEvent imgDownloadAvailableEvent){
+        Log.i(TAG, "image download recieved, updating adapter");
+        adapter.notifyDataSetChanged();
+    }
 
     public void setDay(int day) {
         this.day = day;
