@@ -20,6 +20,6 @@
               android:textColor="@color/s"
               android:padding="3dp"
               android:textSize="15sp"
-            android:id="@+id/textViewDescription"/>
+                android:id="@+id/textViewDescription"/>
 
 </LinearLayout>

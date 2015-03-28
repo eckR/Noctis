@@ -33,6 +33,27 @@
     </FrameLayout>
 
     <FrameLayout
+            android:id="@+id/eventDetailSwipeUpPanel"
+            android:layout_width="fill_parent"
+            android:layout_gravity="bottom"
+            android:background="@color/g5"
+            android:layout_height="@dimen/EventListHeight">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/evenDetailHandle"
+                android:layout_gravity="top"
+                android:translationZ="5dp"
+                android:clickable="true"
+                android:layout_width="fill_parent"
+                android:background="#22ffffff"
+                android:layout_height="@dimen/EventListHeaderHeight">
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/loginFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

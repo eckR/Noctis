@@ -3,6 +3,7 @@ package at.rosinen.Noctis.activity;
 import android.app.AlertDialog;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import at.rosinen.Noctis.R;
@@ -19,6 +20,8 @@ import org.androidannotations.annotations.*;
 public class SplashScreenActivity extends FragmentActivity {
 
     private EventBus mEventBus = EventBus.getDefault();
+    private SlidingUpPanelApplier applier;
+    private SlidingUpPanelApplier applierDetails;
 
     @Bean
     ServiceHandler serviceHandler;
@@ -35,6 +38,12 @@ public class SplashScreenActivity extends FragmentActivity {
     @ViewById
     View fragmentBase;
 
+    @ViewById
+    View eventDetailSwipeUpPanel;
+
+    @ViewById
+    View evenDetailHandle;
+
     @Bean
     MapEventBus mapEventBus;
 
@@ -47,8 +56,23 @@ public class SplashScreenActivity extends FragmentActivity {
     public void afterLoad() {
         mEventBus.post(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
 
+        applierDetails = new SlidingUpPanelApplier(eventDetailSwipeUpPanel,
+                evenDetailHandle, 0, eventDetailSwipeUpPanel.getLayoutParams().height, this) {
+            @Override
+            public void onExpand() {
 
-        SlidingUpPanelApplier applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
+            }
+
+            @Override
+            public void onCollapse() {
+
+            }
+        };
+        applierDetails.collapse();
+        //applierDetails.expand();
+
+
+        applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
             public void onExpand() {
                 ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMaxHeight());
@@ -110,6 +134,11 @@ public class SplashScreenActivity extends FragmentActivity {
 
     public void onEventMainThread(final ToastMeEvent toastMeEvent) {
         Toast.makeText(this,toastMeEvent.message, toastMeEvent.length).show();
+    }
+
+    public void onEvent(ShowDetailsEvent event) {
+        applierDetails.expand();
+        Log.d("EVENT", "SHOW DETAILS");
     }
 
     @Override
