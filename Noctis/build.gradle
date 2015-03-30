@@ -5,7 +5,7 @@ buildscript {
         maven { url 'http://download.crashlytics.com/maven' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.1.3'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     }
@@ -50,16 +50,21 @@ apt {
 android {
     signingConfigs {
         release {
-            keyAlias 'NoctisRelease'
-            keyPassword 'LGGRW50vz2B_ok7ZkGFpIqPxz63w1Mhf'
-            storeFile file('D:/noctis.jks')
-            storePassword 'A5fKmc_PdYgwE67sG1Sue35XahElc7vR'
+//            so für einen release build gehören diese 2 Zeilen einkommentiert und die debugkeys auskommentiert
+//            da es beim ändern des keys zu problemen beim build kommt bleibt der release key den builds für den store
+//            vorbehalten
+//            keyAlias RELEASE_KEY_ALIAS
+//            keyPassword RELEASE_KEY_PASSWORD
+            keyAlias DEBUG_KEY_ALIAS
+            keyPassword DEBUG_KEY_PASSWORD
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
         }
         debug {
-            keyAlias 'NoctisDebug'
-            keyPassword 'ESVAKBUSokiJJMP8q8zIy6gY_6dk5KYL'
-            storeFile file('D:/noctis.jks')
-            storePassword 'A5fKmc_PdYgwE67sG1Sue35XahElc7vR'
+            keyAlias DEBUG_KEY_ALIAS
+            keyPassword DEBUG_KEY_PASSWORD
+            storeFile file(DEBUG_STORE_FILE)
+            storePassword DEBUG_STORE_PASSWORD
         }
     }
     compileSdkVersion 22
@@ -69,12 +74,17 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.001"
+
+        resValue "string", "FACEBOOK_API_KEY", FACEBOOK_API_KEY
+        resValue "string", "MAPS_API_KEY", MAPS_API_KEY
+        resValue "string", "CRASHLYTICS_API_KEY", CRASHLYTICS_API_KEY
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
     }
+
     buildTypes {
         release {
             minifyEnabled false
