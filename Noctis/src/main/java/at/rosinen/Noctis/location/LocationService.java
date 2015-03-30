@@ -14,6 +14,8 @@ import at.rosinen.Noctis.activity.event.AlertDialogEvent;
 import at.rosinen.Noctis.activity.event.StartActivityEvent;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
 import at.rosinen.Noctis.base.AbstractService;
+import at.rosinen.Noctis.base.SharedPreferences;
+import at.rosinen.Noctis.base.SharedPreferences_;
 import at.rosinen.Noctis.location.event.GoogleAPIClientEvent;
 import at.rosinen.Noctis.location.event.NewLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
@@ -26,6 +28,7 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SystemService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 /**
  * Created by Simon on 23.03.2015.
@@ -39,6 +42,9 @@ public class LocationService extends AbstractService implements
 
     @SystemService
     LocationManager locationManager;
+
+    @Pref
+    SharedPreferences_ sharedPref;
 
     private Context ctx;
 
@@ -119,19 +125,28 @@ public class LocationService extends AbstractService implements
 
         if (lastLocation != null) {
 
-            if(mLastLocation == null || mLastLocation.distanceTo(lastLocation) > 1){
+            if(mLastLocation == null || mLastLocation.distanceTo(lastLocation) > 1){ //todo check distance
+
                 mLastLocation = lastLocation;
             }
 
 
             if(mRequestedLocationUpdate){
                 mRequestedLocationUpdate = false;
-                mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude() ) ));
-                mEventBus.postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude() ) ));
+                mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+                mEventBus.postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+
+                sharedPref.edit().latitude().put((float) mLastLocation.getLatitude()).apply();
+                sharedPref.edit().longitude().put((float) mLastLocation.getLongitude()).apply();
             }
+        }
 
+        else if(sharedPref.latitude().exists() && sharedPref.longitude().exists()){
+            mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get() ) ));
+            mEventBus.postSticky(new NewLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
+        }
 
-        } else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
+        else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || //TODO implement location request
                 !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             fireNoGpsAlertDialogEvent();
         }
