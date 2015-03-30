@@ -17,6 +17,8 @@ import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.activity.event.FragmentChangeEvent;
 import at.rosinen.Noctis.activity.event.LoginNavigationEvent;
 import at.rosinen.Noctis.base.ReceiverOnlyEventBusFragment;
+import at.rosinen.Noctis.eventdetail.EventDetailPagerFragment;
+import at.rosinen.Noctis.eventdetail.EventDetailPagerFragment_;
 import at.rosinen.Noctis.eventoverview.EventpagerFragment_;
 import at.rosinen.Noctis.map.MapsFragment_;
 import com.facebook.*;
@@ -61,6 +63,7 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
     private void goToMapScreen(){
         mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
         mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
+        mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), false, R.id.eventDetailSwipeUpPanel));
         mEventBus.post(new LoginNavigationEvent(false));
     }
 

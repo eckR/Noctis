@@ -10,7 +10,7 @@
             android:layout_height="match_parent">
 
         <ListView
-                android:id="@id/android:list"
+                android:id="@+id/eventListView"
                 android:orientation="vertical"
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"

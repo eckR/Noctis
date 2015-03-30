@@ -5,7 +5,9 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import at.rosinen.Noctis.Model.NoctisEvent;
 import at.rosinen.Noctis.R;
+import at.rosinen.Noctis.activity.event.ShowDetailsEvent;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
 import at.rosinen.Noctis.base.EventBusFragment;
 import at.rosinen.Noctis.location.event.NewLocationEvent;
@@ -27,7 +29,7 @@ public class EventListFragment extends EventBusFragment {
 
     private static final int DEFAULT_RADIUS = 100;
 
-    @ViewById(android.R.id.list)
+    @ViewById(R.id.eventListView)
     ListView list;
 
     @ViewById
@@ -56,6 +58,12 @@ public class EventListFragment extends EventBusFragment {
 //                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 //        eventListRefresher.setRefreshing(true);
 
+    }
+
+    @ItemClick(R.id.eventListView)
+    void itemClicked(int position) {
+        ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position);
+        mEventBus.post(detailsEvent);
     }
 
 
@@ -109,6 +117,8 @@ public class EventListFragment extends EventBusFragment {
     public void setDay(int day) {
         this.day = day;
     }
+
+
 
 
 }
