@@ -2,6 +2,7 @@ package at.rosinen.Noctis.base;
 
 import at.rosinen.Noctis.base.AbstractService;
 import at.rosinen.Noctis.location.LocationService;
+import at.rosinen.Noctis.map.MarkerService;
 import at.rosinen.Noctis.noctisevents.ImageService;
 import at.rosinen.Noctis.noctisevents.MockNoctisEventService;
 import org.androidannotations.annotations.AfterInject;
@@ -27,6 +28,9 @@ public class ServiceHandler {
     @Bean
     ImageService imageService;
 
+    @Bean
+    MarkerService markerService;
+
     private List<AbstractService> services = new ArrayList<AbstractService>();
 
     @AfterInject
@@ -34,6 +38,7 @@ public class ServiceHandler {
         services.add(locationService);
         services.add(mockNoctisEventService);
         services.add(imageService);
+        services.add(markerService);
     }
 
 

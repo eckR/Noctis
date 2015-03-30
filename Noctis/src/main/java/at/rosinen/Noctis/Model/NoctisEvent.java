@@ -37,8 +37,6 @@ public class NoctisEvent {
      */
     private Bitmap pictureBig;
 
-    private Bitmap mapMarkerBitmap;
-
     public NoctisEvent() {
         Context ctx = NoctisApplication.getContext();
         pictureBig = BitmapFactory.decodeResource(ctx.getResources(),R.drawable.kalender); // default init with "no event img available" picture so no nullchecks are neccessary
@@ -72,6 +70,12 @@ public class NoctisEvent {
         Context ctx = NoctisApplication.getContext();
         pictureBig = BitmapFactory.decodeResource(ctx.getResources(),R.drawable.kalender); // default init with "no event img available" picture so no nullchecks are neccessary
 
+    }
+
+    public String getKey(){
+        StringBuilder sb = new StringBuilder();//TODO set capacity (fbid might always be the same length
+        sb.append(getFBID()).append(getAttending());
+        return sb.toString();
     }
 
     public void setFbID(Long fbID) {
@@ -166,11 +170,4 @@ public class NoctisEvent {
         this.pictureBig = pictureBig;
     }
 
-    public Bitmap getMapMarkerBitmap() {
-        return mapMarkerBitmap;
-    }
-
-    public void setMapMarkerBitmap(Bitmap mapMarkerBitmap) {
-        this.mapMarkerBitmap = mapMarkerBitmap;
-    }
 }

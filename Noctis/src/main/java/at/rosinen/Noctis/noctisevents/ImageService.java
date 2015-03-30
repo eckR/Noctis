@@ -1,8 +1,12 @@
 package at.rosinen.Noctis.noctisevents;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import at.rosinen.Noctis.Model.NoctisEvent;
+import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.activity.NoctisApplication;
 import at.rosinen.Noctis.base.AbstractService;
 import at.rosinen.Noctis.noctisevents.event.ImageDownloadAvailableEvent;
@@ -11,6 +15,7 @@ import at.rosinen.Noctis.noctisevents.event.NoctisEventsAvailableEvent;
 import com.squareup.picasso.Picasso;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.res.DrawableRes;
 
 import java.util.HashMap;
 import java.util.Map;

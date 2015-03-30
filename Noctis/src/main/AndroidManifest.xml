@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="at.rosinen.Noctis" >
+          package="at.rosinen.Noctis">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -14,26 +14,31 @@
             android:required="true"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".activity.NoctisApplication_">
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:name=".activity.NoctisApplication_">
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"
-                android:value="AIzaSyAIXDLEbPhKBJyfVIhCyYJTOf9iuIN6kdc" />
+                android:value="AIzaSyAIXDLEbPhKBJyfVIhCyYJTOf9iuIN6kdc"/>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <activity
-            android:name=".activity.SplashScreenActivity_"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
+                android:name=".activity.SplashScreenActivity_"
+                android:label="@string/app_name"
+                android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity android:name="com.facebook.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <meta-data
+                android:name="com.crashlytics.ApiKey"
+                android:value="83435064126d2d158bf9e6436fe18d9a6cef73a4"/>
     </application>
 
 </manifest>

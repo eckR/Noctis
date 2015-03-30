@@ -1,6 +1,7 @@
 package at.rosinen.Noctis.map;
 
 
+import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import at.rosinen.Noctis.Model.NoctisEvent;
@@ -10,14 +11,12 @@ import at.rosinen.Noctis.location.event.NewLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
 import at.rosinen.Noctis.map.event.ChangeBottomPaddingMapEvent;
 import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
+import at.rosinen.Noctis.map.event.MarkerAvailableEvent;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -28,6 +27,8 @@ import java.util.HashMap;
 
 @EFragment(R.layout.fragment_maps)
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
+
+    private HashMap<String,Marker> markerOptionsHashMap = new HashMap<String, Marker>();
 
     private static final int ZOOM_DEFAULT = 12;
     private EventBus mEventBus = EventBus.getDefault();
@@ -58,34 +59,36 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    public  void onEventMainThread(MarkerAvailableEvent markerAvailableEvent){
+        Marker marker = markerOptionsHashMap.get(markerAvailableEvent.noctisEvent.getKey());
+
+        if (marker != null) {
+            marker.remove();
+        }
+//        map.clear();
+        //TODO put markerbitmap back into noctisevent else the memory will go missing
+        addMarker(markerAvailableEvent.noctisEvent, BitmapDescriptorFactory.fromBitmap(markerAvailableEvent.markerBitmap));
+    }
 
     public void onEventMainThread(MarkEventsOnMapEvent event) {
-        //this check should be obsolete because of the mapeventbus!
-//        if (map == null) {
-//            //TODO handle that maybe with a list that gets added when the map is ready again?
-//            return;
-//        }
-
-
-
-
 
         map.clear();
         markerOptionsHashMap.clear();
 
         for (NoctisEvent noctisEvent : event.events) {
-
-
-           MarkerOptions marker = new MarkerOptions()
-                    .alpha(0.8f)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mask))
-                    .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                    .position(noctisEvent.getCoords());
-            map.addMarker(marker);
-            markerOptionsHashMap.put(noctisEvent.getFBID(), marker);
+           addMarker(noctisEvent, BitmapDescriptorFactory.fromResource(R.drawable.marker_mask));
         }
     }
-    HashMap<Long,MarkerOptions> markerOptionsHashMap = new HashMap<Long, MarkerOptions>();
+
+    private void addMarker(NoctisEvent noctisEvent, BitmapDescriptor iconDescriptor){
+        MarkerOptions marker = new MarkerOptions()
+                .alpha(0.8f)
+                .icon(iconDescriptor)
+                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                .position(noctisEvent.getCoords());
+
+        markerOptionsHashMap.put(noctisEvent.getKey(), map.addMarker(marker));
+    }
 
 
     public void onEventMainThread(NewLocationEvent newLocationEvent) {

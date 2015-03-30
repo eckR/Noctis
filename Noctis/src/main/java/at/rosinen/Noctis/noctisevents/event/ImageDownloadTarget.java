@@ -3,6 +3,7 @@ package at.rosinen.Noctis.noctisevents.event;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import at.rosinen.Noctis.Model.NoctisEvent;
+import at.rosinen.Noctis.map.event.RequestMarkerBitmapEvent;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import de.greenrobot.event.EventBus;
@@ -40,6 +41,7 @@ public class ImageDownloadTarget implements Target {
 
         if (type == ImageDownloadTargetType.SMALL) {
             noctisEvent.setPictureSmall(bitmap);
+            mEventBus.post(new RequestMarkerBitmapEvent(noctisEvent));
 
             if (noctisEvent.getPictureBig() == null) {
                 noctisEvent.setPictureBig(bitmap);
