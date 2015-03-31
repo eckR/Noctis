@@ -9,9 +9,11 @@ public class ImageDownloadAvailableEvent {
 
     public final NoctisEvent event;
     public final ImageDownloadTarget target;
+    public final int day;
 
-    public ImageDownloadAvailableEvent(NoctisEvent event, ImageDownloadTarget target) {
+    public ImageDownloadAvailableEvent(NoctisEvent event, ImageDownloadTarget target, int day) {
         this.event = event;
         this.target = target;
+        this.day = day;
     }
 }

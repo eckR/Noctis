@@ -51,9 +51,9 @@ public class NoctisEventAdapter extends BaseAdapter {
         return eventListItemView;
     }
 
-    public void setNoctisEventList(List<NoctisEvent> eventList) {
-        this.noctisEventList = eventList;
-    }
+//    public void setNoctisEventList(List<NoctisEvent> eventList) {
+//        this.noctisEventList = eventList;
+//    }
 
     public List<NoctisEvent> getNoctisEventList() {
         return noctisEventList;

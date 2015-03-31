@@ -40,7 +40,13 @@ public class MarkerService extends AbstractService {
     LayoutInflater  mInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
-
+    /**
+     * called by the ImageService - downloadTarget after the small picture has been fetched
+     *  creates the marker and caches it based on the fbid and attending count in an lrucache
+     *
+     *  fires a MarkerAvailableEvent to the mapBus
+     * @param requestMarkerBitmapEvent
+     */
     public void onEventBackgroundThread(RequestMarkerBitmapEvent requestMarkerBitmapEvent) {
 
         NoctisEvent noctisEvent = requestMarkerBitmapEvent.noctisEvent;

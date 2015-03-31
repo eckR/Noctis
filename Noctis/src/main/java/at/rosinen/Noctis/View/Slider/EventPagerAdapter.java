@@ -6,9 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.activity.NoctisApplication;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
+import at.rosinen.Noctis.eventoverview.EventListFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,11 +18,11 @@ import java.util.Locale;
  */
 public class EventPagerAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> fragments = new ArrayList<Fragment>();
+    private List<EventListFragment> fragments = new ArrayList<EventListFragment>();
 
     private Context ctx;
 
-    public EventPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public EventPagerAdapter(FragmentManager fm, List<EventListFragment> fragments) {
         super(fm);
         this.fragments = fragments;
         this.ctx = NoctisApplication.getContext();

@@ -2,6 +2,7 @@ package at.rosinen.Noctis.activity;
 
 import android.app.Application;
 import android.content.Context;
+import at.rosinen.Noctis.R;
 import com.crashlytics.android.Crashlytics;
 import org.androidannotations.annotations.EApplication;
 

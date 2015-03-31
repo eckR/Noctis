@@ -49,7 +49,7 @@ public class ImageDownloadTarget implements Target {
         } else { //if(type == ImageDownloadTargetType.BIG){
             noctisEvent.setPictureBig(bitmap);
         }
-        mEventBus.post(new ImageDownloadAvailableEvent(noctisEvent, this));
+        mEventBus.post(new ImageDownloadAvailableEvent(noctisEvent, this, day));
     }
 
     @Override

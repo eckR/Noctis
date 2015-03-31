@@ -14,10 +14,9 @@ import at.rosinen.Noctis.activity.event.AlertDialogEvent;
 import at.rosinen.Noctis.activity.event.StartActivityEvent;
 import at.rosinen.Noctis.activity.event.ToastMeEvent;
 import at.rosinen.Noctis.base.AbstractService;
-import at.rosinen.Noctis.base.SharedPreferences;
 import at.rosinen.Noctis.base.SharedPreferences_;
 import at.rosinen.Noctis.location.event.GoogleAPIClientEvent;
-import at.rosinen.Noctis.location.event.NewLocationEvent;
+import at.rosinen.Noctis.location.event.FoundLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
 import at.rosinen.Noctis.map.MapEventBus;
 import com.google.android.gms.common.ConnectionResult;
@@ -109,15 +108,15 @@ public class LocationService extends AbstractService implements
         mRequestedLocationUpdate = true;
         if(mLastLocation != null){
             mRequestedLocationUpdate = false;
-            mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-            mEventBus.postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+            mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
         }else{
             getLocation();
         }
     }
 
     /**
-     *
+     * //TODo implement as stategy loop through every strategy and if non works fire event to ask for gps
      */
     private void getLocation(){
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -133,8 +132,8 @@ public class LocationService extends AbstractService implements
 
             if(mRequestedLocationUpdate){
                 mRequestedLocationUpdate = false;
-                mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-                mEventBus.postSticky(new NewLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+                mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+                mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
 
                 sharedPref.edit().latitude().put((float) mLastLocation.getLatitude()).apply();
                 sharedPref.edit().longitude().put((float) mLastLocation.getLongitude()).apply();
@@ -142,8 +141,8 @@ public class LocationService extends AbstractService implements
         }
 
         else if(sharedPref.latitude().exists() && sharedPref.longitude().exists()){
-            mapEventBus.getEventBus().postSticky(new NewLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get() ) ));
-            mEventBus.postSticky(new NewLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
+            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get() ) ));
+            mEventBus.postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
         }
 
         else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || //TODO implement location request

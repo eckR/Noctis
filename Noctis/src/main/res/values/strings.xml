@@ -22,6 +22,7 @@
     <string name="connectionSuspended">Verbindung temporär unterbrochen</string>
 
     <string name="needLocationFirst">Das Gerät muss zuerst lokalisiert werden</string>
+    <string name="locationUpdateRequested">Eine Standortabfrage wurde gestartet</string>
 
 
 

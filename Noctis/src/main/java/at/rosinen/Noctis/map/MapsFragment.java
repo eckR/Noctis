@@ -1,13 +1,12 @@
 package at.rosinen.Noctis.map;
 
 
-import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import at.rosinen.Noctis.Model.NoctisEvent;
 import at.rosinen.Noctis.R;
 import at.rosinen.Noctis.location.event.GoogleAPIClientEvent;
-import at.rosinen.Noctis.location.event.NewLocationEvent;
+import at.rosinen.Noctis.location.event.FoundLocationEvent;
 import at.rosinen.Noctis.location.event.RequestLocationEvent;
 import at.rosinen.Noctis.map.event.ChangeBottomPaddingMapEvent;
 import at.rosinen.Noctis.map.event.MarkEventsOnMapEvent;
@@ -28,6 +27,8 @@ import java.util.HashMap;
 @EFragment(R.layout.fragment_maps)
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
+    private static String TAG = MapsFragment.class.getName();
+
     private HashMap<String,Marker> markerOptionsHashMap = new HashMap<String, Marker>();
 
     private static final int ZOOM_DEFAULT = 12;
@@ -38,6 +39,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     MapEventBus mapEventBus;
 
 
+    /**
+     * find the map
+     */
     @AfterViews
     void afterViews() {
         SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.gMap));
@@ -50,28 +54,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mEventBus.post(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
     }
 
-    private void moveMapCameraToLocation(LatLng coordinate, int zoom) {
-        CameraPosition cameraPosition = new CameraPosition.Builder() // Creates a CameraPosition from the builder
-                .target(coordinate)
-                .zoom(zoom)
-                .build();
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
-
-    public  void onEventMainThread(MarkerAvailableEvent markerAvailableEvent){
+    /**
+     * comming from the markerservice and delivers one single marker
+     * @param markerAvailableEvent
+     */
+    public  void onEventMainThread(final MarkerAvailableEvent markerAvailableEvent){
         Marker marker = markerOptionsHashMap.get(markerAvailableEvent.noctisEvent.getKey());
 
         if (marker != null) {
             marker.remove();
         }
 //        map.clear();
-        //TODO put markerbitmap back into noctisevent else the memory will go missing
+        //TODO put markerbitmap back into noctisevent else the memory will go missing nullptr excetions maybe occur
         addMarker(markerAvailableEvent.noctisEvent, BitmapDescriptorFactory.fromBitmap(markerAvailableEvent.markerBitmap));
     }
 
-    public void onEventMainThread(MarkEventsOnMapEvent event) {
-
+    /**
+     * called from EventListfragment
+     * mark with empty markers before the picture was fetched
+     * called when sliding viewpager or the events are done fetching
+     * @param event
+     */
+    public void onEventMainThread(final MarkEventsOnMapEvent event) {
         map.clear();
         markerOptionsHashMap.clear();
 
@@ -80,7 +84,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void addMarker(NoctisEvent noctisEvent, BitmapDescriptor iconDescriptor){
+    /**
+     * add a marker for the given event and add it to the hashmap for replacement
+     * @param noctisEvent
+     * @param iconDescriptor
+     */
+    private void addMarker(final NoctisEvent noctisEvent,final BitmapDescriptor iconDescriptor){
         MarkerOptions marker = new MarkerOptions()
                 .alpha(0.8f)
                 .icon(iconDescriptor)
@@ -90,26 +99,35 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         markerOptionsHashMap.put(noctisEvent.getKey(), map.addMarker(marker));
     }
 
-
-    public void onEventMainThread(NewLocationEvent newLocationEvent) {
-        moveMapCameraToLocation(newLocationEvent.coordinate, ZOOM_DEFAULT);
-    }
-
-    public void onEventMainThread(ChangeBottomPaddingMapEvent event) {
+    /**
+     * TODO harry comment
+     * @param event
+     */
+    public void onEventMainThread(final ChangeBottomPaddingMapEvent event) {
         CameraPosition position = map.getCameraPosition();
         map.setPadding(0, 0, 0, event.bottomPadding);
         map.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+    }
 
+
+    /**
+     * called from the locationservice
+     * found a location -> zoom into that part of the map
+     * @param foundLocationEvent
+     */
+    public void onEventMainThread(final FoundLocationEvent foundLocationEvent) {
+        moveMapCameraToLocation(foundLocationEvent.coordinate, ZOOM_DEFAULT);
     }
 
     /**
      * Mapcallback
+     * Start locationrequest from here
      *
      * @param googleMap
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        Log.v(getClass().getCanonicalName(), "Found map");
+    public void onMapReady(final GoogleMap googleMap) {
+        Log.i(TAG, "onMapReady");
         mEventBus.post(new RequestLocationEvent());
         map = googleMap;
         map.setMyLocationEnabled(true);
@@ -120,16 +138,31 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 return true;
             }
         });
-        map.getUiSettings().setCompassEnabled(true);
+//        map.getUiSettings().setCompassEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         mapEventBus.getEventBus().register(this);
+    }
+
+    /**
+     * Move the map actually to that postition
+     * should only be called when the map is ready
+     * that's what the mapEventbus is for.
+     * @param coordinate
+     * @param zoom
+     */
+    private void moveMapCameraToLocation(final LatLng coordinate, final int zoom) {
+        CameraPosition cameraPosition = new CameraPosition.Builder() // Creates a CameraPosition from the builder
+                .target(coordinate)
+                .zoom(zoom)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
-        mEventBus.post(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
+        mEventBus.post(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.DISCONNECT));
     }
 }
 

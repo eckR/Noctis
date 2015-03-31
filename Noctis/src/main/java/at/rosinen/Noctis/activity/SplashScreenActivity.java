@@ -20,7 +20,9 @@ import org.androidannotations.annotations.*;
 public class SplashScreenActivity extends FragmentActivity {
 
     private EventBus mEventBus = EventBus.getDefault();
+
     private SlidingUpPanelApplier applier;
+
     private SlidingUpPanelApplier applierDetails;
 
     @Bean
@@ -47,11 +49,9 @@ public class SplashScreenActivity extends FragmentActivity {
     @Bean
     MapEventBus mapEventBus;
 
-    @AfterInject
-    public void afterInject() {
-//        EventBus.getDefault().register(this);
-    }
-
+    /**
+     * TODO this has to be properly aligned with the loginevent....!!!! This is a real performance issue
+     */
     @AfterViews
     public void afterLoad() {
         mEventBus.post(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
@@ -89,7 +89,18 @@ public class SplashScreenActivity extends FragmentActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mEventBus.register(this);
+        serviceHandler.startServices();
+        afterLoad();
+    }
+
     /**
+     * Change a given fragment and replace it with the one from the event
+     * choose in what layout this has to be placed and whether to add it on the
+     * backstack or not
      * @param fragmentChangeEvent
      */
     public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
@@ -101,12 +112,44 @@ public class SplashScreenActivity extends FragmentActivity {
             ft.addToBackStack(fragmentChangeEvent.fragment.getClass().getName());
         }
         ft.commit();
-
-//        dragHandleSwipeUp.bringToFront();
-//        swipeUpPanel.bringToFront();
-//        swipeUpPanel.invalidate();
     }
 
+
+
+    /**
+     * TODO needs an update .. remove unnecessary framelayout
+     * @param changeFragmentVisibilityEvent
+     */
+    public void onEventMainThread(final LoginNavigationEvent changeFragmentVisibilityEvent)
+    {
+        if(changeFragmentVisibilityEvent.show){
+            loginFragment.setVisibility(View.VISIBLE);
+        }
+        else{
+            loginFragment.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     * start an intent with the context of the main activity
+     * @param startActivityEvent
+     */
+    public void onEventMainThread(final StartActivityEvent startActivityEvent) {
+        startActivity(startActivityEvent.intent);
+    }
+
+    /**
+     * Show a Toast with a given message but don't have a context or don't want to worry about it
+     * @param toastMeEvent
+     */
+    public void onEventMainThread(final ToastMeEvent toastMeEvent) {
+        Toast.makeText(this,toastMeEvent.message, toastMeEvent.length).show();
+    }
+
+    /**
+     * Show an alert dialog without a context
+     * @param alertDialogEvent
+     */
     public void onEventMainThread(final AlertDialogEvent alertDialogEvent) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(alertDialogEvent.title)
@@ -118,36 +161,17 @@ public class SplashScreenActivity extends FragmentActivity {
         alert.show();
     }
 
-    public void onEventMainThread(final LoginNavigationEvent changeFragmentVisibilityEvent)
-    {
-        if(changeFragmentVisibilityEvent.show){
-            loginFragment.setVisibility(View.VISIBLE);
-        }
-        else{
-            loginFragment.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    public void onEventMainThread(final StartActivityEvent startActivityEvent) {
-        startActivity(startActivityEvent.intent);
-    }
-
-    public void onEventMainThread(final ToastMeEvent toastMeEvent) {
-        Toast.makeText(this,toastMeEvent.message, toastMeEvent.length).show();
-    }
-
-    public void onEvent(ShowDetailsEvent event) {
+    /**
+     * TODO in my opinion (simon) this has to be done an other way .. namly change the fragment on the
+     * TODO eventDetailSwipeUpPanel and apply a proper animation
+     * @param event
+     */
+    public void onEvent(final ShowDetailsEvent event) {
         applierDetails.expand();
         Log.d("EVENT", "SHOW DETAILS");
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mEventBus.register(this);
-        serviceHandler.startServices();
-        afterLoad();
-    }
+
 
     @Override
     protected void onStop() {
