@@ -32,7 +32,7 @@
                 android:value="83435064126d2d158bf9e6436fe18d9a6cef73a4"/>
 
         <activity
-                android:name=".activity.SplashScreenActivity_"
+                android:name=".activity.MainActivity_"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait">
             <intent-filter>

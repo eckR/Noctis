@@ -4,28 +4,23 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.facebook.*;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.FragmentChangeEvent;
 import com.rosinen.noctis.activity.event.LoginNavigationEvent;
 import com.rosinen.noctis.base.ReceiverOnlyEventBusFragment;
+import com.rosinen.noctis.base.Typefaces;
 import com.rosinen.noctis.eventdetail.EventDetailPagerFragment_;
 import com.rosinen.noctis.eventoverview.EventpagerFragment_;
 import com.rosinen.noctis.map.MapsFragment_;
-import com.facebook.*;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.LoginButton;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -33,14 +28,23 @@ import java.util.Arrays;
 
 @EFragment(R.layout.fragment_login_fragement)
 public class LoginFragement extends ReceiverOnlyEventBusFragment {
-    private static final String TAG="LoginFragment";
 
-    private View loginView;
+    private static final String TAG = LoginFragement.class.getName();
+
     private UiLifecycleHelper uiHelper;
-    private LoginButton loginButton;
 
-    @ViewById(R.id.button2)
-    public Button button2;
+    @ViewById(R.id.loginBtn)
+    LoginButton loginButton;
+
+    @ViewById
+    Button button2;
+
+    @Bean
+    Typefaces typefaces;
+
+
+    @ViewById(R.id.NoctisFont)
+    TextView tv;
 
     @Click(R.id.button2)
     public void Click(){
@@ -63,21 +67,15 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
         mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
         mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
         mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), false, R.id.eventDetailSwipeUpPanel));
-        mEventBus.post(new LoginNavigationEvent(false));
+        mEventBus.post(new LoginNavigationEvent());
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        loginView = inflater.inflate(R.layout.fragment_login_fragement, container, false);
+    @AfterViews
+    public void initView() {
+        tv.setTypeface(typefaces.quicksand);
 
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand_Book.ttf");
-        TextView tv = (TextView) loginView.findViewById(R.id.NoctisFont);
-        tv.setTypeface(tf);
-
-        loginButton = (LoginButton) loginView.findViewById(R.id.loginBtn);
         loginButton.setFragment(this);
         loginButton.setReadPermissions(Arrays.asList("user_events")); //"rsvp_event",
-        return loginView;
     }
 
     private void onSessionStatechange(Session session,SessionState state,Exception exception)

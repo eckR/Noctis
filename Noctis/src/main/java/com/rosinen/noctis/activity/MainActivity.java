@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Slider.SlidingUpPanelApplier;
@@ -18,8 +16,8 @@ import com.rosinen.noctis.activity.event.*;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.*;
 
-@EActivity(R.layout.activity_splash_screen)
-public class SplashScreenActivity extends FragmentActivity {
+@EActivity(R.layout.activity_main)
+public class MainActivity extends FragmentActivity {
 
     private EventBus mEventBus = EventBus.getDefault();
 
@@ -30,17 +28,17 @@ public class SplashScreenActivity extends FragmentActivity {
     @Bean
     ServiceHandler serviceHandler;
 
+    @Bean
+    MapEventBus mapEventBus;
+
+    @ViewById
+    View fragmentBase;
+
     @ViewById
     View swipeUpPanel;
 
     @ViewById
-    View loginFragment;
-
-    @ViewById
     View dragHandleSwipeUp;
-
-    @ViewById
-    View fragmentBase;
 
     @ViewById
     View eventDetailSwipeUpPanel;
@@ -48,15 +46,12 @@ public class SplashScreenActivity extends FragmentActivity {
     @ViewById
     View evenDetailHandle;
 
-    @Bean
-    MapEventBus mapEventBus;
-
     /**
      * TODO this has to be properly aligned with the loginevent....!!!! This is a real performance issue
      */
     @AfterViews
     public void afterLoad() {
-        mEventBus.post(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
+        mEventBus.post(new FragmentChangeEvent(new LoginFragement_(), false, R.id.fragmentBase));
 
         applierDetails = new SlidingUpPanelApplier(eventDetailSwipeUpPanel,
                 evenDetailHandle, 0, eventDetailSwipeUpPanel.getLayoutParams().height, this) {
@@ -71,8 +66,7 @@ public class SplashScreenActivity extends FragmentActivity {
             }
         };
         applierDetails.collapse();
-        //applierDetails.expand();
-
+//        applierDetails.expand();
 
         applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
@@ -88,7 +82,6 @@ public class SplashScreenActivity extends FragmentActivity {
             }
         };
         mapEventBus.getEventBus().post(new ChangeBottomPaddingMapEvent(applier.getMaxHeight()));
-
     }
 
     @Override
@@ -103,18 +96,16 @@ public class SplashScreenActivity extends FragmentActivity {
      * Change a given fragment and replace it with the one from the event
      * choose in what layout this has to be placed and whether to add it on the
      * backstack or not
+     *
      * @param fragmentChangeEvent
      */
     public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 //        Animation animation = AnimationUtils.loadAnimation(this, R.anim.overshoot);
-//ft.an
-//        ft.setCustomA/nimations()
+//        ft.setCustomAnimations()
 //                loginFragment.startAnimation(animation);
-
 //        ft.setCustomAnimations(R.anim.overshoot,R.anim.accelerate);
-
 
         ft.replace(fragmentChangeEvent.placeholderFragmentId, fragmentChangeEvent.fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -125,23 +116,21 @@ public class SplashScreenActivity extends FragmentActivity {
     }
 
 
-
     /**
      * TODO needs an update .. remove unnecessary framelayout
-     * @param changeFragmentVisibilityEvent
+     *
+     * @param loginNavigationEvent
      */
-    public void onEventMainThread(final LoginNavigationEvent changeFragmentVisibilityEvent)
-    {
-        if(changeFragmentVisibilityEvent.show){
-            loginFragment.setVisibility(View.VISIBLE);
-        }
-        else{
-            loginFragment.setVisibility(View.INVISIBLE);
-        }
+    public void onEventMainThread(final LoginNavigationEvent loginNavigationEvent) {
+        swipeUpPanel.setVisibility(View.VISIBLE);
+        dragHandleSwipeUp.setVisibility(View.VISIBLE);
+        eventDetailSwipeUpPanel.setVisibility(View.VISIBLE);
+        evenDetailHandle.setVisibility(View.VISIBLE);
     }
 
     /**
      * start an intent with the context of the main activity
+     *
      * @param startActivityEvent
      */
     public void onEventMainThread(final StartActivityEvent startActivityEvent) {
@@ -150,14 +139,16 @@ public class SplashScreenActivity extends FragmentActivity {
 
     /**
      * Show a Toast with a given message but don't have a context or don't want to worry about it
+     *
      * @param toastMeEvent
      */
     public void onEventMainThread(final ToastMeEvent toastMeEvent) {
-        Toast.makeText(this,toastMeEvent.message, toastMeEvent.length).show();
+        Toast.makeText(this, toastMeEvent.message, toastMeEvent.length).show();
     }
 
     /**
      * Show an alert dialog without a context
+     *
      * @param alertDialogEvent
      */
     public void onEventMainThread(final AlertDialogEvent alertDialogEvent) {
@@ -174,13 +165,13 @@ public class SplashScreenActivity extends FragmentActivity {
     /**
      * TODO in my opinion (simon) this has to be done an other way .. namly change the fragment on the
      * TODO eventDetailSwipeUpPanel and apply a proper animation
+     *
      * @param event
      */
     public void onEvent(final ShowDetailsEvent event) {
         applierDetails.expand();
         Log.d("EVENT", "SHOW DETAILS");
     }
-
 
 
     @Override
