@@ -5,19 +5,31 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Slider.SlidingUpPanelApplier;
+import com.rosinen.noctis.activity.event.*;
 import com.rosinen.noctis.base.ServiceHandler;
+import com.rosinen.noctis.base.SharedPreferences_;
+import com.rosinen.noctis.eventdetail.EventDetailPagerFragment_;
+import com.rosinen.noctis.eventoverview.EventpagerFragment_;
 import com.rosinen.noctis.login.LoginFragement_;
 import com.rosinen.noctis.map.MapEventBus;
+import com.rosinen.noctis.map.MapsFragment_;
 import com.rosinen.noctis.map.event.ChangeBottomPaddingMapEvent;
-import com.rosinen.noctis.activity.event.*;
 import de.greenrobot.event.EventBus;
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends FragmentActivity {
+
+    private static String TAG = MainActivity.class.getName();
 
     private EventBus mEventBus = EventBus.getDefault();
 
@@ -44,15 +56,29 @@ public class MainActivity extends FragmentActivity {
     View eventDetailSwipeUpPanel;
 
     @ViewById
+    View loginFragment;
+
+    @ViewById
     View evenDetailHandle;
 
+    @Pref
+    SharedPreferences_ sharedPrefs;
+
+    boolean showingDetails = false;
     /**
-     * TODO this has to be properly aligned with the loginevent....!!!! This is a real performance issue
+     *
      */
     @AfterViews
     public void afterLoad() {
-        mEventBus.post(new FragmentChangeEvent(new LoginFragement_(), false, R.id.fragmentBase));
+        //TODO @david set loggedIn status to true
+        if (!sharedPrefs.loggedIn().get()) { // never logged in or logged out again
+            onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
+        }
 
+    }
+
+
+    void applySlider() {
         applierDetails = new SlidingUpPanelApplier(eventDetailSwipeUpPanel,
                 evenDetailHandle, 0, eventDetailSwipeUpPanel.getLayoutParams().height, this) {
             @Override
@@ -81,6 +107,8 @@ public class MainActivity extends FragmentActivity {
                 mapEventBus.getEventBus().post(event);
             }
         };
+        applier.collapse();
+
         mapEventBus.getEventBus().post(new ChangeBottomPaddingMapEvent(applier.getMaxHeight()));
     }
 
@@ -89,7 +117,6 @@ public class MainActivity extends FragmentActivity {
         super.onStart();
         mEventBus.register(this);
         serviceHandler.startServices();
-        afterLoad();
     }
 
     /**
@@ -102,10 +129,8 @@ public class MainActivity extends FragmentActivity {
     public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-//        Animation animation = AnimationUtils.loadAnimation(this, R.anim.overshoot);
-//        ft.setCustomAnimations()
-//                loginFragment.startAnimation(animation);
-//        ft.setCustomAnimations(R.anim.overshoot,R.anim.accelerate);
+        ft.setCustomAnimations(fragmentChangeEvent.inAnimationRes, fragmentChangeEvent.outAnimationRes);
+
 
         ft.replace(fragmentChangeEvent.placeholderFragmentId, fragmentChangeEvent.fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -113,6 +138,10 @@ public class MainActivity extends FragmentActivity {
             ft.addToBackStack(fragmentChangeEvent.fragment.getClass().getName());
         }
         ft.commit();
+
+        for (View view : fragmentChangeEvent.viewsToSetVisible) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -122,10 +151,33 @@ public class MainActivity extends FragmentActivity {
      * @param loginNavigationEvent
      */
     public void onEventMainThread(final LoginNavigationEvent loginNavigationEvent) {
-        swipeUpPanel.setVisibility(View.VISIBLE);
-        dragHandleSwipeUp.setVisibility(View.VISIBLE);
-        eventDetailSwipeUpPanel.setVisibility(View.VISIBLE);
-        evenDetailHandle.setVisibility(View.VISIBLE);
+
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha_fade_out);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                loginFragment.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        loginFragment.startAnimation(anim);
+        Log.i(TAG, "Start mapsfragment");
+        onEventMainThread(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
+
+        Log.i(TAG, "apply slider");
+        applySlider();
+        onEventMainThread(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel, swipeUpPanel, dragHandleSwipeUp));
+        onEventMainThread(new FragmentChangeEvent(new EventDetailPagerFragment_(), false, R.id.eventDetailSwipeUpPanel, eventDetailSwipeUpPanel,evenDetailHandle));
+
     }
 
     /**
@@ -170,9 +222,23 @@ public class MainActivity extends FragmentActivity {
      */
     public void onEvent(final ShowDetailsEvent event) {
         applierDetails.expand();
+        showingDetails = true;
         Log.d("EVENT", "SHOW DETAILS");
     }
 
+
+
+    @Override
+    public void onBackPressed() {
+
+        if (showingDetails) {
+            applierDetails.collapse();
+            showingDetails = false;
+        }else{
+            super.onBackPressed();
+        }
+
+    }
 
     @Override
     protected void onStop() {

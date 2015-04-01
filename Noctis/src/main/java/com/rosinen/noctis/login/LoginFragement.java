@@ -64,10 +64,8 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
     };
 
     private void goToMapScreen(){
-        mEventBus.post(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
-        mEventBus.post(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel));
-        mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), false, R.id.eventDetailSwipeUpPanel));
         mEventBus.post(new LoginNavigationEvent());
+
     }
 
     @AfterViews

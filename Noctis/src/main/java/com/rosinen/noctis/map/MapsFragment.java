@@ -80,7 +80,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         markerOptionsHashMap.clear();
 
         for (NoctisEvent noctisEvent : event.events) {
-           addMarker(noctisEvent, BitmapDescriptorFactory.fromResource(R.drawable.marker_mask));
+           addMarker(noctisEvent, BitmapDescriptorFactory.fromResource(R.drawable.marker_mask_72));
         }
     }
 

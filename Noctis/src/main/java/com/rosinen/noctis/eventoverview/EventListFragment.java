@@ -6,9 +6,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.rosinen.noctis.R;
+import com.rosinen.noctis.activity.event.FragmentChangeEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.eventdetail.EventDetailPagerFragment;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
 import com.rosinen.noctis.map.MapEventBus;
@@ -72,7 +74,14 @@ public class EventListFragment extends EventBusFragment {
     void itemClicked(int position) {
 //        adapter.getItem(position);
         //TODO change call of showdetailevent to supply the event directly else nullpointer can occur because of to late calls to the list
+//        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
+
+//        EventDetailPagerFragment.
         ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position);
+
+//        FragmentChangeEvent changeEvent = new FragmentChangeEvent(detailsEvent, true,R.id.swipeUpPanel);
+
+
         mEventBus.post(detailsEvent);
     }
 

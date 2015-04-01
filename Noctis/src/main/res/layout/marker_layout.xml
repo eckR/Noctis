@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="72dp"
               android:layout_height="72dp"
-        android:background="@drawable/marker_mask">
+        android:background="@drawable/marker_mask_72">
 
     <ImageView
             android:id="@+id/eventImage"

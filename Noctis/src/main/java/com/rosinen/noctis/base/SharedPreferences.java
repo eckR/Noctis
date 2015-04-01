@@ -1,5 +1,6 @@
 package com.rosinen.noctis.base;
 
+import org.androidannotations.annotations.sharedpreferences.DefaultBoolean;
 import org.androidannotations.annotations.sharedpreferences.DefaultString;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
 
@@ -15,4 +16,7 @@ public interface SharedPreferences  {
 
     @DefaultString("")
     String locationName();
+
+    @DefaultBoolean(false)
+    boolean loggedIn();
 }

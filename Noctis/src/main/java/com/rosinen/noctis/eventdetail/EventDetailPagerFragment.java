@@ -60,8 +60,10 @@ public class EventDetailPagerFragment extends EventBusFragment {
         updateHeader(event.getEvents().get(event.getClickedPosition()));
 
     }
+
     private void updateHeader(NoctisEvent event) {
         eventLocation.setText(event.getLocation());
         eventTitle.setText(event.getName());
     }
+
 }
