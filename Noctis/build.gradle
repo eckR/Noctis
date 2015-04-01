@@ -36,7 +36,7 @@ apt {
         androidManifestFile variant.outputs[0].processResources.manifestFile
         // if you have multiple outputs (when using splits), you may want to have other index than 0
 
-        resourcePackageName 'at.rosinen.Noctis'
+        resourcePackageName 'com.rosinen.noctis'
 
         // If you're using Android NBS flavors you should use the following line instead of hard-coded packageName
         // resourcePackageName android.defaultConfig.packageName
@@ -53,10 +53,10 @@ android {
 //            so für einen release build gehören diese 2 Zeilen einkommentiert und die debugkeys auskommentiert
 //            da es beim ändern des keys zu problemen beim build kommt bleibt der release key den builds für den store
 //            vorbehalten
-//            keyAlias RELEASE_KEY_ALIAS
-//            keyPassword RELEASE_KEY_PASSWORD
-            keyAlias DEBUG_KEY_ALIAS
-            keyPassword DEBUG_KEY_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+//            keyAlias DEBUG_KEY_ALIAS
+//            keyPassword DEBUG_KEY_PASSWORD
             storeFile file(RELEASE_STORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
         }
@@ -70,11 +70,11 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
     defaultConfig {
-        applicationId "at.rosinen.Noctis"
+        applicationId "com.rosinen.noctis"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName "0.0.001"
+        versionCode 3
+        versionName "0.0.003"
 
         resValue "string", "FACEBOOK_API_KEY", FACEBOOK_API_KEY
         resValue "string", "MAPS_API_KEY", MAPS_API_KEY
