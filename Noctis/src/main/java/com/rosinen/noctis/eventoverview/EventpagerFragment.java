@@ -4,14 +4,17 @@ package com.rosinen.noctis.eventoverview;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.widget.TextView;
+import com.astuetz.PagerSlidingTabStrip;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Slider.EventPagerAdapter;
-import com.rosinen.noctis.eventoverview.EventListFragment_;
+import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.eventoverview.event.EventListPageChangedEvent;
+import com.rosinen.noctis.eventoverview.event.UpdateEventCount;
 import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.event.MarkEventsOnMapEvent;
 import com.rosinen.noctis.noctisevents.event.RequestPicturesEvent;
-import com.astuetz.PagerSlidingTabStrip;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -26,9 +29,9 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 @EFragment(R.layout.fragment_eventpager)
-public class EventpagerFragment extends Fragment {
+public class EventpagerFragment extends EventBusFragment {
 
-    private static String TAG = EventListFragment.class.getName();
+    private static String TAG = EventListFragment.class.getSimpleName();
 
     @Bean
     MapEventBus mapEventBus;
@@ -39,11 +42,22 @@ public class EventpagerFragment extends Fragment {
     @ViewById
     PagerSlidingTabStrip pagerHeader;
 
+    @ViewById
+    TextView eventCount;
 
     EventPagerAdapter eventPagerAdapter;
 
     private List<EventListFragment> eventListFragments = new ArrayList<EventListFragment>(3);
 
+    public void onEventMainThread(UpdateEventCount updateEventCount){
+
+        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
+
+        if(updateEventCount.day == page){
+            eventCount.setText(updateEventCount.count + "");
+        }
+
+    }
 
     @AfterViews
     void afterViews(){
@@ -61,6 +75,7 @@ public class EventpagerFragment extends Fragment {
         pagerHeader.setViewPager(viewPager);
         pagerHeader.setOnPageChangeListener(pgList);
 
+        mEventBus.postSticky(new EventListPageChangedEvent(0));
     }
 
 
@@ -78,11 +93,17 @@ public class EventpagerFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             Log.d(TAG, "onPageSelected || position: " + position);
-            //TODO think of fireing an event here!!
-            List<NoctisEvent> noctisEventList = eventListFragments.get(position).adapter.getNoctisEventList();
-            mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(noctisEventList));
-            EventBus.getDefault().post(new RequestPicturesEvent(noctisEventList,position));
 
+            mEventBus.postSticky(new EventListPageChangedEvent(position));
+
+            //TODO think of fireing an event here!!
+            //or maybe not because the counter has to be refreshed too
+            List<NoctisEvent> noctisEventList = eventListFragments.get(position).adapter.getNoctisEventList();
+
+            mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(noctisEventList, position));
+            EventBus.getDefault().post(new RequestPicturesEvent(noctisEventList, position));
+
+            eventCount.setText(noctisEventList.size() + "");
         }
 
         @Override

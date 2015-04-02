@@ -29,7 +29,7 @@ import java.util.Arrays;
 @EFragment(R.layout.fragment_login_fragement)
 public class LoginFragement extends ReceiverOnlyEventBusFragment {
 
-    private static final String TAG = LoginFragement.class.getName();
+    private static final String TAG = LoginFragement.class.getSimpleName();
 
     private UiLifecycleHelper uiHelper;
 

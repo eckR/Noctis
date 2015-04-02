@@ -25,7 +25,7 @@ import org.androidannotations.annotations.EBean;
 @EBean
 public class MarkerService extends AbstractService {
 
-    private static final String TAG = MarkerService.class.getName();
+    private static final String TAG = MarkerService.class.getSimpleName();
 
     @Bean
     MapEventBus mapEventBus;
@@ -94,7 +94,7 @@ public class MarkerService extends AbstractService {
 
             lruCache.put(key,markerBitmap);
         }
-        mapEventBus.getEventBus().post(new MarkerAvailableEvent(noctisEvent, markerBitmap));
+        mapEventBus.getEventBus().post(new MarkerAvailableEvent(noctisEvent, markerBitmap, requestMarkerBitmapEvent.day));
 
     }
 

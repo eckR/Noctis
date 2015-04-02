@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+import com.rosinen.noctis.BuildConfig;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Slider.SlidingUpPanelApplier;
 import com.rosinen.noctis.activity.event.*;
@@ -29,7 +30,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends FragmentActivity {
 
-    private static String TAG = MainActivity.class.getName();
+    private static String TAG = MainActivity.class.getSimpleName();
 
     private EventBus mEventBus = EventBus.getDefault();
 
@@ -115,6 +116,8 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+//        EventBus.builder().throwSubscriberException(BuildConfig.DEBUG).installDefaultEventBus();
+
         mEventBus.register(this);
         serviceHandler.startServices();
     }

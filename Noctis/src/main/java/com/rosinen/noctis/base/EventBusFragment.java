@@ -14,9 +14,9 @@ public class EventBusFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mEventBus.register(this);
+//        mEventBus.register(this);
 
-//        mEventBus.registerSticky(this);
+        mEventBus.registerSticky(this);
     }
 
     @Override

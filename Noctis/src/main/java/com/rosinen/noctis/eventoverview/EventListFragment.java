@@ -6,11 +6,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.rosinen.noctis.R;
-import com.rosinen.noctis.activity.event.FragmentChangeEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.EventBusFragment;
-import com.rosinen.noctis.eventdetail.EventDetailPagerFragment;
+import com.rosinen.noctis.eventoverview.event.UpdateEventCount;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
 import com.rosinen.noctis.map.MapEventBus;
@@ -27,7 +26,7 @@ import org.androidannotations.annotations.*;
 @EFragment(R.layout.event_list_fragment)
 public class EventListFragment extends EventBusFragment {
 
-    private static final String TAG = EventListFragment.class.getName();
+    private static final String TAG = EventListFragment.class.getSimpleName();
 
     private static final int DEFAULT_RADIUS = 100; //TODO check this value -> maybe set in sharedpreffile -> option menu
 
@@ -116,8 +115,8 @@ public class EventListFragment extends EventBusFragment {
         adapter.notifyDataSetChanged();
         eventListRefresher.setRefreshing(false);
 
-        mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(adapter.getNoctisEventList()));
-
+        mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(adapter.getNoctisEventList(), day));
+        mEventBus.post(new UpdateEventCount(adapter.getNoctisEventList().size(), day));
     }
 
     /**

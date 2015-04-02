@@ -41,7 +41,7 @@ public class ImageDownloadTarget implements Target {
 
         if (type == ImageDownloadTargetType.SMALL) {
             noctisEvent.setPictureSmall(bitmap);
-            mEventBus.post(new RequestMarkerBitmapEvent(noctisEvent));
+            mEventBus.post(new RequestMarkerBitmapEvent(noctisEvent, day));
 
             if (noctisEvent.getPictureBig() == null) {
                 noctisEvent.setPictureBig(bitmap);

@@ -1,5 +1,6 @@
 package com.rosinen.noctis.map;
 
+import com.rosinen.noctis.BuildConfig;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.EBean;
 

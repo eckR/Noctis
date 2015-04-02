@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
+import com.rosinen.noctis.eventoverview.event.EventListPageChangedEvent;
 import com.rosinen.noctis.location.event.GoogleAPIClientEvent;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 @EFragment(R.layout.fragment_maps)
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
-    private static String TAG = MapsFragment.class.getName();
+    private static String TAG = MapsFragment.class.getSimpleName();
 
     private HashMap<String,Marker> markerOptionsHashMap = new HashMap<String, Marker>();
 
@@ -59,6 +60,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      * @param markerAvailableEvent
      */
     public  void onEventMainThread(final MarkerAvailableEvent markerAvailableEvent){
+
+        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
+
+        if(markerAvailableEvent.day != page){
+            return;
+        }
+
         Marker marker = markerOptionsHashMap.get(markerAvailableEvent.noctisEvent.getKey());
 
         if (marker != null) {
@@ -67,6 +75,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //        map.clear();
         //TODO put markerbitmap back into noctisevent else the memory will go missing nullptr excetions maybe occur
         addMarker(markerAvailableEvent.noctisEvent, BitmapDescriptorFactory.fromBitmap(markerAvailableEvent.markerBitmap));
+
     }
 
     /**
@@ -76,6 +85,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      * @param event
      */
     public void onEventMainThread(final MarkEventsOnMapEvent event) {
+
+        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
+
+        if(event.day != page){
+            return;
+        }
         map.clear();
         markerOptionsHashMap.clear();
 
@@ -90,13 +105,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      * @param iconDescriptor
      */
     private void addMarker(final NoctisEvent noctisEvent,final BitmapDescriptor iconDescriptor){
-        MarkerOptions marker = new MarkerOptions()
+        MarkerOptions markerOptions = new MarkerOptions()
                 .alpha(0.8f)
                 .icon(iconDescriptor)
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(noctisEvent.getCoords());
 
-        markerOptionsHashMap.put(noctisEvent.getKey(), map.addMarker(marker));
+        Marker marker = map.addMarker(markerOptions);
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Log.d(TAG, "marker clicked" + marker.getId());
+                return false;
+            }
+        });
+        markerOptionsHashMap.put(noctisEvent.getKey(),marker );
     }
 
     /**

@@ -15,7 +15,7 @@
     <string name="today">Heute</string>
     <string name="tomorrow">Morgen</string>
 
-
+    <string name="events">Events</string>
 
     <!--Error strings-->
     <string name="connectionFailed">Verbindung fehlgeschlagen</string>
@@ -24,6 +24,7 @@
     <string name="needLocationFirst">Das Gerät muss zuerst lokalisiert werden</string>
     <string name="locationUpdateRequested">Eine Standortabfrage wurde gestartet</string>
 
+    <string name="notAvailableShort">nV</string>
 
 
     <!--AlertDialog-->
