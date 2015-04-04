@@ -17,6 +17,8 @@ import org.androidannotations.annotations.ViewById;
 @EFragment(R.layout.fragment_event_detail_pager)
 public class EventDetailPagerFragment extends EventBusFragment {
 
+    //Test for Jenkins
+
     @ViewById
     ImageView eventImage;
 
@@ -43,6 +45,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
             @Override
             public void onPageSelected(int position) {
+
                 updateHeader(adapter.getItemByPosition(position));
             }
 
@@ -58,6 +61,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
         adapter.setNoctisEventList(event.getEvents());
         adapter.notifyDataSetChanged();
         updateHeader(event.getEvents().get(event.getClickedPosition()));
+        detailViewPager.setCurrentItem(event.getClickedPosition());
 
     }
 
