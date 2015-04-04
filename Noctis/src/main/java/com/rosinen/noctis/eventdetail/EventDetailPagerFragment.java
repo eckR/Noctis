@@ -37,6 +37,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
     void prepare() {
         adapter = new EventDetailPagerAdapter(getFragmentManager());
         detailViewPager.setAdapter(adapter);
+        System.out.println("test");
         detailViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
