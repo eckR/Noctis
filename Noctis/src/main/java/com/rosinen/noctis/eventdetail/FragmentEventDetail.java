@@ -8,6 +8,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by harald on 3/28/15.
  */
@@ -34,7 +36,13 @@ public class FragmentEventDetail extends EventBusFragment {
 
     @AfterViews
     void updateFields() {
-        textViewEventDate.setText(event.getStart().toString());
+        SimpleDateFormat simpleDateFormatStart = new SimpleDateFormat("EEEE dd.MM.yyyy HH:mm");
+        SimpleDateFormat simpleDateFormatEnd = new SimpleDateFormat("HH:mm");
+        StringBuilder dateBuilder = new StringBuilder();
+        dateBuilder.append(simpleDateFormatStart.format(event.getStart()));
+        dateBuilder.append(" - ");
+        dateBuilder.append(simpleDateFormatEnd.format(event.getEnd()));
+        textViewEventDate.setText(dateBuilder.toString());
         textViewDescription.setText(event.getDescription());
     }
 
