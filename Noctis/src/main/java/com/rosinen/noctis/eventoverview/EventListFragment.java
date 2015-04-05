@@ -76,7 +76,7 @@ public class EventListFragment extends EventBusFragment {
 //        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
 
 //        EventDetailPagerFragment.
-        ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position);
+        ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position, day);
 
 //        FragmentChangeEvent changeEvent = new FragmentChangeEvent(detailsEvent, true,R.id.swipeUpPanel);
 

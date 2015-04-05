@@ -7,6 +7,7 @@ import com.rosinen.noctis.R;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.noctisevents.event.ImageDownloadAvailableEvent;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
@@ -33,11 +34,12 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
     EventDetailPagerAdapter adapter;
 
+    private int day;
+
     @AfterViews
     void prepare() {
         adapter = new EventDetailPagerAdapter(getFragmentManager());
         detailViewPager.setAdapter(adapter);
-        System.out.println("test");
         detailViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -59,6 +61,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
 
     public void onEvent(ShowDetailsEvent event) {
+        this.day =  event.getDay();
         adapter.setNoctisEventList(event.getEvents());
         adapter.notifyDataSetChanged();
         updateHeader(event.getEvents().get(event.getClickedPosition()));
@@ -66,9 +69,23 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
     }
 
+    public void onEvent(final ImageDownloadAvailableEvent imgDownloadAvailableEvent) {
+        if (imgDownloadAvailableEvent.day != day) {
+            return;
+        }
+        adapter.notifyDataSetChanged();
+        updateHeader(adapter.getItemByPosition(detailViewPager.getCurrentItem()));
+
+    }
+
     private void updateHeader(NoctisEvent event) {
         eventLocation.setText(event.getLocation());
         eventTitle.setText(event.getName());
+        eventImage.setImageBitmap(event.getPictureBig());
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 
 }

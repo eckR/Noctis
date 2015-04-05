@@ -63,6 +63,7 @@
             android:background="@color/com_facebook_blue"
             android:layout_toRightOf="@id/textViewRoute"
             android:layout_alignBottom="@id/textViewRoute"
+            android:scaleType="centerCrop"
             android:layout_marginLeft="10dp"
             android:src="@drawable/facebook"/>
     <View android:layout_width="match_parent" android:layout_height="62dp"

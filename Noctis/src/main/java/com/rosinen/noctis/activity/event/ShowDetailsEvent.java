@@ -10,10 +10,12 @@ import java.util.List;
 public class ShowDetailsEvent {
     private List<NoctisEvent> events;
     private int clickedPosition;
+    private int day;
 
-    public ShowDetailsEvent(List<NoctisEvent> events, int clickedPosition) {
+    public ShowDetailsEvent(List<NoctisEvent> events, int clickedPosition, int day) {
         this.events = events;
         this.clickedPosition = clickedPosition;
+        this.day = day;
     }
 
     public int getClickedPosition() {
@@ -22,5 +24,9 @@ public class ShowDetailsEvent {
 
     public List<NoctisEvent> getEvents() {
         return this.events;
+    }
+
+    public int getDay() {
+        return this.day;
     }
 }
