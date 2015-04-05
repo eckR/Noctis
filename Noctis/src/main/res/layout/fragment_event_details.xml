@@ -11,15 +11,19 @@
             android:padding="3dp"
             android:textSize="15sp"
             android:id="@+id/textViewEventDate"/>
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-              android:layout_marginTop="0dp"
-              android:layout_marginLeft="13.33dp"
-              android:layout_marginRight="13.33dp"
-              android:background="@color/g3"
-              android:text="Beschreibung"
-              android:textColor="@color/s"
-              android:padding="3dp"
-              android:textSize="15sp"
-                android:id="@+id/textViewDescription"/>
+    <ScrollView android:layout_width="match_parent" android:layout_height="200dp"
+                android:layout_marginLeft="13.33dp"
+                android:layout_marginRight="13.33dp"
+                android:layout_marginTop="0dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+
+
+                  android:background="@color/g3"
+                  android:text="Beschreibung"
+                  android:textColor="@color/s"
+                  android:padding="3dp"
+                  android:textSize="15sp"
+                    android:id="@+id/textViewDescription"/>
+    </ScrollView>
 
 </LinearLayout>
