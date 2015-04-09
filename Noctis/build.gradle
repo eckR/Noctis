@@ -95,6 +95,8 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
+            ext.betaDistributionReleaseNotes="Release Notes"
+            ext.betaDistributionGroupAliases="noctis-beta"
         }
     }
     packagingOptions {
@@ -103,6 +105,7 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/notice.txt'
     }
+
 }
 
 dependencies {
