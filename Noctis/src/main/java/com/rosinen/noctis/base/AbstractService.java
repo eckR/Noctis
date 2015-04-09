@@ -9,17 +9,13 @@ public class AbstractService {
 
     protected EventBus mEventBus = EventBus.getDefault();
 
-    public void onStart(){
+    public AbstractService() {
         mEventBus.register(this);
     }
 
-    public void onStop(){
+    public void onStop() {
         mEventBus.unregister(this);
     }
-
-
-
-
 
 
 }

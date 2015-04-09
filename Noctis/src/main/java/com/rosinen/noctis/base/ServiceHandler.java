@@ -40,13 +40,6 @@ public class ServiceHandler {
         services.add(markerService);
     }
 
-
-    public void startServices() {
-        for (AbstractService service : services){
-            service.onStart();
-        }
-    }
-
     public void stopServices() {
         for (AbstractService service : services){
             service.onStop();

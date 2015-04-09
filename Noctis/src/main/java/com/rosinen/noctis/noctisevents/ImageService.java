@@ -36,16 +36,13 @@ public class ImageService extends AbstractService {
      */
     HashMap[] downloadTargetHashMaps = new HashMap[3];
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    public ImageService(){
         ctx = NoctisApplication.getContext();
         picasso = Picasso.with(ctx);
         picasso.setLoggingEnabled(true);
         for (int i = 0; i < 3; ++i) {
             downloadTargetHashMaps[i] = new HashMap<String, ImageDownloadTarget>();
         }
-
     }
 
     /**

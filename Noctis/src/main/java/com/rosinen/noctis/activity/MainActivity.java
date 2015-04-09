@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-import com.rosinen.noctis.BuildConfig;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Slider.SlidingUpPanelApplier;
 import com.rosinen.noctis.activity.event.*;
@@ -70,6 +69,34 @@ public class MainActivity extends FragmentActivity {
 
     boolean showingDetails = false;
 
+    Fragment mapsFragment = new MapsFragment_();
+    Fragment eventpagerFragment = new EventpagerFragment_();
+    Fragment eventDetailPagerFragment = new EventDetailPagerFragment_();
+
+
+    @DebugLog
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mEventBus.register(this);
+
+        loginAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_fade_out);
+        loginAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                loginFragment.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+    }
+
     /**
      *
      */
@@ -77,10 +104,11 @@ public class MainActivity extends FragmentActivity {
     @AfterViews
     public void afterLoad() {
         //TODO @david set loggedIn status to true
-        if(mEventBus.getStickyEvent(LoginNavigationEvent.class) == null){
-            if (!sharedPrefs.loggedIn().get()) { // never logged in or logged out again
-                onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
-            }
+        // never logged in since the app started && never logged in via fb
+        if (mEventBus.getStickyEvent(LoginNavigationEvent.class) == null || !sharedPrefs.loggedIn().get()) {
+            onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
+        } else {
+            loginFragment.setVisibility(View.GONE);
         }
 
 
@@ -129,43 +157,6 @@ public class MainActivity extends FragmentActivity {
         mapEventBus.getEventBus().post(new ChangeBottomPaddingMapEvent(applier.getMaxHeight()));
     }
 
-    Fragment mapsFragment = new MapsFragment_();
-    Fragment eventpagerFragment = new EventpagerFragment_();
-    Fragment eventDetailPagerFragment = new EventDetailPagerFragment_();
-
-    @DebugLog
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        loginAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_fade_out);
-        loginAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                loginFragment.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        mEventBus.register(this);
-
-
-    }
-
-    @DebugLog
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        EventBus.builder().throwSubscriberException(BuildConfig.DEBUG).installDefaultEventBus();
-        serviceHandler.startServices();
-    }
-
     /**
      * Change a given fragment and replace it with the one from the event
      * choose in what layout this has to be placed and whether to add it on the
@@ -190,7 +181,6 @@ public class MainActivity extends FragmentActivity {
             view.setVisibility(View.VISIBLE);
         }
     }
-
 
 
     /**
@@ -282,6 +272,11 @@ public class MainActivity extends FragmentActivity {
     protected void onStop() {
         super.onStop();
         mEventBus.unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         serviceHandler.stopServices();
     }
 }
