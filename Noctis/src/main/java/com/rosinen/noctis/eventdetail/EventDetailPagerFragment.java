@@ -1,6 +1,11 @@
 package com.rosinen.noctis.eventdetail;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.rosinen.noctis.R;
@@ -9,6 +14,7 @@ import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.base.EventBusFragment;
 import com.rosinen.noctis.noctisevents.event.ImageDownloadAvailableEvent;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
@@ -57,6 +63,44 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
             }
         });
+    }
+    //Onclick for Event Buttons
+    @Click(R.id.eventFacebook)
+    void facebookButtonClick() {
+        Context context = getActivity().getApplicationContext();
+        Intent intent;
+        long fbId = adapter.getItemByPosition(detailViewPager.getCurrentItem()).getFBID();
+        Log.d("FBID", fbId+"");
+        try {
+            context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://event/" + fbId));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/events/" + fbId));
+        }
+        startActivity(intent);
+    }
+
+    @Click(R.id.eventJoin)
+    void eventJoinClick() {
+        Log.d("ClickTEst", "Event join clicked");
+    }
+
+    @Click(R.id.eventRoute)
+    void eventRouteClick() {
+        Context context = getActivity().getApplicationContext();
+        NoctisEvent event = adapter.getItemByPosition(detailViewPager.getCurrentItem());
+        String url;
+        try {
+            context.getPackageManager().getPackageInfo("com.google.android.apps.maps", 0);
+            url="http://maps.google.com/maps?daddr="+event.getCoords().latitude+","+event.getCoords().longitude;
+        } catch (PackageManager.NameNotFoundException e) {
+            url="geo:" + event.getCoords().latitude + "," + event.getCoords().longitude;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
+
     }
 
 

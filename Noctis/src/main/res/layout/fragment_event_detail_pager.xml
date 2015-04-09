@@ -47,33 +47,37 @@
             android:layout_alignBottom="@id/eventImage"
             android:padding="7dp"
             android:background="@color/g3"
-            android:id="@+id/textViewJoin"
+            android:clickable="true"
+            android:id="@+id/eventJoin"
             />
     <TextView android:layout_width="wrap_content" android:layout_height="34dp"
             android:text="ROUTE"
             android:textColor="@color/w"
             android:background="@color/g2"
-            android:layout_toRightOf="@id/textViewJoin"
-            android:layout_alignBottom="@id/textViewJoin"
+            android:layout_toRightOf="@id/eventJoin"
+            android:layout_alignBottom="@id/eventJoin"
             android:padding="7dp"
             android:textSize="17sp"
+            android:clickable="true"
             android:layout_marginLeft="10dp"
-            android:id="@+id/textViewRoute"/>
+            android:id="@+id/eventRoute"/>
     <ImageView android:layout_width="34dp" android:layout_height="34dp"
             android:background="@color/com_facebook_blue"
-            android:layout_toRightOf="@id/textViewRoute"
-            android:layout_alignBottom="@id/textViewRoute"
+            android:layout_toRightOf="@id/eventRoute"
+            android:layout_alignBottom="@id/eventRoute"
             android:scaleType="centerCrop"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/facebook"/>
+            android:clickable="true"
+            android:src="@drawable/facebook"
+            android:id="@+id/eventFacebook"/>
     <View android:layout_width="match_parent" android:layout_height="62dp"
           android:id="@+id/slider"></View>
     <android.support.v4.view.ViewPager
             android:id="@+id/detailViewPager"
+            android:layout_alignTop="@id/eventFacebook"
+            android:layout_marginTop="40dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="62dp"
-            android:paddingTop="50dp">
+            android:layout_height="match_parent">
 
 
 

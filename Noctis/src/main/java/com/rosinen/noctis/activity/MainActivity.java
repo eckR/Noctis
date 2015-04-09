@@ -106,6 +106,7 @@ public class MainActivity extends FragmentActivity {
             public void onCollapse() {
                 ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMinHeight());
                 mapEventBus.getEventBus().post(event);
+
             }
         };
         applier.collapse();
