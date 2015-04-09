@@ -111,7 +111,6 @@ public class MainActivity extends FragmentActivity {
             loginFragment.setVisibility(View.GONE);
         }
 
-
         onEventMainThread(new FragmentChangeEvent(mapsFragment, false, R.id.fragmentBase));
 
         onEventMainThread(new FragmentChangeEvent(eventpagerFragment, false, R.id.swipeUpPanel, swipeUpPanel, dragHandleSwipeUp));
@@ -247,7 +246,7 @@ public class MainActivity extends FragmentActivity {
      * @param event
      */
     @DebugLog
-    public void onEvent(final ShowDetailsEvent event) {
+    public void onEventMainThread(final ShowDetailsEvent event) {
         applierDetails.expand();
         showingDetails = true;
         Log.d(TAG, "SHOW DETAILS");

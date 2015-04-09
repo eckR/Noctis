@@ -5,10 +5,12 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
 import com.rosinen.noctis.eventoverview.event.UpdateEventCount;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
@@ -60,13 +62,11 @@ public class EventListFragment extends EventBusFragment {
     void bindAdapter() {
         list.setAdapter(adapter);
         eventListRefresher.setOnRefreshListener(new EventRefreshListener());
-
         list.setEmptyView(emptyIndicator);
         // workaround to show the loading circle
 //        eventListRefresher.setProgressViewOffset(false, 0,
 //                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 //        eventListRefresher.setRefreshing(true);
-
     }
 
     @ItemClick(R.id.eventListView)
@@ -74,25 +74,36 @@ public class EventListFragment extends EventBusFragment {
 //        adapter.getItem(position);
         //TODO change call of showdetailevent to supply the event directly else nullpointer can occur because of to late calls to the list
 //        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
-
 //        EventDetailPagerFragment.
         ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position, day);
-
-//        FragmentChangeEvent changeEvent = new FragmentChangeEvent(detailsEvent, true,R.id.swipeUpPanel);
-
-
         mEventBus.post(detailsEvent);
     }
 
 
     /**
+     * called from the marker
+     *
+     * @param requestShowDetailsEvent
+     */
+    public void onEventBackgroundThread(final RequestShowDetailsEvent requestShowDetailsEvent) {
+
+        for (int i = 0; i < adapter.getNoctisEventList().size(); ++i) {
+            if (adapter.getNoctisEventList().get(i).getFBID() == requestShowDetailsEvent.event.getFBID()) {
+                mEventBus.post(new ShowDetailsEvent(adapter.getNoctisEventList(), i, day));
+                break;
+            }
+        }
+    }
+
+    /**
      * called by the location service
-     *  will be called by the map to i think and also
-     *  when a text field to enter a city name
-     *
+     * will be called by the map to i think and also
+     * when a text field to enter a city name
+     * <p/>
      * issued when a new Location update has to be delivered
-     *
+     * <p/>
      * requests immediatly the events for that location
+     *
      * @param foundLocationEvent
      */
     public void onEvent(final FoundLocationEvent foundLocationEvent) {
@@ -103,6 +114,7 @@ public class EventListFragment extends EventBusFragment {
     /**
      * called from Eventservice
      * check if the events are for that fragment and if so display them
+     *
      * @param noctisEventsAvailableEvent
      */
     public void onEventMainThread(final NoctisEventsAvailableEvent noctisEventsAvailableEvent) {
@@ -121,10 +133,11 @@ public class EventListFragment extends EventBusFragment {
 
     /**
      * called from Imageservice
-     *  it basically only has to notify the adapter that the data has changed
+     * it basically only has to notify the adapter that the data has changed
+     *
      * @param imgDownloadAvailableEvent
      */
-    public void onEventMainThread(final ImageDownloadAvailableEvent imgDownloadAvailableEvent){
+    public void onEventMainThread(final ImageDownloadAvailableEvent imgDownloadAvailableEvent) {
         if (imgDownloadAvailableEvent.day != day) {
             return;
         }
@@ -135,9 +148,9 @@ public class EventListFragment extends EventBusFragment {
 
     /**
      * OnRefreshListener for NoctisEventListFragment
-     *
+     * <p/>
      * fires a RequestEventsEvent if there is already a location
-     *  if not a ToastMeEvent is fired which says that there is no location available
+     * if not a ToastMeEvent is fired which says that there is no location available
      */
     private class EventRefreshListener implements SwipeRefreshLayout.OnRefreshListener {
         @Override
@@ -156,13 +169,12 @@ public class EventListFragment extends EventBusFragment {
     /**
      * set the day after construction!
      * it is needed for the RequestEventEvents
+     *
      * @param day
      */
     public void setDay(int day) {
         this.day = day;
     }
-
-
 
 
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.eventoverview.event.EventListPageChangedEvent;
+import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
 import com.rosinen.noctis.location.event.GoogleAPIClientEvent;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.rosinen.noctis.map.event.MoveAndZoomToLocationEvent;
 import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -30,9 +32,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private static String TAG = MapsFragment.class.getSimpleName();
 
-    private HashMap<String,Marker> markerOptionsHashMap = new HashMap<String, Marker>();
+    private HashMap<String, Marker> markerOptionsHashMap = new HashMap<String, Marker>();
+    private HashMap<Marker, NoctisEvent> markerNoctisEventHashMap = new HashMap<Marker, NoctisEvent>();
 
     private static final int ZOOM_DEFAULT = 12;
+    private static final int ZOOM_TO_EVENT = 16;
     private EventBus mEventBus = EventBus.getDefault();
     private GoogleMap map;
 
@@ -57,13 +61,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * comming from the markerservice and delivers one single marker
+     *
      * @param markerAvailableEvent
      */
-    public  void onEventMainThread(final MarkerAvailableEvent markerAvailableEvent){
+    public void onEventMainThread(final MarkerAvailableEvent markerAvailableEvent) {
 
         int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
 
-        if(markerAvailableEvent.day != page){
+        if (markerAvailableEvent.day != page) {
             return;
         }
 
@@ -82,48 +87,62 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      * called from EventListfragment
      * mark with empty markers before the picture was fetched
      * called when sliding viewpager or the events are done fetching
+     *
      * @param event
      */
     public void onEventMainThread(final MarkEventsOnMapEvent event) {
 
         int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
 
-        if(event.day != page){
+        if (event.day != page) {
             return;
         }
         map.clear();
         markerOptionsHashMap.clear();
 
         for (NoctisEvent noctisEvent : event.events) {
-           addMarker(noctisEvent, BitmapDescriptorFactory.fromResource(R.drawable.marker_mask_72));
+            addMarker(noctisEvent, BitmapDescriptorFactory.fromResource(R.drawable.marker_mask_72));
         }
     }
 
     /**
      * add a marker for the given event and add it to the hashmap for replacement
+     *
      * @param noctisEvent
      * @param iconDescriptor
      */
-    private void addMarker(final NoctisEvent noctisEvent,final BitmapDescriptor iconDescriptor){
+    private void addMarker(final NoctisEvent noctisEvent, final BitmapDescriptor iconDescriptor) {
+
         MarkerOptions markerOptions = new MarkerOptions()
                 .alpha(0.8f)
                 .icon(iconDescriptor)
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                 .position(noctisEvent.getCoords());
 
+
         Marker marker = map.addMarker(markerOptions);
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                NoctisEvent event = markerNoctisEventHashMap.get(marker);
+
+                mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(event.getCoords(), ZOOM_TO_EVENT));
+                mEventBus.post(new RequestShowDetailsEvent(event));
+
+                Log.d(TAG, "marker clicked" + event.getName());
                 Log.d(TAG, "marker clicked" + marker.getId());
-                return false;
+
+                return true;
             }
         });
-        markerOptionsHashMap.put(noctisEvent.getKey(),marker );
+        markerOptionsHashMap.put(noctisEvent.getKey(), marker);
+        markerNoctisEventHashMap.put(marker, noctisEvent);
     }
 
     /**
      * TODO harry comment
+     *
      * @param event
      */
     public void onEventMainThread(final ChangeBottomPaddingMapEvent event) {
@@ -136,10 +155,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     /**
      * called from the locationservice
      * found a location -> zoom into that part of the map
+     *
      * @param foundLocationEvent
      */
     public void onEventMainThread(final FoundLocationEvent foundLocationEvent) {
         moveMapCameraToLocation(foundLocationEvent.coordinate, ZOOM_DEFAULT);
+    }
+
+    public void onEventMainThread(final MoveAndZoomToLocationEvent moveAndZoomToLocationEvent){
+        moveMapCameraToLocation(moveAndZoomToLocationEvent.coordinate, moveAndZoomToLocationEvent.zoom);
     }
 
     /**
@@ -170,6 +194,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      * Move the map actually to that postition
      * should only be called when the map is ready
      * that's what the mapEventbus is for.
+     *
      * @param coordinate
      * @param zoom
      */

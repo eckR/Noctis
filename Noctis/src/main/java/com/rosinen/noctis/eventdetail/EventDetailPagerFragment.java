@@ -60,7 +60,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
     }
 
 
-    public void onEvent(ShowDetailsEvent event) {
+    public void onEventMainThread(ShowDetailsEvent event) {
         this.day =  event.getDay();
         adapter.setNoctisEventList(event.getEvents());
         adapter.notifyDataSetChanged();
