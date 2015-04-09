@@ -6,3 +6,5 @@ _Crashlytics Build:_
 
 [![Build Status](http://noctis.eizinger.eu:9000/job/Noctis%20-%20Crashlytics%20Release/badge/icon)](http://noctis.eizinger.eu:9000/job/Noctis%20-%20Crashlytics%20Release/)
 
+Get latest Server Build: http://noctis.eizinger.eu/getNoctis/
+
