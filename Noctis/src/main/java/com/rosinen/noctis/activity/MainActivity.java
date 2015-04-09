@@ -94,7 +94,7 @@ public class MainActivity extends FragmentActivity {
         };
         applierDetails.collapse();
 //        applierDetails.expand();
-
+        
         applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
             public void onExpand() {
