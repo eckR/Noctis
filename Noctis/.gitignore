@@ -1,3 +1,21 @@
-/build
-crashlytics.properties
+#
+
+# Generated files
+bin/
+gen/
+.idea/
+*.iml
 *.apk
+
+# Gradle files
+.gradle/
+build/
+
+# Log Files
+*.log
+
+# Keystore
+*.jks
+com_crashlytics_export_strings.xml
+crashlytics-build.properties
+crashlytics.properties

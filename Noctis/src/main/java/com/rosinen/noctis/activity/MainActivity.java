@@ -1,6 +1,8 @@
 package com.rosinen.noctis.activity;
 
 import android.app.AlertDialog;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -21,10 +23,8 @@ import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.MapsFragment_;
 import com.rosinen.noctis.map.event.ChangeBottomPaddingMapEvent;
 import de.greenrobot.event.EventBus;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import hugo.weaving.DebugLog;
+import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 @EActivity(R.layout.activity_main)
@@ -65,20 +65,36 @@ public class MainActivity extends FragmentActivity {
     @Pref
     SharedPreferences_ sharedPrefs;
 
+    Animation loginAnimation;
+
+
     boolean showingDetails = false;
+
     /**
      *
      */
+    @DebugLog
     @AfterViews
     public void afterLoad() {
         //TODO @david set loggedIn status to true
-        if (!sharedPrefs.loggedIn().get()) { // never logged in or logged out again
-            onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
+        if(mEventBus.getStickyEvent(LoginNavigationEvent.class) == null){
+            if (!sharedPrefs.loggedIn().get()) { // never logged in or logged out again
+                onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
+            }
         }
+
+
+        onEventMainThread(new FragmentChangeEvent(mapsFragment, false, R.id.fragmentBase));
+
+        onEventMainThread(new FragmentChangeEvent(eventpagerFragment, false, R.id.swipeUpPanel, swipeUpPanel, dragHandleSwipeUp));
+        onEventMainThread(new FragmentChangeEvent(eventDetailPagerFragment, false, R.id.eventDetailSwipeUpPanel, eventDetailSwipeUpPanel, evenDetailHandle));
+
+        applySlider();
 
     }
 
-
+    @DebugLog
+    @UiThread
     void applySlider() {
         applierDetails = new SlidingUpPanelApplier(eventDetailSwipeUpPanel,
                 evenDetailHandle, 0, eventDetailSwipeUpPanel.getLayoutParams().height, this) {
@@ -113,12 +129,40 @@ public class MainActivity extends FragmentActivity {
         mapEventBus.getEventBus().post(new ChangeBottomPaddingMapEvent(applier.getMaxHeight()));
     }
 
+    Fragment mapsFragment = new MapsFragment_();
+    Fragment eventpagerFragment = new EventpagerFragment_();
+    Fragment eventDetailPagerFragment = new EventDetailPagerFragment_();
+
+    @DebugLog
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        loginAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_fade_out);
+        loginAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                loginFragment.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mEventBus.register(this);
+
+
+    }
+
+    @DebugLog
     @Override
     protected void onStart() {
         super.onStart();
 //        EventBus.builder().throwSubscriberException(BuildConfig.DEBUG).installDefaultEventBus();
-
-        mEventBus.register(this);
         serviceHandler.startServices();
     }
 
@@ -129,11 +173,11 @@ public class MainActivity extends FragmentActivity {
      *
      * @param fragmentChangeEvent
      */
-    public void onEventMainThread(FragmentChangeEvent fragmentChangeEvent) {
+    @DebugLog
+    public void onEventMainThread(final FragmentChangeEvent fragmentChangeEvent) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ft.setCustomAnimations(fragmentChangeEvent.inAnimationRes, fragmentChangeEvent.outAnimationRes);
-
 
         ft.replace(fragmentChangeEvent.placeholderFragmentId, fragmentChangeEvent.fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -148,46 +192,34 @@ public class MainActivity extends FragmentActivity {
     }
 
 
+
     /**
      * TODO needs an update .. remove unnecessary framelayout
      *
      * @param loginNavigationEvent
      */
-    public void onEventMainThread(final LoginNavigationEvent loginNavigationEvent) {
-
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha_fade_out);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                loginFragment.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        loginFragment.startAnimation(anim);
-        Log.i(TAG, "Start mapsfragment");
-        onEventMainThread(new FragmentChangeEvent(new MapsFragment_(), false, R.id.fragmentBase));
-
-        Log.i(TAG, "apply slider");
-        applySlider();
-        onEventMainThread(new FragmentChangeEvent(new EventpagerFragment_(), false, R.id.swipeUpPanel, swipeUpPanel, dragHandleSwipeUp));
-        onEventMainThread(new FragmentChangeEvent(new EventDetailPagerFragment_(), false, R.id.eventDetailSwipeUpPanel, eventDetailSwipeUpPanel,evenDetailHandle));
-
+    @DebugLog
+    public void onEvent(final LoginNavigationEvent loginNavigationEvent) {
+        fadeLoginFragment();
     }
+
+    /**
+     * start login fragment animation on ui thread
+     */
+    @DebugLog
+    @UiThread
+    void fadeLoginFragment() {
+        Log.i(TAG, "Start login fragment animation");
+        loginFragment.startAnimation(loginAnimation);
+    }
+
 
     /**
      * start an intent with the context of the main activity
      *
      * @param startActivityEvent
      */
+    @DebugLog
     public void onEventMainThread(final StartActivityEvent startActivityEvent) {
         startActivity(startActivityEvent.intent);
     }
@@ -206,6 +238,7 @@ public class MainActivity extends FragmentActivity {
      *
      * @param alertDialogEvent
      */
+    @DebugLog
     public void onEventMainThread(final AlertDialogEvent alertDialogEvent) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(alertDialogEvent.title)
@@ -223,26 +256,28 @@ public class MainActivity extends FragmentActivity {
      *
      * @param event
      */
+    @DebugLog
     public void onEvent(final ShowDetailsEvent event) {
         applierDetails.expand();
         showingDetails = true;
-        Log.d("EVENT", "SHOW DETAILS");
+        Log.d(TAG, "SHOW DETAILS");
     }
 
 
-
+    @DebugLog
     @Override
     public void onBackPressed() {
-
+        Log.d(TAG, "onBackPressed");
         if (showingDetails) {
             applierDetails.collapse();
             showingDetails = false;
-        }else{
+        } else {
             super.onBackPressed();
         }
 
     }
 
+    @DebugLog
     @Override
     protected void onStop() {
         super.onStop();

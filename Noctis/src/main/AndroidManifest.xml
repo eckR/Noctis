@@ -27,9 +27,9 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId"
                    android:value="@string/FACEBOOK_API_KEY"/>
 
-        <meta-data
-                android:name="com.crashlytics.ApiKey"
-                android:value="83435064126d2d158bf9e6436fe18d9a6cef73a4"/>
+        <!--<meta-data-->
+                <!--android:name="com.crashlytics.ApiKey"-->
+                <!--android:value="83435064126d2d158bf9e6436fe18d9a6cef73a4"/>-->
 
         <activity
                 android:name=".activity.MainActivity_"

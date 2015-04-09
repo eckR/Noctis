@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Noctis</string>
+    <string name="app_package_name">com.rosinen.noctis</string>
 
     <string name="distanceString">" km entfernt"</string>
 
@@ -25,6 +26,12 @@
     <string name="locationUpdateRequested">Eine Standortabfrage wurde gestartet</string>
 
     <string name="notAvailableShort">nV</string>
+
+    <string name="alreadySkipedLoginscreen">Already skipped loginscreen</string>
+
+
+    <string name="unableToGetKeyHash">Unable to get get key hash</string>
+
 
 
     <!--AlertDialog-->
