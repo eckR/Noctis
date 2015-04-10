@@ -49,16 +49,17 @@ apt {
     }
 }
 
+ext {
+    vMajor = 0
+    vMinor = 0
+    vBugfix = 17
+}
+
 android {
     signingConfigs {
         release {
-//            so für einen release build gehören diese 2 Zeilen einkommentiert und die debugkeys auskommentiert
-//            da es beim ändern des keys zu problemen beim build kommt bleibt der release key den builds für den store
-//            vorbehalten
             keyAlias RELEASE_KEY_ALIAS
             keyPassword RELEASE_KEY_PASSWORD
-//            keyAlias DEBUG_KEY_ALIAS
-//            keyPassword DEBUG_KEY_PASSWORD
             storeFile file(RELEASE_STORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
         }
@@ -68,6 +69,12 @@ android {
             storeFile file(DEBUG_STORE_FILE)
             storePassword DEBUG_STORE_PASSWORD
         }
+        crashlyticsRelease{
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+        }
     }
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -75,13 +82,15 @@ android {
         applicationId "com.rosinen.noctis"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 6
-        versionName "0.0.006"
+
+        versionCode computeVersionCode() // ex: 1
+        versionName computeVersionName() // ex: 0.00.001
 
         resValue "string", "FACEBOOK_API_KEY", FACEBOOK_API_KEY
         resValue "string", "MAPS_API_KEY", MAPS_API_KEY
         resValue "string", "CRASHLYTICS_API_KEY", CRASHLYTICS_API_KEY
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
@@ -95,6 +104,13 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
+            ext.betaDistributionReleaseNotes="Release Notes"
+            ext.betaDistributionGroupAliases="noctis-beta"
+        }
+        crashlyticsRelease{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
             ext.betaDistributionReleaseNotes="Release Notes"
             ext.betaDistributionGroupAliases="noctis-beta"
         }
@@ -121,4 +137,17 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
+// Returns “0.00.001”
+def computeVersionName() {
+    String versionName = String.format('%d.%02d.%03d', vMajor, ext.vMinor, ext.vBugfix)
+    println "Version Name: " + versionName
+   return String.format('%d.%02d.%03d', vMajor, ext.vMinor, ext.vBugfix)
+}
+// Returns 1, for Jenkins build #0.00.001
+// Returns 101001, for build #1.1.001
+def computeVersionCode() {
+    int versionCode = (ext.vMajor * 100000) + (ext.vMinor * 1000) + ext.vBugfix
+    println "Version Code: " + versionCode
+    return versionCode
+}
 

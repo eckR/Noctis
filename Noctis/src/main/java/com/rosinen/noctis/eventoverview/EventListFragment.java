@@ -16,6 +16,7 @@ import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
 import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.event.MarkEventsOnMapEvent;
+import com.rosinen.noctis.map.event.MoveAndZoomToLocationEvent;
 import com.rosinen.noctis.noctisevents.event.ImageDownloadAvailableEvent;
 import com.rosinen.noctis.noctisevents.event.NoctisEventsAvailableEvent;
 import com.rosinen.noctis.noctisevents.event.RequestEventsEvent;
@@ -58,6 +59,8 @@ public class EventListFragment extends EventBusFragment {
     public int day;
 
 
+    //Simon hat unrecht
+
     @AfterViews
     void bindAdapter() {
         list.setAdapter(adapter);
@@ -75,6 +78,7 @@ public class EventListFragment extends EventBusFragment {
         //TODO change call of showdetailevent to supply the event directly else nullpointer can occur because of to late calls to the list
 //        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
 //        EventDetailPagerFragment.
+        mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(adapter.getNoctisEventList().get(position).getCoords(),16)); //TODO get from config file
         ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position, day);
         mEventBus.post(detailsEvent);
     }
