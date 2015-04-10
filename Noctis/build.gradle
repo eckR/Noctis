@@ -52,19 +52,14 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 7
+    vBugfix = 16
 }
 
 android {
     signingConfigs {
         release {
-//            so für einen release build gehören diese 2 Zeilen einkommentiert und die debugkeys auskommentiert
-//            da es beim ändern des keys zu problemen beim build kommt bleibt der release key den builds für den store
-//            vorbehalten
             keyAlias RELEASE_KEY_ALIAS
             keyPassword RELEASE_KEY_PASSWORD
-//            keyAlias DEBUG_KEY_ALIAS
-//            keyPassword DEBUG_KEY_PASSWORD
             storeFile file(RELEASE_STORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
         }
@@ -73,6 +68,12 @@ android {
             keyPassword DEBUG_KEY_PASSWORD
             storeFile file(DEBUG_STORE_FILE)
             storePassword DEBUG_STORE_PASSWORD
+        }
+        crashlyticsRelease{
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
         }
     }
     compileSdkVersion 22
@@ -106,6 +107,13 @@ android {
             ext.betaDistributionReleaseNotes="Release Notes"
             ext.betaDistributionGroupAliases="noctis-beta"
         }
+        crashlyticsRelease{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            ext.betaDistributionReleaseNotes="Release Notes"
+            ext.betaDistributionGroupAliases="noctis-beta"
+        }
     }
     packagingOptions {
         exclude 'META-INF/license.txt'
@@ -129,13 +137,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
-
-
-task testTask {
-    computeVersionCode()
-    computeVersionName()
-}
-
 // Returns “0.00.001”
 def computeVersionName() {
     String versionName = String.format('%d.%02d.%03d', vMajor, ext.vMinor, ext.vBugfix)
@@ -145,9 +146,8 @@ def computeVersionName() {
 // Returns 1, for Jenkins build #0.00.001
 // Returns 101001, for build #1.1.001
 def computeVersionCode() {
-    int test = (ext.vMajor * 100000) + (ext.vMinor * 1000) + ext.vBugfix
-    println "Version Code: " + test
-    return test
-//    return test
+    int versionCode = (ext.vMajor * 100000) + (ext.vMinor * 1000) + ext.vBugfix
+    println "Version Code: " + versionCode
+    return versionCode
 }
 
