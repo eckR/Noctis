@@ -20,24 +20,16 @@ allprojects {
     project.afterEvaluate {
         //only apply to projects that have the android plugin
         if (project.plugins.hasPlugin('com.android.application')) {
-
-//            createCrashlyticsProperties(project);
-
             project.android.applicationVariants.all { variant ->
                 //add a generated crashlytics properties file if the project applies the crashlytics plugin
-//                if (project.plugins.hasPlugin("io.fabric")) {
-                    createCrashlyticsProperties(project,variant)
-//                }
-
-                //rename output files
-//                renameOutputFiles(project,variant)
+                createCrashlyticsProperties(project, variant)
             }
 
         }
     }
 }
 
-def createCrashlyticsProperties(Project project,variant) {
+def createCrashlyticsProperties(Project project, variant) {
     def crashlyticsSecret = CRASHLYTICS_API_SECRET
     def crashlyticsKey = CRASHLYTICS_API_KEY
 
@@ -61,29 +53,3 @@ def createCrashlyticsProperties(Project project,variant) {
         crashlyticsProperties.delete()
     }
 }
-
-
-//def renameOutputFiles(Project project,variant) {
-//    variant.outputs.each { output ->
-//        def abi = output.getFilter(com.android.build.OutputFile.ABI);
-//        output.versionCodeOverride = project.ext.versionCodes.get(abi, 0) * 1000000 + output.versionCode
-//
-//        def alignedOutputFile = output.outputFile
-//        def unalignedOutputFile = output.packageApplication.outputFile
-//        def outputFileName = alignedOutputFile.name
-//
-//        // Customise APK filenames
-//        if (outputFileName.contains("debug")) {
-//            outputFileName = outputFileName.replace("debug", "development").replace(".apk", "-" + (System.getenv("BUILD_NUMBER") ?: "local") + ".apk")
-//        } else {
-//            outputFileName = outputFileName.replace(".apk", "-" + variant.versionName + ".apk")
-//        }
-//
-//        if (variant.buildType.zipAlignEnabled) {
-//            // normal APK
-//            output.outputFile = new File(alignedOutputFile.parent, outputFileName)
-//        }
-//        // 'unaligned' APK
-//        output.packageApplication.outputFile = new File(unalignedOutputFile.parent, outputFileName.replace(".apk", "-unaligned.apk"))
-//    }
-//}

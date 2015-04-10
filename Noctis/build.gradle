@@ -49,6 +49,12 @@ apt {
     }
 }
 
+ext {
+    vMajor = 0
+    vMinor = 0
+    vBugfix = 7
+}
+
 android {
     signingConfigs {
         release {
@@ -75,13 +81,15 @@ android {
         applicationId "com.rosinen.noctis"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 6
-        versionName "0.0.006"
+
+        versionCode computeVersionCode() // ex: 1
+        versionName computeVersionName() // ex: 0.00.001
 
         resValue "string", "FACEBOOK_API_KEY", FACEBOOK_API_KEY
         resValue "string", "MAPS_API_KEY", MAPS_API_KEY
         resValue "string", "CRASHLYTICS_API_KEY", CRASHLYTICS_API_KEY
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
@@ -121,4 +129,25 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
+
+
+task testTask {
+    computeVersionCode()
+    computeVersionName()
+}
+
+// Returns “0.00.001”
+def computeVersionName() {
+    String versionName = String.format('%d.%02d.%03d', vMajor, ext.vMinor, ext.vBugfix)
+    println "Version Name: " + versionName
+   return String.format('%d.%02d.%03d', vMajor, ext.vMinor, ext.vBugfix)
+}
+// Returns 1, for Jenkins build #0.00.001
+// Returns 101001, for build #1.1.001
+def computeVersionCode() {
+    int test = (ext.vMajor * 100000) + (ext.vMinor * 1000) + ext.vBugfix
+    println "Version Code: " + test
+    return test
+//    return test
+}
 
