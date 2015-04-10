@@ -22,7 +22,7 @@ import org.androidannotations.annotations.EBean;
 /**
  * Created by Simon on 25.03.2015.
  */
-@EBean
+@EBean(scope = EBean.Scope.Singleton)
 public class MarkerService extends AbstractService {
 
     private static final String TAG = MarkerService.class.getSimpleName();

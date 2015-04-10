@@ -32,7 +32,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 /**
  * Created by Simon on 23.03.2015.
  */
-@EBean
+@EBean(scope = EBean.Scope.Singleton)
 public class LocationService extends AbstractService implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 

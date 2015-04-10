@@ -67,7 +67,6 @@ public class MainActivity extends FragmentActivity {
     Animation loginAnimation;
 
 
-    boolean showingDetails = false;
 
     Fragment mapsFragment = new MapsFragment_();
     Fragment eventpagerFragment = new EventpagerFragment_();
@@ -105,9 +104,17 @@ public class MainActivity extends FragmentActivity {
     public void afterLoad() {
         //TODO @david set loggedIn status to true
         // never logged in since the app started && never logged in via fb
-        if (mEventBus.getStickyEvent(LoginNavigationEvent.class) == null || !sharedPrefs.loggedIn().get()) {
-            onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment));
-        } else {
+        // if either one, the shared pref file or the sticky event equals to not skip the loginscreen
+        // shared pref = show login
+        // sticky event = null -> show login
+        // if an event has already been sent ( means the app has been started before ) skip it
+
+        boolean isEventAvailable = mEventBus.getStickyEvent(LoginNavigationEvent.class) != null;
+
+
+        if (!isEventAvailable | sharedPrefs.showLoginScreen().get()) {
+            onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment, loginFragment));
+        }else {
             loginFragment.setVisibility(View.GONE);
         }
 
@@ -118,6 +125,12 @@ public class MainActivity extends FragmentActivity {
 
         applySlider();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        serviceHandler.startServices();
     }
 
     @DebugLog
@@ -253,6 +266,8 @@ public class MainActivity extends FragmentActivity {
     }
 
 
+    boolean showingDetails = false;
+    //TODO implement onBackPressed for the overview to collapse
     @DebugLog
     @Override
     public void onBackPressed() {
@@ -271,11 +286,6 @@ public class MainActivity extends FragmentActivity {
     protected void onStop() {
         super.onStop();
         mEventBus.unregister(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         serviceHandler.stopServices();
     }
 }

@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by Simon on 25.03.2015.
  */
 //TODO implement proper picture cache or at least test and configure the one from picasso!!
-@EBean
+@EBean(scope = EBean.Scope.Singleton)
 public class ImageService extends AbstractService {
 
     public static final String TAG = ImageService.class.getSimpleName();

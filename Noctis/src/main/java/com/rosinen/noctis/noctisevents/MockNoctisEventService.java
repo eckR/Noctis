@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Created by Simon on 24.03.2015.
  */
-@EBean
+@EBean(scope = EBean.Scope.Singleton)
 public class MockNoctisEventService extends AbstractService implements INoctisEventObtainer{
 
 

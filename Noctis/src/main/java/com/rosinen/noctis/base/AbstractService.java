@@ -9,7 +9,7 @@ public class AbstractService {
 
     protected EventBus mEventBus = EventBus.getDefault();
 
-    public AbstractService() {
+    public void onStart(){
         mEventBus.register(this);
     }
 

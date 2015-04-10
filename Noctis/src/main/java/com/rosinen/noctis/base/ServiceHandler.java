@@ -4,6 +4,7 @@ import com.rosinen.noctis.location.LocationService;
 import com.rosinen.noctis.map.MarkerService;
 import com.rosinen.noctis.noctisevents.ImageService;
 import com.rosinen.noctis.noctisevents.MockNoctisEventService;
+import hugo.weaving.DebugLog;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -40,6 +41,14 @@ public class ServiceHandler {
         services.add(markerService);
     }
 
+    @DebugLog
+    public void startServices(){
+        for(AbstractService service :services){
+            service.onStart();
+        }
+    }
+
+    @DebugLog
     public void stopServices() {
         for (AbstractService service : services){
             service.onStop();

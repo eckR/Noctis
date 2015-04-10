@@ -18,5 +18,5 @@ public interface SharedPreferences  {
     String locationName();
 
     @DefaultBoolean(false)
-    boolean loggedIn();
+    boolean showLoginScreen();
 }
