@@ -75,6 +75,9 @@ public class EventpagerFragment extends EventBusFragment {
         pagerHeader.setViewPager(viewPager);
         pagerHeader.setOnPageChangeListener(pgList);
 
+        //Fix Touch Bug for header
+
+
         mEventBus.postSticky(new EventListPageChangedEvent(0));
     }
 

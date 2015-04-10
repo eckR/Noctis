@@ -5,48 +5,51 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 tools:context="com.rosinen.noctis.eventoverview.EventpagerFragment">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="62dp"
-        android:background="@color/g1"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="70dp"
-        android:text="@string/events"
-        android:textSize="18sp"
-        android:textColor="@color/g3"
-        android:gravity="center"/>
+        android:background="@color/g1">
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/pagerHeader"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="14dp"
-        android:layout_width="300dp"
-        android:layout_height="48dip"
-        android:textColor="@color/w"
-        android:textSize="20sp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="70dp"
+            android:text="@string/events"
+            android:textSize="18sp"
+            android:textColor="@color/g3"
+            android:gravity="center"/>
 
-        app:pstsIndicatorHeight="5dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/eventCount"
-        android:layout_toEndOf="@+id/eventCount"
-        android:fillViewport="false"/>
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/pagerHeader"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="14dp"
+            android:layout_width="300dp"
+            android:layout_height="48dip"
+            android:textColor="@color/w"
+            android:textSize="20sp"
+            android:touchscreenBlocksFocus="true"
+            android:clickable="true"
 
-    <TextView
-        android:id="@+id/eventCount"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="7dp"
-        android:text="@string/notAvailableShort"
-        android:textSize="22sp"
-        android:background="@color/g2"
-        android:textColor="@color/w"
-        android:gravity="center"/>
+            app:pstsIndicatorHeight="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/eventCount"
+            android:layout_toEndOf="@+id/eventCount"
+            android:fillViewport="false"/>
 
+        <TextView
+            android:id="@+id/eventCount"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="7dp"
+            android:text="@string/notAvailableShort"
+            android:textSize="22sp"
+            android:background="@color/g2"
+            android:textColor="@color/w"
+            android:gravity="center"/>
+    </RelativeLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

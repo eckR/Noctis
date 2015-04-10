@@ -150,7 +150,7 @@ public class MainActivity extends FragmentActivity {
         };
         applierDetails.collapse();
 //        applierDetails.expand();
-
+        
         applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
             @Override
             public void onExpand() {
@@ -162,6 +162,7 @@ public class MainActivity extends FragmentActivity {
             public void onCollapse() {
                 ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMinHeight());
                 mapEventBus.getEventBus().post(event);
+
             }
         };
         applier.collapse();
