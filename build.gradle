@@ -62,31 +62,3 @@ def createCrashlyticsProperties(Project project, variant) {
     }
 }
 
-//task createCrashlyticsProperties << {
-//    def crashlyticsSecret = CRASHLYTICS_API_SECRET
-//    def crashlyticsKey = CRASHLYTICS_API_KEY
-//
-//    File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
-//    def variantSuffix = variant.name.capitalize()
-//    def generatePropertiesTask = task("crashlyticsGenerateProperties${variantSuffix}") << {
-//        Properties properties = new Properties()
-//        println "...copying apiSecret"
-//        properties.put("apiSecret", crashlyticsSecret)
-//        println "...copying apiKey"
-//        properties.put("apiKey", crashlyticsKey)
-//        properties.store(new FileWriter(crashlyticsProperties), "")
-//    }
-//}
-//
-//task deleteCrashlyticsProperties << {
-//    File crashlyticsProperties = new File("${project.projectDir.absolutePath}/crashlytics.properties")
-//    crashlyticsProperties.delete()
-//}
-//
-//task jenkinsReleaseBuild (dependsOn:[':Noctis:clean', ':Noctis:assembleRelease', ':Noctis:Noctis:crashlyticsGeneratePropertiesRelease', ':Noctis:Noctis:crashlyticsUploadDistributionRelease' ]) << {
-//
-//    tasks.getByName()
-//
-//}
-
-
