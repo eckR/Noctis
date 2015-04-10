@@ -59,6 +59,8 @@ public class EventListFragment extends EventBusFragment {
     public int day;
 
 
+    //Simon hat unrecht
+
     @AfterViews
     void bindAdapter() {
         list.setAdapter(adapter);
