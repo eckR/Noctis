@@ -54,7 +54,9 @@ def createCrashlyticsProperties(Project project,variant) {
     }
     generateResourcesTask.dependsOn generatePropertiesTask
     def assembleTask = project.tasks.getByName("assemble${variantSuffix}")
-    assembleTask.doLast {
+    def uploadCrashlyticsTask = project.tasks.getByName("crashlyticsUploadDistribution${variantSuffix}")
+    uploadCrashlyticsTask.dependsOn assembleTask
+    uploadCrashlyticsTask.doLast {
         println "...removing crashlytics.properties"
         crashlyticsProperties.delete()
     }
