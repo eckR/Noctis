@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="3140437661">
+    <data-source source="LOCAL" name="PostgreSQL - noctisdb@noctisdatabase.cdlrm7ntyx6v.eu-west-1.rds.amazonaws.com" uuid="3f409cd2-f9b8-41c1-9b24-572a5004b6a3">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://noctisdatabase.cdlrm7ntyx6v.eu-west-1.rds.amazonaws.com:5432/noctisdb</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

@@ -56,7 +56,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStart() {
         super.onStart();
-        mEventBus.post(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
+        mEventBus.postSticky(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
     }
 
     /**

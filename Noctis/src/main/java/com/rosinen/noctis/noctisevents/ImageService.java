@@ -78,12 +78,12 @@ public class ImageService extends AbstractService {
         for (final NoctisEvent event :noctisEvents) {
 
             ImageDownloadTarget bigTarget = new ImageDownloadTarget(day, ImageDownloadTarget.ImageDownloadTargetType.BIG, event);
-            launchDownload(bigTarget, event.getKey().concat("b"), event.getPictureBigUrl(), day, Picasso.Priority.LOW);
-            Log.i(TAG, "starting to fetch big picture for: " + event.getFBID());
+            launchDownload(bigTarget, event.getKey().concat("b"), event.getPictureUrl(), day, Picasso.Priority.LOW);
+            Log.i(TAG, "starting to fetch big picture for: " + event.getFacebookId());
 
             ImageDownloadTarget smallTarget = new ImageDownloadTarget(day, ImageDownloadTarget.ImageDownloadTargetType.SMALL, event);
             launchDownload(smallTarget, event.getKey().concat("s"), event.getSmallPicUrl(), day, Picasso.Priority.NORMAL);
-            Log.i(TAG, "starting to fetch small picture for: " + event.getFBID());
+            Log.i(TAG, "starting to fetch small picture for: " + event.getFacebookId());
         }
     }
 
@@ -131,6 +131,6 @@ public class ImageService extends AbstractService {
      * @return
      */
     private String getIDForHashSet(ImageDownloadTarget target) {
-        return target.noctisEvent.getFBID() + "" + target.type;
+        return target.noctisEvent.getFacebookId() + "" + target.type;
     }
 }

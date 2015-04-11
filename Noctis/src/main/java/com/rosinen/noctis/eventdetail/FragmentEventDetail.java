@@ -41,7 +41,7 @@ public class FragmentEventDetail extends EventBusFragment {
         StringBuilder dateBuilder = new StringBuilder();
         dateBuilder.append(simpleDateFormatStart.format(event.getStart()));
         dateBuilder.append(" - ");
-        dateBuilder.append(simpleDateFormatEnd.format(event.getEnd()));
+        dateBuilder.append(simpleDateFormatEnd.format(event.getEndTime()));
         textViewEventDate.setText(dateBuilder.toString());
         textViewDescription.setText(event.getDescription());
     }

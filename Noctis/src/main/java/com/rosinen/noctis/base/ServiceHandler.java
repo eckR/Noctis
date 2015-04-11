@@ -4,6 +4,7 @@ import com.rosinen.noctis.location.LocationService;
 import com.rosinen.noctis.map.MarkerService;
 import com.rosinen.noctis.noctisevents.ImageService;
 import com.rosinen.noctis.noctisevents.MockNoctisEventService;
+import com.rosinen.noctis.noctisevents.NoctisEventService;
 import hugo.weaving.DebugLog;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
@@ -22,8 +23,8 @@ public class ServiceHandler {
     @Bean
     LocationService locationService;
 
-    @Bean
-    MockNoctisEventService mockNoctisEventService;
+//    @Bean
+//    MockNoctisEventService mockNoctisEventService;
 
     @Bean
     ImageService imageService;
@@ -31,14 +32,18 @@ public class ServiceHandler {
     @Bean
     MarkerService markerService;
 
+    @Bean
+    NoctisEventService noctisEventService;
+
     private List<AbstractService> services = new ArrayList<AbstractService>();
 
     @AfterInject
     public void loadServices(){
         services.add(locationService);
-        services.add(mockNoctisEventService);
+//        services.add(mockNoctisEventService);
         services.add(imageService);
         services.add(markerService);
+        services.add(noctisEventService);
     }
 
     @DebugLog
@@ -54,5 +59,4 @@ public class ServiceHandler {
             service.onStop();
         }
     }
-
 }

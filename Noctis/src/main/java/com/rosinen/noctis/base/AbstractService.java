@@ -10,7 +10,7 @@ public class AbstractService {
     protected EventBus mEventBus = EventBus.getDefault();
 
     public void onStart(){
-        mEventBus.register(this);
+        mEventBus.registerSticky(this);
     }
 
     public void onStop() {

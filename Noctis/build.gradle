@@ -52,7 +52,7 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 17
+    vBugfix = 18
 }
 
 android {
@@ -128,13 +128,16 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.facebook.android:facebook-android-sdk:3.23.0'
     compile 'com.android.support:support-v13:22.0.0'
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.2'
 }
 
 // Returns “0.00.001”

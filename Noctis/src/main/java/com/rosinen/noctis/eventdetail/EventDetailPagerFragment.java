@@ -69,8 +69,8 @@ public class EventDetailPagerFragment extends EventBusFragment {
     void facebookButtonClick() {
         Context context = getActivity().getApplicationContext();
         Intent intent;
-        long fbId = adapter.getItemByPosition(detailViewPager.getCurrentItem()).getFBID();
-        Log.d("FBID", fbId+"");
+        String fbId = adapter.getItemByPosition(detailViewPager.getCurrentItem()).getFacebookId();
+        Log.d("FBID", fbId);
         try {
             context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://event/" + fbId));

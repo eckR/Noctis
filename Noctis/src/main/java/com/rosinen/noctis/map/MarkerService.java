@@ -67,7 +67,7 @@ public class MarkerService extends AbstractService {
 
 
             eventImage.setImageBitmap(noctisEvent.getPictureSmall());
-            textAttending.setText(noctisEvent.getAttending() + "");
+            textAttending.setText(noctisEvent.getAttendingCount() + "");
             textFriendsAttending.setText("nA");
 
             //Provide it with a layout params. It should necessarily be wrapping the

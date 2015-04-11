@@ -1,5 +1,6 @@
 package com.rosinen.noctis.map;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -7,5 +8,5 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public interface LocationFinderStrategy {
 
-    LatLng getLocation();
+    LatLng getLocation(GoogleApiClient mGoogleApiClient);
 }

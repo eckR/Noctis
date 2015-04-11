@@ -3,6 +3,8 @@ package com.rosinen.noctis.Model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.NoctisApplication;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,20 +14,25 @@ import java.util.Date;
 /**
  * Created by Harald on 20.03.2015.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NoctisEvent {
     private static final long serialVersionUID = 1L;
-    private Long fbID;
+
+    private String facebookId;
     private String name;
+    @JsonIgnore
     private Date start;
-    private Date end;
+    @JsonIgnore
+    private Date endTime;
     private String location;
-    private Double lat;
-    private Double lng;
-    private String pictureSmallUrl;
-    private int attending;
+    private Double latitude;
+    private Double longitude;
+    private int attendingCount;
     private String description;
-    private String pictureBigUrl;
+    private String coverUrl;
+    private String pictureUrl;
     private float distance;
+    private Integer rating;
 
     /**
      * used to store the thumbnail
@@ -51,20 +58,20 @@ public class NoctisEvent {
         this.distance = distance;
     }
 
-    public NoctisEvent(long fbID, String name, Date start, Date end, String location, Double lat, Double lng, String url, int attending, String description, String pictureBigUrl, String pictureSmallUrl, float distance){
-        this.fbID=fbID;
+    public NoctisEvent(String facebookId, String name, Date start, Date endTime, String location, Double latitude, Double longitude, String url, int attendingCount, String description, String pictureUrl, String pictureSmallUrl, float distance){
+        this.facebookId = facebookId;
         this.name=name;
         this.start=start;
-        this.end=end;
+        this.endTime = endTime;
         this.location=location;
-        this.lat =lat;
-        this.lng =lng;
-        this.pictureSmallUrl=url;
-        this.attending=attending;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.coverUrl =url;
+        this.attendingCount = attendingCount;
         this.description=description;
-        this.pictureBigUrl=pictureBigUrl;
+        this.pictureUrl = pictureUrl;
         this.description=description.replaceAll("\\\\n", System.getProperty("line.separator"));
-        this.pictureSmallUrl = pictureSmallUrl;
+        this.coverUrl = pictureSmallUrl;
         this.distance = distance;
 
         Context ctx = NoctisApplication.getContext();
@@ -74,12 +81,12 @@ public class NoctisEvent {
 
     public String getKey(){
         StringBuilder sb = new StringBuilder();//TODO set capacity (fbid might always be the same length
-        sb.append(getFBID()).append(getAttending());
+        sb.append(getFacebookId()).append(getAttendingCount());
         return sb.toString();
     }
 
-    public void setFbID(Long fbID) {
-        this.fbID = fbID;
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 
     public void setName(String name) {
@@ -90,40 +97,40 @@ public class NoctisEvent {
         this.start = start;
     }
 
-    public void setEnd(Date end) {
-        this.end = end;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public void setLng(Double lng) {
-        this.lng = lng;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
-    public void setPictureSmallUrl(String pictureSmallUrl) {
-        this.pictureSmallUrl = pictureSmallUrl;
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 
-    public void setAttending(int attending) {
-        this.attending = attending;
+    public void setAttendingCount(int attendingCount) {
+        this.attendingCount = attendingCount;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setPictureBigUrl(String pictureBigUrl) {
-        this.pictureBigUrl = pictureBigUrl;
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
-    public Long getFBID(){
-        return fbID;
+    public String getFacebookId(){
+        return facebookId;
     }
     public String getName(){
         return name;
@@ -131,27 +138,27 @@ public class NoctisEvent {
     public Date getStart(){
         return start;
     }
-    public Date getEnd(){
-        return end;
+    public Date getEndTime(){
+        return endTime;
     }
     public String getLocation(){
         return location;
     }
     public LatLng getCoords(){
-        return new LatLng(lat, lng);
+        return new LatLng(latitude, longitude);
     }
     public String getSmallPicUrl(){
-        return pictureSmallUrl;
+        return coverUrl;
     }
-    public int getAttending(){
-        return attending;
+    public int getAttendingCount(){
+        return attendingCount;
     }
 
     public String getDescription(){
         return description;
     }
-    public String getPictureBigUrl(){
-        return pictureBigUrl;
+    public String getPictureUrl(){
+        return pictureUrl;
     }
 
     public Bitmap getPictureSmall() {

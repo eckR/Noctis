@@ -37,7 +37,7 @@ public class EventListItemView extends LinearLayout{
         itemImage.setImageBitmap(event.getPictureBig());
         itemTitle.setText(event.getName());
         itemLocation.setText(event.getLocation());
-        itemAttendance.setText(event.getAttending()+"");
+        itemAttendance.setText(event.getAttendingCount()+"");
         itemDistance.setText(event.getDistance() + getContext().getString(R.string.distanceString));
         
     }

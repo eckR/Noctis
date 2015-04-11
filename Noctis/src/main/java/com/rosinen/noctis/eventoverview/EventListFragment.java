@@ -92,7 +92,7 @@ public class EventListFragment extends EventBusFragment {
     public void onEventBackgroundThread(final RequestShowDetailsEvent requestShowDetailsEvent) {
 
         for (int i = 0; i < adapter.getNoctisEventList().size(); ++i) {
-            if (adapter.getNoctisEventList().get(i).getFBID() == requestShowDetailsEvent.event.getFBID()) {
+            if (adapter.getNoctisEventList().get(i).getFacebookId() == requestShowDetailsEvent.event.getFacebookId()) {
                 mEventBus.post(new ShowDetailsEvent(adapter.getNoctisEventList(), i, day));
                 break;
             }

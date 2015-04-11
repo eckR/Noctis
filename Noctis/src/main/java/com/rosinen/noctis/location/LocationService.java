@@ -1,5 +1,6 @@
 package com.rosinen.noctis.location;
 
+import android.app.ApplicationErrorReport;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.NoctisApplication;
 import com.rosinen.noctis.activity.event.AlertDialogEvent;
@@ -18,6 +22,7 @@ import com.rosinen.noctis.base.SharedPreferences_;
 import com.rosinen.noctis.location.event.GoogleAPIClientEvent;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
+import com.rosinen.noctis.map.LocationFinderStrategy;
 import com.rosinen.noctis.map.MapEventBus;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,12 +34,18 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Simon on 23.03.2015.
  */
 @EBean(scope = EBean.Scope.Singleton)
 public class LocationService extends AbstractService implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+
+    private static final String TAG = LocationService.class.getSimpleName();
 
     @Bean
     MapEventBus mapEventBus;
@@ -53,6 +64,7 @@ public class LocationService extends AbstractService implements
 
     private boolean mRequestedLocationUpdate = false;
 
+    List<LocationFinderStrategy> locationFinderStrategies = new ArrayList<LocationFinderStrategy>();
 
     @AfterInject
     public void initLocationService() {
@@ -63,7 +75,6 @@ public class LocationService extends AbstractService implements
                 .addApi(LocationServices.API).build();
 
     }
-
 
 
     @Override
@@ -103,14 +114,13 @@ public class LocationService extends AbstractService implements
     }
 
 
-
-    public void onEvent(RequestLocationEvent requestLocationEvent){
+    public void onEvent(RequestLocationEvent requestLocationEvent) {
         mRequestedLocationUpdate = true;
-        if(mLastLocation != null){
+        if (mLastLocation != null) {
             mRequestedLocationUpdate = false;
             mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
             mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-        }else{
+        } else {
             getLocation();
         }
     }
@@ -118,19 +128,34 @@ public class LocationService extends AbstractService implements
     /**
      * //TODo implement as stategy loop through every strategy and if non works fire event to ask for gps
      */
-    private void getLocation(){
+    private void getLocation() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(600000);
+        locationRequest.setFastestInterval(10000);
+//        mGoogleApiClient.connect();
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, locationRequest, this);
+        }
+//        for(LocationFinderStrategy strategy :locationFinderStrategies){
+//
+//            LatLng coords = strategy.getLocation(mGoogleApiClient);
+//
+//        }
+
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
         if (lastLocation != null) {
 
-            if(mLastLocation == null || mLastLocation.distanceTo(lastLocation) > 1){ //todo check distance
+            if (mLastLocation == null || mLastLocation.distanceTo(lastLocation) > 1) { //todo check distance
 
                 mLastLocation = lastLocation;
             }
 
 
-            if(mRequestedLocationUpdate){
+            if (mRequestedLocationUpdate) {
                 mRequestedLocationUpdate = false;
                 mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
                 mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
@@ -138,17 +163,14 @@ public class LocationService extends AbstractService implements
                 sharedPref.edit().latitude().put((float) mLastLocation.getLatitude()).apply();
                 sharedPref.edit().longitude().put((float) mLastLocation.getLongitude()).apply();
             }
-        }
-
-        else if(sharedPref.latitude().exists() && sharedPref.longitude().exists()){
-            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get() ) ));
+        } else if (sharedPref.latitude().exists() && sharedPref.longitude().exists()) {
+            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
             mEventBus.postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
-        }
-
-        else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || //TODO implement location request
+        } else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || //TODO implement location request
                 !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             fireNoGpsAlertDialogEvent();
         }
+
     }
 
     /**
@@ -157,7 +179,7 @@ public class LocationService extends AbstractService implements
      *
      * @param googleAPIClientEvent
      */
-    public void onEventMainThread(GoogleAPIClientEvent googleAPIClientEvent) {
+    public void onEventMainThread(final GoogleAPIClientEvent googleAPIClientEvent) {
         switch (googleAPIClientEvent.action) {
             case CONNECT:
                 mGoogleApiClient.connect();
@@ -169,4 +191,22 @@ public class LocationService extends AbstractService implements
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+        mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+        }
+    }
 }
