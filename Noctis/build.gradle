@@ -52,7 +52,7 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 18
+    vBugfix = 19
 }
 
 android {
@@ -113,6 +113,7 @@ android {
             signingConfig signingConfigs.release
             ext.betaDistributionReleaseNotes="Release Notes"
             ext.betaDistributionGroupAliases="noctis-beta"
+
         }
     }
     packagingOptions {
@@ -138,6 +139,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.2'
+//    compile 'com.google.guava:guava:18.0'
 }
 
 // Returns “0.00.001”

@@ -44,7 +44,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
     @AfterViews
     void prepare() {
-        adapter = new EventDetailPagerAdapter(getFragmentManager());
+        adapter = new EventDetailPagerAdapter(getChildFragmentManager());
         detailViewPager.setAdapter(adapter);
         detailViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

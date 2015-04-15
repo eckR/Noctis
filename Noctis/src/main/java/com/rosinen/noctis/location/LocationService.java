@@ -1,6 +1,5 @@
 package com.rosinen.noctis.location;
 
-import android.app.ApplicationErrorReport;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,9 +8,12 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.NoctisApplication;
 import com.rosinen.noctis.activity.event.AlertDialogEvent;
@@ -19,23 +21,14 @@ import com.rosinen.noctis.activity.event.StartActivityEvent;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.AbstractService;
 import com.rosinen.noctis.base.SharedPreferences_;
-import com.rosinen.noctis.location.event.GoogleAPIClientEvent;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
+import com.rosinen.noctis.location.event.GoogleAPIClientEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
-import com.rosinen.noctis.map.LocationFinderStrategy;
 import com.rosinen.noctis.map.MapEventBus;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import org.androidannotations.annotations.AfterInject;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.SystemService;
+import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Simon on 23.03.2015.
@@ -60,11 +53,6 @@ public class LocationService extends AbstractService implements
 
     private GoogleApiClient mGoogleApiClient;
 
-    private Location mLastLocation = null;
-
-    private boolean mRequestedLocationUpdate = false;
-
-    List<LocationFinderStrategy> locationFinderStrategies = new ArrayList<LocationFinderStrategy>();
 
     @AfterInject
     public void initLocationService() {
@@ -81,8 +69,8 @@ public class LocationService extends AbstractService implements
     public void onConnected(Bundle bundle) {
         Log.v(getClass().getCanonicalName(), "mGoogleApiClient connected");
 
+        //TODO really call getLocation? maybe this is why it is called to often
         getLocation();
-
     }
 
     @Override
@@ -101,8 +89,14 @@ public class LocationService extends AbstractService implements
 
 
     private void fireNoGpsAlertDialogEvent() {
-        mEventBus.post(new AlertDialogEvent(
-                ctx.getString(R.string.locatingError),
+        AlertDialogEvent alertDialogEvent = mEventBus.getStickyEvent(AlertDialogEvent.class);
+        String title = ctx.getString(R.string.locatingError);
+        if (alertDialogEvent != null && alertDialogEvent.title.equals(title)) {
+            mEventBus.post(new ToastMeEvent("GPS muss aktiviert werden", Toast.LENGTH_SHORT));
+            return;
+        }
+        mEventBus.postSticky(new AlertDialogEvent(
+                title,
                 ctx.getString(R.string.noGpsAskToEnable),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -115,62 +109,130 @@ public class LocationService extends AbstractService implements
 
 
     public void onEvent(RequestLocationEvent requestLocationEvent) {
-        mRequestedLocationUpdate = true;
-        if (mLastLocation != null) {
-            mRequestedLocationUpdate = false;
-            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-            mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-        } else {
-            getLocation();
-        }
+        getLocation();
     }
 
     /**
      * //TODo implement as stategy loop through every strategy and if non works fire event to ask for gps
      */
-    private void getLocation() {
+    @Background
+    void getLocation() {
+
+
+        LatLng location = getLastLocation();
+
+        switch (0) {
+            case 0: {
+                location = getLastLocation();
+                if (location != null) {
+                    break;
+                }
+            }//fall through
+            case 1: {
+                location = getLocationFromStickyEvent();
+                if (location != null) {
+                    break;
+                }
+            }//fall through
+            case 2: {
+                location = getLocationFromSharedPrefFile();
+                if (location != null) {
+                    break;
+                }
+            }//fall through
+            case 3: {
+
+                if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || //TODO implement location request
+                        !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    fireNoGpsAlertDialogEvent();
+                    break;
+                }
+                prepareRequestLocationUpdates();
+            }
+        }
+        if (location != null) {
+            storeLocationInSharedPrefFile(location);
+
+            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(location));
+            mEventBus.postSticky(new FoundLocationEvent(location));
+        }
+    }
+
+
+    /**
+     * prepare request Location update
+     */
+    private void prepareRequestLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        locationRequest.setInterval(600000);
+        locationRequest.setInterval(600000); //don't ever call twice to save battery;)
         locationRequest.setFastestInterval(10000);
-//        mGoogleApiClient.connect();
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, locationRequest, this);
-        }
-//        for(LocationFinderStrategy strategy :locationFinderStrategies){
-//
-//            LatLng coords = strategy.getLocation(mGoogleApiClient);
-//
-//        }
 
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
+        mGoogleApiClient.blockingConnect(2, TimeUnit.MINUTES);
+
+        requestLocationUpdates(locationRequest);
+    }
+
+    /**
+     * actually register for location updates
+     *
+     * @param locationRequest
+     */
+    @UiThread
+    void requestLocationUpdates(LocationRequest locationRequest) {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, locationRequest, this);
+    }
+
+    /**
+     * get last foundlocationEvent form eventbus and use that location
+     *
+     * @return
+     */
+    private LatLng getLocationFromStickyEvent() {
+
+        FoundLocationEvent foundLocationEvent = mEventBus.getStickyEvent(FoundLocationEvent.class);
+        if (foundLocationEvent != null) {
+            return foundLocationEvent.coordinate;
+        }
+        return null;
+    }
+
+    /**
+     * get location form fusedlocationapi
+     *
+     * @return
+     */
+    private LatLng getLastLocation() {
+        Location location = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
-        if (lastLocation != null) {
-
-            if (mLastLocation == null || mLastLocation.distanceTo(lastLocation) > 1) { //todo check distance
-
-                mLastLocation = lastLocation;
-            }
-
-
-            if (mRequestedLocationUpdate) {
-                mRequestedLocationUpdate = false;
-                mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-                mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-
-                sharedPref.edit().latitude().put((float) mLastLocation.getLatitude()).apply();
-                sharedPref.edit().longitude().put((float) mLastLocation.getLongitude()).apply();
-            }
-        } else if (sharedPref.latitude().exists() && sharedPref.longitude().exists()) {
-            mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
-            mEventBus.postSticky(new FoundLocationEvent(new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get())));
-        } else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || //TODO implement location request
-                !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            fireNoGpsAlertDialogEvent();
+        LatLng latLng = null;
+        if (location != null) {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
         }
+        return latLng;
+    }
 
+    /**
+     * store the aquired location to the shared pref file to have a fallback method for location aquireing instead of
+     * turning on the gps
+     *
+     * @param location
+     */
+    private void storeLocationInSharedPrefFile(final LatLng location) {
+        sharedPref.longitude().put((float) location.longitude);
+        sharedPref.latitude().put((float) location.latitude);
+    }
+
+    /**
+     * @return
+     */
+    private LatLng getLocationFromSharedPrefFile() {
+        if (sharedPref.latitude().exists() && sharedPref.longitude().exists()) {
+            return new LatLng(sharedPref.latitude().get(), sharedPref.longitude().get());
+        }
+        return null;
     }
 
     /**
@@ -193,10 +255,10 @@ public class LocationService extends AbstractService implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-        mEventBus.postSticky(new FoundLocationEvent(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+        mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(location.getLatitude(), location.getLongitude())));
+        mEventBus.postSticky(new FoundLocationEvent(new LatLng(location.getLatitude(), location.getLongitude())));
 
+        mEventBus.post(new ToastMeEvent("Das GPS kann nun wieder abgeschalten werden",Toast.LENGTH_SHORT));
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
     }

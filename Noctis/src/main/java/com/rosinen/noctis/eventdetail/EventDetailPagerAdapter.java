@@ -15,6 +15,7 @@ import java.util.List;
 public class EventDetailPagerAdapter extends FragmentPagerAdapter{
 
     private List<NoctisEvent> events;
+
     public EventDetailPagerAdapter(FragmentManager fm) {
         super(fm);
         events = new ArrayList<NoctisEvent>();
@@ -36,7 +37,9 @@ public class EventDetailPagerAdapter extends FragmentPagerAdapter{
     }
 
     public void setNoctisEventList(List<NoctisEvent> events) {
-        this.events = events;
+        if (events != null) {
+            this.events = events;
+        }
     }
     public NoctisEvent getItemByPosition(int position) {
         return events.get(position);

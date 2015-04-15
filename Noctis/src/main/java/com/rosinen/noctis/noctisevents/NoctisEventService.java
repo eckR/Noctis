@@ -5,7 +5,6 @@ import com.rosinen.noctis.base.AbstractService;
 import com.rosinen.noctis.noctisevents.event.NoctisEventsAvailableEvent;
 import com.rosinen.noctis.noctisevents.event.RequestEventsEvent;
 import hugo.weaving.DebugLog;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.rest.RestService;
 
@@ -26,7 +25,7 @@ public class NoctisEventService extends AbstractService implements  INoctisEvent
     public void onEventBackgroundThread(RequestEventsEvent requestEventsEvent) {
         List<NoctisEvent> events = noctisRestHandler.getNoctisEvents(requestEventsEvent.coordinate.longitude,
                                                                         requestEventsEvent.coordinate.latitude,
-                                                                        1000,
+                                                                        requestEventsEvent.radius,
                                                                         requestEventsEvent.day);
         mEventBus.post(new NoctisEventsAvailableEvent(requestEventsEvent,events));
     }

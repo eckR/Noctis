@@ -42,8 +42,8 @@ public class EventListFragment extends EventBusFragment {
     @Bean
     NoctisEventAdapter adapter;
 
-    @ViewById
-    RelativeLayout emptyIndicator;
+//    @ViewById
+//    RelativeLayout emptyIndicator;
 
     @Bean
     MapEventBus mapEventBus;
@@ -65,7 +65,7 @@ public class EventListFragment extends EventBusFragment {
     void bindAdapter() {
         list.setAdapter(adapter);
         eventListRefresher.setOnRefreshListener(new EventRefreshListener());
-        list.setEmptyView(emptyIndicator);
+//        list.setEmptyView(emptyIndicator);
         // workaround to show the loading circle
 //        eventListRefresher.setProgressViewOffset(false, 0,
 //                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));

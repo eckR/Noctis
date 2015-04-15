@@ -37,6 +37,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int ZOOM_DEFAULT = 12;
     private static final int ZOOM_TO_EVENT = 16;
+
     private EventBus mEventBus = EventBus.getDefault();
     private GoogleMap map;
 
@@ -53,6 +54,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -66,7 +68,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      */
     public void onEventMainThread(final MarkerAvailableEvent markerAvailableEvent) {
 
-        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
+        EventListPageChangedEvent eventListPageChangedEvent = mEventBus.getStickyEvent(EventListPageChangedEvent.class);
+        int page = 0;
+        if (eventListPageChangedEvent != null){
+            page = eventListPageChangedEvent.page;
+        }
 
         if (markerAvailableEvent.day != page) {
             return;
@@ -92,7 +98,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
      */
     public void onEventMainThread(final MarkEventsOnMapEvent event) {
 
-        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
+        EventListPageChangedEvent eventListPageChangedEvent = mEventBus.getStickyEvent(EventListPageChangedEvent.class);
+        int page = 0;
+        if (eventListPageChangedEvent != null){
+            page = eventListPageChangedEvent.page;
+        }
 
         if (event.day != page) {
             return;

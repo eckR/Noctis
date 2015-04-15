@@ -21,18 +21,18 @@
     The view to use when the list is empty.
     It has one  widgets,the "no data" indicator.
     -->
-    <RelativeLayout
-            android:id="@+id/emptyIndicator"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <TextView
+    <!--<RelativeLayout-->
+            <!--android:id="@+id/emptyIndicator"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+        <!--<TextView-->
 
-                android:text="there are no items"
-                android:textIsSelectable="false"
-                android:layout_centerInParent="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-    </RelativeLayout>
+                <!--android:text="there are no items"-->
+                <!--android:textIsSelectable="false"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
+    <!--</RelativeLayout>-->
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>
