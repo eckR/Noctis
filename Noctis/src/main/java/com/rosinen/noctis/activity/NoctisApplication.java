@@ -2,7 +2,10 @@ package com.rosinen.noctis.activity;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
+import com.rosinen.noctis.activity.event.ToastMeEvent;
+import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.EApplication;
 
 /**
@@ -18,6 +21,7 @@ public class NoctisApplication extends Application {
         super.onCreate();
         mContext = this;
         Crashlytics.start(this);
+        EventBus.getDefault().post(new ToastMeEvent("Crashlytics started", Toast.LENGTH_SHORT));
     }
 
     public static Context getContext(){

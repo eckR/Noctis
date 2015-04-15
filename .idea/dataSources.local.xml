@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="PostgreSQL - noctisdb@noctisdatabase.cdlrm7ntyx6v.eu-west-1.rds.amazonaws.com" uuid="3f409cd2-f9b8-41c1-9b24-572a5004b6a3">
+      <secret-storage>master_key</secret-storage>
+      <user-name>noctisAdmin</user-name>
+      <schema-pattern>noctisdb.pg_catalog noctisdb.public</schema-pattern>
+      <default-schemas>noctisdb.pg_catalog noctisdb.public</default-schemas>
+    </data-source>
+  </component>
+</project>
