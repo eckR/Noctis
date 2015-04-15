@@ -21,6 +21,7 @@ import com.rosinen.noctis.login.LoginFragement_;
 import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.MapsFragment_;
 import com.rosinen.noctis.map.event.ChangeBottomPaddingMapEvent;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 import org.androidannotations.annotations.*;
@@ -33,9 +34,9 @@ public class MainActivity extends FragmentActivity {
 
     private EventBus mEventBus = EventBus.getDefault();
 
-    private SlidingUpPanelApplier applier;
+    //private SlidingUpPanelApplier applier;
 
-    private SlidingUpPanelApplier applierDetails;
+    //private SlidingUpPanelApplier applierDetails;
 
     @Bean
     ServiceHandler serviceHandler;
@@ -50,16 +51,19 @@ public class MainActivity extends FragmentActivity {
     View swipeUpPanel;
 
     @ViewById
-    View dragHandleSwipeUp;
+    SlidingUpPanelLayout slidingUpPanelLayout;
 
-    @ViewById
-    View eventDetailSwipeUpPanel;
+//    @ViewById
+//    View dragHandleSwipeUp;
+//
+//    @ViewById
+//    View eventDetailSwipeUpPanel;
 
     @ViewById
     View loginFragment;
-
-    @ViewById
-    View evenDetailHandle;
+//
+//    @ViewById
+//    View evenDetailHandle;
 
     @Pref
     SharedPreferences_ sharedPrefs;
@@ -70,7 +74,7 @@ public class MainActivity extends FragmentActivity {
 
     Fragment mapsFragment = new MapsFragment_();
     Fragment eventpagerFragment = new EventpagerFragment_();
-    Fragment eventDetailPagerFragment = new EventDetailPagerFragment_();
+    //Fragment eventDetailPagerFragment = new EventDetailPagerFragment_();
 
 
     @DebugLog
@@ -120,10 +124,43 @@ public class MainActivity extends FragmentActivity {
 
         onEventMainThread(new FragmentChangeEvent(mapsFragment, false, R.id.fragmentBase));
 
-        onEventMainThread(new FragmentChangeEvent(eventpagerFragment, false, R.id.swipeUpPanel, swipeUpPanel, dragHandleSwipeUp));
-        onEventMainThread(new FragmentChangeEvent(eventDetailPagerFragment, false, R.id.eventDetailSwipeUpPanel, eventDetailSwipeUpPanel, evenDetailHandle));
+        onEventMainThread(new FragmentChangeEvent(eventpagerFragment, false, R.id.swipeUpPanel, swipeUpPanel));
 
-        applySlider();
+
+        slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View view, float v) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View view) {
+                int height = slidingUpPanelLayout.getPanelHeight();
+                ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(height);
+                mapEventBus.getEventBus().post(event);
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+                int height = swipeUpPanel.getLayoutParams().height;
+                ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(height);
+                mapEventBus.getEventBus().post(event);
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+
+            }
+        });
+
+
+
+        changePadding();
 
     }
 
@@ -133,41 +170,11 @@ public class MainActivity extends FragmentActivity {
         serviceHandler.startServices();
     }
 
-    @DebugLog
     @UiThread
-    void applySlider() {
-        applierDetails = new SlidingUpPanelApplier(eventDetailSwipeUpPanel,
-                evenDetailHandle, 0, eventDetailSwipeUpPanel.getLayoutParams().height, this) {
-            @Override
-            public void onExpand() {
+    void changePadding() {
 
-            }
-
-            @Override
-            public void onCollapse() {
-
-            }
-        };
-        applierDetails.collapse();
-//        applierDetails.expand();
-        
-        applier = new SlidingUpPanelApplier(swipeUpPanel, dragHandleSwipeUp, this) {
-            @Override
-            public void onExpand() {
-                ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMaxHeight());
-                mapEventBus.getEventBus().post(event);
-            }
-
-            @Override
-            public void onCollapse() {
-                ChangeBottomPaddingMapEvent event = new ChangeBottomPaddingMapEvent(getMinHeight());
-                mapEventBus.getEventBus().post(event);
-
-            }
-        };
-        applier.collapse();
-
-        mapEventBus.getEventBus().post(new ChangeBottomPaddingMapEvent(applier.getMaxHeight()));
+        int height = slidingUpPanelLayout.getPanelHeight();
+        mapEventBus.getEventBus().postSticky(new ChangeBottomPaddingMapEvent(slidingUpPanelLayout.getPanelHeight()));
     }
 
     /**
@@ -188,6 +195,7 @@ public class MainActivity extends FragmentActivity {
         if (fragmentChangeEvent.addToBackstack) {
             ft.addToBackStack(fragmentChangeEvent.fragment.getClass().getName());
         }
+
         ft.commit();
 
         for (View view : fragmentChangeEvent.viewsToSetVisible) {
@@ -195,6 +203,9 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public void onEventMainThread(final SliderDragViewSetterEvent sliderDragViewSetterEvent) {
+        slidingUpPanelLayout.setDragView(sliderDragViewSetterEvent.getDragView());
+    }
 
     /**
      * TODO needs an update .. remove unnecessary framelayout
@@ -261,7 +272,7 @@ public class MainActivity extends FragmentActivity {
      */
     @DebugLog
     public void onEventMainThread(final ShowDetailsEvent event) {
-        applierDetails.expand();
+        //applierDetails.expand();
         showingDetails = true;
         Log.d(TAG, "SHOW DETAILS");
     }
@@ -269,18 +280,18 @@ public class MainActivity extends FragmentActivity {
 
     boolean showingDetails = false;
     //TODO implement onBackPressed for the overview to collapse
-    @DebugLog
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, "onBackPressed");
-        if (showingDetails) {
-            applierDetails.collapse();
-            showingDetails = false;
-        } else {
-            super.onBackPressed();
-        }
-
-    }
+    //@DebugLog
+//    @Override
+//    public void onBackPressed() {
+//        Log.d(TAG, "onBackPressed");
+//        if (showingDetails) {
+//            //applierDetails.collapse();
+//            showingDetails = false;
+//        } else {
+//            super.onBackPressed();
+//        }
+//
+//    }
 
     @DebugLog
     @Override

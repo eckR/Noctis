@@ -6,13 +6,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
+import com.rosinen.noctis.activity.event.SliderDragViewSetterEvent;
 import com.rosinen.noctis.base.EventBusFragment;
 import com.rosinen.noctis.noctisevents.event.ImageDownloadAvailableEvent;
+import de.greenrobot.event.EventBus;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -38,13 +41,23 @@ public class EventDetailPagerFragment extends EventBusFragment {
     @ViewById
     ViewPager detailViewPager;
 
+    @ViewById
+    View slider;
+
     EventDetailPagerAdapter adapter;
 
     private int day;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        //EventBus.getDefault().registerSticky(this);
+    }
+
     @AfterViews
     void prepare() {
         adapter = new EventDetailPagerAdapter(getChildFragmentManager());
+        mEventBus.post(new SliderDragViewSetterEvent(slider));
         detailViewPager.setAdapter(adapter);
         detailViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

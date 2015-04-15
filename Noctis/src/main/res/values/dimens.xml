@@ -7,5 +7,5 @@
 
     <!--Eventlist-->
     <dimen name="EventListHeight">400dp</dimen>
-    <dimen name="EventListHeaderHeight">63dp</dimen>
+    <dimen name="EventListHeaderHeight">62dp</dimen>
 </resources>

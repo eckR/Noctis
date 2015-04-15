@@ -51,6 +51,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @AfterViews
     void afterViews() {
         SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.gMap));
+
         mapFragment.getMapAsync(this);
     }
 
@@ -59,6 +60,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onStart() {
         super.onStart();
         mEventBus.postSticky(new GoogleAPIClientEvent(GoogleAPIClientEvent.Action.CONNECT));
+
     }
 
     /**
@@ -150,11 +152,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         markerNoctisEventHashMap.put(marker, noctisEvent);
     }
 
+
     /**
      * TODO harry comment
      *
      * @param event
      */
+
+
     public void onEventMainThread(final ChangeBottomPaddingMapEvent event) {
         CameraPosition position = map.getCameraPosition();
         map.setPadding(0, 0, 0, event.bottomPadding);
@@ -197,7 +202,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
 //        map.getUiSettings().setCompassEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
-        mapEventBus.getEventBus().register(this);
+        mapEventBus.getEventBus().registerSticky(this);
     }
 
     /**

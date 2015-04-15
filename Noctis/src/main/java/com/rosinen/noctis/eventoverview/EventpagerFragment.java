@@ -1,14 +1,17 @@
 package com.rosinen.noctis.eventoverview;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Slider.EventPagerAdapter;
+import com.rosinen.noctis.activity.event.SliderDragViewSetterEvent;
 import com.rosinen.noctis.base.EventBusFragment;
 import com.rosinen.noctis.eventoverview.event.EventListPageChangedEvent;
 import com.rosinen.noctis.eventoverview.event.UpdateEventCount;
@@ -45,6 +48,9 @@ public class EventpagerFragment extends EventBusFragment {
     @ViewById
     TextView eventCount;
 
+    @ViewById
+    View eventPagerDragHandle;
+
     EventPagerAdapter eventPagerAdapter;
 
     private List<EventListFragment> eventListFragments = new ArrayList<EventListFragment>(3);
@@ -59,14 +65,28 @@ public class EventpagerFragment extends EventBusFragment {
 
     }
 
-    @AfterViews
-    void afterViews(){
-
+    @Override
+    public void onCreate(Bundle savendInstanceState) {
+        super.onCreate(savendInstanceState);
         for (int i = 0 ; i < 3; ++i){
             eventListFragments.add(i, EventListFragment_.builder().day(i).build());
         }
+        eventPagerAdapter = new EventPagerAdapter(getChildFragmentManager(),eventListFragments);
 
-        eventPagerAdapter = new EventPagerAdapter(getFragmentManager(),eventListFragments);
+
+
+        //Fix Touch Bug for header
+
+
+        mEventBus.postSticky(new EventListPageChangedEvent(0));
+
+
+    }
+
+
+
+    @AfterViews
+    void afterViews(){
 
         viewPager.setAdapter(eventPagerAdapter);
 
@@ -74,11 +94,8 @@ public class EventpagerFragment extends EventBusFragment {
 
         pagerHeader.setViewPager(viewPager);
         pagerHeader.setOnPageChangeListener(pgList);
+        mEventBus.postSticky(new SliderDragViewSetterEvent(eventPagerDragHandle));
 
-        //Fix Touch Bug for header
-
-
-        mEventBus.postSticky(new EventListPageChangedEvent(0));
     }
 
 
