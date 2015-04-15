@@ -52,7 +52,7 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 19
+    vBugfix = 20
 }
 
 android {

@@ -25,6 +25,7 @@ import com.rosinen.noctis.location.event.FoundLocationEvent;
 import com.rosinen.noctis.location.event.GoogleAPIClientEvent;
 import com.rosinen.noctis.location.event.RequestLocationEvent;
 import com.rosinen.noctis.map.MapEventBus;
+import hugo.weaving.DebugLog;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -253,8 +254,13 @@ public class LocationService extends AbstractService implements
     }
 
 
+    @DebugLog
     @Override
     public void onLocationChanged(Location location) {
+        if(location == null){
+            Log.d(TAG, "onLocationChanged: location was null");
+            return;
+        }
         mapEventBus.getEventBus().postSticky(new FoundLocationEvent(new LatLng(location.getLatitude(), location.getLongitude())));
         mEventBus.postSticky(new FoundLocationEvent(new LatLng(location.getLatitude(), location.getLongitude())));
 
