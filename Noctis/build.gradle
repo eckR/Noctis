@@ -53,7 +53,7 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 20
+    vBugfix = 21
 }
 
 android {
@@ -105,14 +105,18 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
-            ext.betaDistributionReleaseNotes="Release Notes"
+            ext.betaDistributionReleaseNotes="* Facebook login updated to version 4.0.1\n" +
+                    "* Facebook login uploads usertoken to server\n" +
+                    "* Loginpage cleanup\n"
             ext.betaDistributionGroupAliases="noctis-beta"
         }
         crashlyticsRelease{
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            ext.betaDistributionReleaseNotes="Release Notes"
+            ext.betaDistributionReleaseNotes="* Facebook login updated to version 4.0.1\n" +
+                    "* Facebook login uploads usertoken to server\n" +
+                    "* Loginpage cleanup\n"
             ext.betaDistributionGroupAliases="noctis-beta"
 
         }

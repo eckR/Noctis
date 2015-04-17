@@ -1,6 +1,7 @@
 package com.rosinen.noctis.noctisevents;
 
 import com.rosinen.noctis.Model.NoctisEvent;
+import com.rosinen.noctis.login.event.UserTokenDTO;
 import org.androidannotations.annotations.rest.Get;
 import org.androidannotations.annotations.rest.Post;
 import org.androidannotations.annotations.rest.RequiresHeader;
@@ -38,6 +39,6 @@ public interface NoctisRestHandler  {
     List<NoctisEvent> getNoctisEvents(double longitude, double latitude, int radius, int dayIndex);
 
     @Post("/users")
-//    @RequiresHeader(CONTENT_TYPE)
-    void postFBUserToken(String userToken);
+    @RequiresHeader("Content-Type")
+    void postFBUserToken(UserTokenDTO userToken);
 }

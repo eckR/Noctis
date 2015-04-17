@@ -2,11 +2,14 @@ package com.rosinen.noctis.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.facebook.*;
+import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.LoginNavigationEvent;
@@ -14,6 +17,7 @@ import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.ReceiverOnlyEventBusFragment;
 import com.rosinen.noctis.base.SharedPreferences_;
 import com.rosinen.noctis.base.Typefaces;
+import com.rosinen.noctis.login.event.SendUserTokenEvent;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -50,15 +54,41 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
     @ViewById
     LoginButton invisibleFbLoginBtn;
 
+
+    private CallbackManager mCallbackManager;
+
+    private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            Log.d(TAG, "onSuccess");
+            AccessToken accessToken = loginResult.getAccessToken();
+            Profile profile = Profile.getCurrentProfile();
+            mEventBus.post(new ToastMeEvent("AccessToken: " + accessToken.getToken(), Toast.LENGTH_SHORT));
+            mEventBus.post(new SendUserTokenEvent(accessToken.getToken()));
+            goToMapScreen();
+        }
+        @Override
+        public void onCancel() {
+            // you get here if on the "already authorized screen" cancel was pressed
+            Log.d(TAG, "onCancel");
+        }
+
+        @Override
+        public void onError(FacebookException e) {
+            Log.d(TAG, "onError " + e);
+        }
+    };
+
+
 //    //TODO handle multiple clicks on the loginbutton the right way
 //    //TODO show allert dialog or loading animation over skip button
 //    //should be done now.. check back.. -> sticky loginevent
-//    @Click(R.id.button2)
-//    public void Click() {
-//        if (loginButton != null) {
-//            loginButton.performClick();
-//        }
-//    }
+    @Click(R.id.visibleFbLoginBtn)
+    public void Click() {
+        if (invisibleFbLoginBtn != null) {
+            invisibleFbLoginBtn.performClick();
+        }
+    }
 
     @Click(R.id.skipBtn)
     public void skipBtnClick() {
@@ -68,12 +98,22 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
         goToMapScreen();
     }
 
-//    private Session.StatusCallback callback = new Session.StatusCallback() {
-//        @Override
-//        public void call(Session session, SessionState state, Exception exception) {
-//            onSessionStatechange(session, state, exception);
-//        }
-//    };
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCallbackManager = CallbackManager.Factory.create();
+    }
+
+    @AfterViews
+    void afterViews(){
+        appNameText.setTypeface(typefaces.quicksand);
+        goodNights.setTypeface(typefaces.quicksand);
+        skipBtn.setTypeface(typefaces.quicksand);
+        visibleFbLoginBtn.setTypeface(typefaces.quicksand);
+        promiseTxt.setTypeface(typefaces.quicksand);
+        setupLoginButton();
+    }
+
 
 
     @Background
@@ -87,94 +127,44 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
         }
     }
 
-//    @AfterViews
-//    public void initView() {
-//        tv.setTypeface(typefaces.quicksand);
-//
-//        loginButton.setFragment(this);
-//        loginButton.setReadPermissions("user_events");
-////        loginButton.setReadPermissions(Arrays.asList("user_events")); //"rsvp_event",
-//    }
-
-//    private void onSessionStatechange(Session session, SessionState state, Exception exception) {
-//        if (state.isOpened()) {
-//            Log.i(TAG, "LOGGED IN to facebook ....");
-//
-//            Log.i(TAG, session.getAccessToken());
-//            Session s = Session.getActiveSession();
-//
-//            Request.newMeRequest(session, new Request.GraphUserCallback() {
-//                @Override
-//                public void onCompleted(GraphUser user, Response response) {
-//                    if (user != null) {
-//                        Log.d(TAG, user.toString());
-//                        Log.d(TAG, response.toString());
-//                        Log.i(TAG, "Email " + user.asMap().get("email"));
-//                        button2.setText("Loading...");
-//                        goToMapScreen();
-//                    }
-//                }
-//            }).executeAsync();
-//        } else {
-//            Log.i(TAG, "LOGGED OUT from facebook ....");
-//        }
-//    }
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        uiHelper = new UiLifecycleHelper(getActivity(), callback);
-//        uiHelper.onCreate(savedInstanceState);
-//        try {
-//            PackageInfo info = getActivity().getPackageManager().getPackageInfo(
-//                    getString(R.string.app_package_name),
-//                    PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d(TAG, "Keyhash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (Exception e) {
-//            Log.e(TAG, getString(R.string.unableToGetKeyHash));
-//        }
-//    }
-
     @Override
     public void onResume() {
         super.onResume();
-//        Session session = Session.getActiveSession();
-//        if ((session != null) && (session.isOpened() || session.isClosed())) {
-//            onSessionStatechange(session, session.getState(), null);
-//        }
-////        else {
-//////            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("user_events"));
-//////            session.requestNewReadPermissions(newPermissionsRequest);
-////        }
-//        uiHelper.onResume();
+        Profile profile = Profile.getCurrentProfile();
+        if(profile != null){ // already logged in!
+            mEventBus.post(new ToastMeEvent("Welcome: " + profile.getName(), Toast.LENGTH_SHORT));
+//            goToMapScreen();
+        }
+
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-//        uiHelper.onPause();
+    public void onStop() {
+        super.onStop();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-//        uiHelper.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        uiHelper.onDestroy();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        uiHelper.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
+
+    private void setupLoginButton() {
+        invisibleFbLoginBtn.setFragment(this);
+        invisibleFbLoginBtn.setReadPermissions("user_events");
+        invisibleFbLoginBtn.registerCallback(mCallbackManager, mFacebookCallback);
+    }
+
+    private String constructWelcomeMessage(Profile profile) {
+        StringBuffer stringBuffer = new StringBuffer();
+        if (profile != null) {
+            stringBuffer.append("Welcome " + profile.getName());
+        }
+        return stringBuffer.toString();
     }
 
 }

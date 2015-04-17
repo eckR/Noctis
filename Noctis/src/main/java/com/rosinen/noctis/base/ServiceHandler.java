@@ -1,6 +1,7 @@
 package com.rosinen.noctis.base;
 
 import com.rosinen.noctis.location.LocationService;
+import com.rosinen.noctis.login.FacebookService;
 import com.rosinen.noctis.map.MarkerService;
 import com.rosinen.noctis.noctisevents.ImageService;
 import com.rosinen.noctis.noctisevents.MockNoctisEventService;
@@ -35,6 +36,9 @@ public class ServiceHandler {
     @Bean
     NoctisEventService noctisEventService;
 
+    @Bean
+    FacebookService facebookService;
+
     private List<AbstractService> services = new ArrayList<AbstractService>();
 
     @AfterInject
@@ -44,6 +48,7 @@ public class ServiceHandler {
         services.add(imageService);
         services.add(markerService);
         services.add(noctisEventService);
+        services.add(facebookService);
     }
 
     @DebugLog

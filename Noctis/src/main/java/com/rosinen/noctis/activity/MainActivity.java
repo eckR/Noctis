@@ -264,21 +264,21 @@ public class MainActivity extends FragmentActivity {
         alert.show();
     }
 
-    /**
-     * TODO in my opinion (simon) this has to be done an other way .. namly change the fragment on the
-     * TODO eventDetailSwipeUpPanel and apply a proper animation
-     *
-     * @param event
-     */
-    @DebugLog
-    public void onEventMainThread(final ShowDetailsEvent event) {
+//    /**
+//     * TODO in my opinion (simon) this has to be done an other way .. namly change the fragment on the
+//     * TODO eventDetailSwipeUpPanel and apply a proper animation
+//     *
+//     * @param event
+//     */
+//    @DebugLog
+//    public void onEventMainThread(final ShowDetailsEvent event) {
         //applierDetails.expand();
-        showingDetails = true;
-        Log.d(TAG, "SHOW DETAILS");
-    }
+//        showingDetails = true;
+//        Log.d(TAG, "SHOW DETAILS");
+//    }
 
 
-    boolean showingDetails = false;
+//    boolean showingDetails = false;
     //TODO implement onBackPressed for the overview to collapse
     //@DebugLog
 //    @Override
