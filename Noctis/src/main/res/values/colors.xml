@@ -8,4 +8,6 @@
     <color name="s">#000000</color>
     <color name="hf">#45619D</color>
     <color name="ho">#FF9D40</color>
+
+    <color name="disabled">#c8373737</color>
 </resources>

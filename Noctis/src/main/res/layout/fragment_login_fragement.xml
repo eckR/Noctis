@@ -1,123 +1,85 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:facebook="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.rosinen.noctis.login.LoginFragement"
-    >
+             xmlns:facebook="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.rosinen.noctis.login.LoginFragement"
+             android:background="@drawable/startscreen6">
 
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <FrameLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center">
-
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/imageView"
-            android:backgroundTintMode="add"
-            android:scaleType="centerCrop"
-            android:src="@drawable/startscreen6" />
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="left|bottom"
-            android:background="#46000000">
-
-            <TextView
-                android:textColor="@android:color/white"
-                android:textSize="8sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="we promise we won&apos;t post anything to your wall, unless you ask us to."
-                android:id="@+id/textView"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="25dp" />
-
-            <FrameLayout
-                android:layout_height="50dp"
-                android:layout_width="250dp"
-                android:background="@drawable/back"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="50dp">
-
-                <Button
-                    android:background="#06ffffff"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="Login with Facebook"
-                    android:id="@+id/button2"
-                    android:clickable="true"
-                    android:capitalize="none"
-                    android:enabled="true"
-                    android:textColor="#ffffffff"
-                    android:layout_gravity="center" />
-
-            </FrameLayout>
-
-            <TextView
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="skip"
-                android:id="@+id/skipBtn"
-                android:layout_gravity="center" />
-
-            <ProgressBar
-                android:id="@+id/loginSpinner"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:translationZ="10dp"
-                android:visibility="gone"/>
-        </FrameLayout>
-
-        <TextView
-            android:textColor="@android:color/white"
-            android:textSize="80sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Noctis"
-            android:id="@+id/NoctisFont"
-            android:layout_gravity="center_horizontal|top"
-            android:layout_marginTop="50dp" />
-
-        <TextView
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="good nights start here"
-            android:id="@+id/textView2"
-            android:layout_gravity="center_horizontal|top"
-            android:layout_marginTop="140dp" />
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/scrollView"/>
-
-
-    </FrameLayout>
-
-    <com.facebook.widget.LoginButton
-        android:id="@+id/loginBtn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        facebook:confirm_logout="false"
-        facebook:fetch_user_info="true"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginBottom="50dp" />
-
-    <WebView
+    <TextView
+        android:id="@+id/appNameText"
+        android:textColor="@android:color/white"
+        android:textSize="80sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/webView"
-        android:layout_gravity="right|top"/>
+        android:text="@string/app_name"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="50dp"/>
 
+    <TextView
+        android:id="@+id/goodNights"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/good_nights"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="140dp"/>
+
+
+    <ProgressBar
+        android:id="@+id/loginSpinner"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="35dp">
+
+        <Button
+            android:id="@+id/skipBtn"
+            android:layout_width="250dp"
+            android:layout_height="48dp"
+            android:text="@string/skip"
+            android:background="@drawable/noctis_button_background"
+            android:textColor="@drawable/nocits_button_textcolor"
+            android:gravity="center_vertical|center|center_horizontal"
+            android:layout_marginBottom="25dp"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"/>
+
+        <Button
+            android:id="@+id/visibleFbLoginBtn"
+            android:layout_width="250dp"
+            android:layout_height="48dp"
+            android:text="@string/login_with_facebook"
+            android:background="@drawable/noctis_button_background"
+            android:textColor="@drawable/nocits_button_textcolor"
+            android:layout_marginBottom="25dp"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"/>
+
+        <TextView
+            android:id="@+id/promiseTxt"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer"/>
+    </LinearLayout>
+
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/invisibleFbLoginBtn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
 </FrameLayout>

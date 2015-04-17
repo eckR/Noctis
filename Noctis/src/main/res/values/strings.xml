@@ -9,6 +9,13 @@
 
     <string name="facebook_app_id">724164557649527</string>
 
+    <!-- login page -->
+    <string name="login_with_facebook">Login with Facebook</string>
+    <string name="skip">Skip</string>
+    <string name="disclaimer">we promise we won\'t post anything to your wall, unless you ask us to.</string>
+    <string name="good_nights">good nights start here</string>
+
+
 
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
@@ -17,6 +24,8 @@
     <string name="tomorrow">Morgen</string>
 
     <string name="events">Events</string>
+
+
 
     <!--Error strings-->
     <string name="connectionFailed">Verbindung fehlgeschlagen</string>
