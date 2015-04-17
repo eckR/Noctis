@@ -2,57 +2,73 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        sothree:umanoPanelHeight="@dimen/EventListHeaderHeight"
+        sothree:umanoOverlay="true"
+        sothree:umanoFadeColor="@android:color/transparent"
+        android:gravity="bottom"
+        android:id="@+id/slidingUpPanelLayout">
     <FrameLayout
         android:id="@+id/fragmentBase"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-
     <FrameLayout
-        android:id="@+id/swipeUpPanel"
-        android:layout_width="fill_parent"
-        android:layout_gravity="bottom"
-        android:background="@color/g5"
-        android:layout_height="@dimen/EventListHeight"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/dragHandleSwipeUp"
-            android:orientation="vertical"
-            android:layout_gravity="top"
-            android:translationZ="5dp"
-            android:clickable="true"
-            android:layout_width="fill_parent"
-            android:background="#22ffffff"
-            android:layout_height="@dimen/EventListHeaderHeight"
-            android:visibility="gone"/>
-
-
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/EventListHeight"
+            android:id="@+id/swipeUpPanel">
     </FrameLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
-    <FrameLayout
-        android:id="@+id/eventDetailSwipeUpPanel"
-        android:layout_width="fill_parent"
-        android:layout_gravity="bottom"
-        android:background="@color/g5"
-        android:layout_height="@dimen/EventListHeight"
-        android:visibility="gone">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:id="@+id/evenDetailHandle"
-            android:layout_gravity="top"
-            android:translationZ="5dp"
-            android:clickable="true"
-            android:layout_width="fill_parent"
-            android:background="#22ffffff"
-            android:layout_height="@dimen/EventListHeaderHeight"
-            android:visibility="gone">
 
-        </LinearLayout>
+    <!--<FrameLayout-->
+        <!--android:id="@+id/swipeUpPanel"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:background="@color/g5"-->
+        <!--android:layout_height="@dimen/EventListHeight"-->
+        <!--android:visibility="gone">-->
 
-    </FrameLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/dragHandleSwipeUp"-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:translationZ="5dp"-->
+            <!--android:clickable="true"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:background="#22ffffff"-->
+            <!--android:layout_height="@dimen/EventListHeaderHeight"-->
+            <!--android:visibility="gone"/>-->
+
+
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/eventDetailSwipeUpPanel"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:background="@color/g5"-->
+        <!--android:layout_height="@dimen/EventListHeight"-->
+        <!--android:visibility="gone">-->
+
+        <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:id="@+id/evenDetailHandle"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:translationZ="5dp"-->
+            <!--android:clickable="true"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:background="#22ffffff"-->
+            <!--android:layout_height="@dimen/EventListHeaderHeight"-->
+            <!--android:visibility="gone">-->
+
+        <!--</LinearLayout>-->
+
+    <!--</FrameLayout>-->
 
     <FrameLayout
         android:id="@+id/loginFragment"

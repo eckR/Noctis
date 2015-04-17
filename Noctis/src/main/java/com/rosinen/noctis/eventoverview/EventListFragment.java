@@ -2,14 +2,18 @@ package com.rosinen.noctis.eventoverview;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
+import com.rosinen.noctis.activity.event.FragmentChangeEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.eventdetail.EventDetailPagerFragment;
+import com.rosinen.noctis.eventdetail.EventDetailPagerFragment_;
 import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
 import com.rosinen.noctis.eventoverview.event.UpdateEventCount;
 import com.rosinen.noctis.location.event.FoundLocationEvent;
@@ -79,8 +83,10 @@ public class EventListFragment extends EventBusFragment {
 //        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
 //        EventDetailPagerFragment.
         mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(adapter.getNoctisEventList().get(position).getCoords(),16)); //TODO get from config file
+        mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), true, R.id.swipeUpPanel));
+
         ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position, day);
-        mEventBus.post(detailsEvent);
+        mEventBus.postSticky(detailsEvent);
     }
 
 
