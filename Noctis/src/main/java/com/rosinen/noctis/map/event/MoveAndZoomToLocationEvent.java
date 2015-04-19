@@ -7,6 +7,9 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class MoveAndZoomToLocationEvent {
 
+    public static final int ZOOM_DEFAULT = 12;
+    public static final int ZOOM_TO_EVENT = 16;
+
     public final LatLng coordinate;
     public final int zoom;
 

@@ -32,8 +32,9 @@ public class NoctisApplication extends Application {
         super.onCreate();
         mContext = this;
         Crashlytics.start(this);
-        EventBus.getDefault().post(new ToastMeEvent("Crashlytics started", Toast.LENGTH_LONG));
+        EventBus.getDefault().postSticky(new ToastMeEvent("Crashlytics started", Toast.LENGTH_SHORT));
         FacebookSdk.sdkInitialize(getApplicationContext());
+        EventBus.getDefault().postSticky(new ToastMeEvent("Facebook started", Toast.LENGTH_SHORT));
     }
 
     public static Context getContext() {

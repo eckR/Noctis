@@ -2,17 +2,13 @@ package com.rosinen.noctis.eventoverview;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.FragmentChangeEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.EventBusFragment;
-import com.rosinen.noctis.eventdetail.EventDetailPagerFragment;
 import com.rosinen.noctis.eventdetail.EventDetailPagerFragment_;
 import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
 import com.rosinen.noctis.eventoverview.event.UpdateEventCount;
@@ -63,8 +59,6 @@ public class EventListFragment extends EventBusFragment {
     public int day;
 
 
-    //Simon hat unrecht
-
     @AfterViews
     void bindAdapter() {
         list.setAdapter(adapter);
@@ -76,6 +70,7 @@ public class EventListFragment extends EventBusFragment {
 //        eventListRefresher.setRefreshing(true);
     }
 
+
     @ItemClick(R.id.eventListView)
     void itemClicked(int position) {
 //        adapter.getItem(position);
@@ -83,7 +78,7 @@ public class EventListFragment extends EventBusFragment {
 //        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
 //        EventDetailPagerFragment.
         mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(adapter.getNoctisEventList().get(position).getCoords(),16)); //TODO get from config file
-        mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), true, R.id.swipeUpPanel));
+        mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), true, R.id.swipeUpPanel,R.anim.slide_up,R.anim.alpha_fade_out));
 
         ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position, day);
         mEventBus.postSticky(detailsEvent);
@@ -98,8 +93,11 @@ public class EventListFragment extends EventBusFragment {
     public void onEventBackgroundThread(final RequestShowDetailsEvent requestShowDetailsEvent) {
 
         for (int i = 0; i < adapter.getNoctisEventList().size(); ++i) {
-            if (adapter.getNoctisEventList().get(i).getFacebookId() == requestShowDetailsEvent.event.getFacebookId()) {
-                mEventBus.post(new ShowDetailsEvent(adapter.getNoctisEventList(), i, day));
+            if (adapter.getNoctisEventList().get(i).getFacebookId().equals(requestShowDetailsEvent.event.getFacebookId())) {
+
+                mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), true, R.id.swipeUpPanel));
+
+                mEventBus.postSticky(new ShowDetailsEvent(adapter.getNoctisEventList(), i, day));
                 break;
             }
         }
@@ -185,7 +183,6 @@ public class EventListFragment extends EventBusFragment {
     public void setDay(int day) {
         this.day = day;
     }
-
 
 }
 

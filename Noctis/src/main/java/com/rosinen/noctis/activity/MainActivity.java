@@ -17,6 +17,7 @@ import com.rosinen.noctis.base.ServiceHandler;
 import com.rosinen.noctis.base.SharedPreferences_;
 import com.rosinen.noctis.eventdetail.EventDetailPagerFragment_;
 import com.rosinen.noctis.eventoverview.EventpagerFragment_;
+import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
 import com.rosinen.noctis.login.LoginFragement_;
 import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.MapsFragment_;
@@ -34,10 +35,6 @@ public class MainActivity extends FragmentActivity {
 
     private EventBus mEventBus = EventBus.getDefault();
 
-    //private SlidingUpPanelApplier applier;
-
-    //private SlidingUpPanelApplier applierDetails;
-
     @Bean
     ServiceHandler serviceHandler;
 
@@ -53,17 +50,8 @@ public class MainActivity extends FragmentActivity {
     @ViewById
     SlidingUpPanelLayout slidingUpPanelLayout;
 
-//    @ViewById
-//    View dragHandleSwipeUp;
-//
-//    @ViewById
-//    View eventDetailSwipeUpPanel;
-
     @ViewById
     View loginFragment;
-//
-//    @ViewById
-//    View evenDetailHandle;
 
     @Pref
     SharedPreferences_ sharedPrefs;
@@ -74,14 +62,11 @@ public class MainActivity extends FragmentActivity {
 
     Fragment mapsFragment = new MapsFragment_();
     Fragment eventpagerFragment = new EventpagerFragment_();
-    //Fragment eventDetailPagerFragment = new EventDetailPagerFragment_();
-
 
     @DebugLog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEventBus.register(this);
 
         loginAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_fade_out);
         loginAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -114,7 +99,6 @@ public class MainActivity extends FragmentActivity {
         // if an event has already been sent ( means the app has been started before ) skip it
 
         boolean isEventAvailable = mEventBus.getStickyEvent(LoginNavigationEvent.class) != null;
-
 
         if (!isEventAvailable | sharedPrefs.showLoginScreen().get()) {
             onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment, loginFragment));
@@ -157,24 +141,22 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
-
-
-
+        
         changePadding();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        mEventBus.registerSticky(this);
         serviceHandler.startServices();
+
     }
 
     @UiThread
     void changePadding() {
-
         int height = slidingUpPanelLayout.getPanelHeight();
-        mapEventBus.getEventBus().postSticky(new ChangeBottomPaddingMapEvent(slidingUpPanelLayout.getPanelHeight()));
+        mapEventBus.getEventBus().postSticky(new ChangeBottomPaddingMapEvent(height));
     }
 
     /**
@@ -207,9 +189,9 @@ public class MainActivity extends FragmentActivity {
         slidingUpPanelLayout.setDragView(sliderDragViewSetterEvent.getDragView());
     }
 
+
     /**
-     * TODO needs an update .. remove unnecessary framelayout
-     *
+     * called from loginpage
      * @param loginNavigationEvent
      */
     @DebugLog
@@ -276,22 +258,7 @@ public class MainActivity extends FragmentActivity {
 //        showingDetails = true;
 //        Log.d(TAG, "SHOW DETAILS");
 //    }
-
-
-//    boolean showingDetails = false;
-    //TODO implement onBackPressed for the overview to collapse
-    //@DebugLog
-//    @Override
-//    public void onBackPressed() {
-//        Log.d(TAG, "onBackPressed");
-//        if (showingDetails) {
-//            //applierDetails.collapse();
-//            showingDetails = false;
-//        } else {
-//            super.onBackPressed();
-//        }
-//
-//    }
+    
 
     @DebugLog
     @Override

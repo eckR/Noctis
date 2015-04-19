@@ -9,25 +9,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.rosinen.noctis.R;
 import com.rosinen.noctis.Model.NoctisEvent;
+import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
 import com.rosinen.noctis.activity.event.SliderDragViewSetterEvent;
+import com.rosinen.noctis.activity.event.StartActivityEvent;
 import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
+import com.rosinen.noctis.map.MapEventBus;
+import com.rosinen.noctis.map.event.MoveAndZoomToLocationEvent;
 import com.rosinen.noctis.noctisevents.event.ImageDownloadAvailableEvent;
-import de.greenrobot.event.EventBus;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
 /**
  * Created by harald on 3/28/15.
  */
 @EFragment(R.layout.fragment_event_detail_pager)
 public class EventDetailPagerFragment extends EventBusFragment {
-
-    //Test for Jenkins
 
     @ViewById
     ImageView eventImage;
@@ -44,15 +42,14 @@ public class EventDetailPagerFragment extends EventBusFragment {
     @ViewById
     View slider;
 
+    @Bean
+    MapEventBus mapEventBus;
+
     EventDetailPagerAdapter adapter;
 
     private int day;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        //EventBus.getDefault().registerSticky(this);
-    }
+
 
     @AfterViews
     void prepare() {
@@ -67,6 +64,10 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
             @Override
             public void onPageSelected(int position) {
+
+                mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(
+                        adapter.getItemByPosition(position).getCoords(),
+                        MoveAndZoomToLocationEvent.ZOOM_TO_EVENT));
 
                 updateHeader(adapter.getItemByPosition(position));
             }
@@ -91,7 +92,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
         } catch (PackageManager.NameNotFoundException e) {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/events/" + fbId));
         }
-        startActivity(intent);
+        mEventBus.post(new StartActivityEvent(intent));
     }
 
     @Click(R.id.eventJoin)
@@ -116,6 +117,23 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
     }
 
+    /**
+     * called from the marker on click
+     *
+     * @param showDetailsEvent
+     */
+    public void onEventMainThread(final RequestShowDetailsEvent showDetailsEvent){
+
+        for (int i = 0; i < adapter.getCount(); ++i){
+            if (adapter.getItemByPosition(i).getFacebookId().equals(showDetailsEvent.event.getFacebookId())){
+                updateHeader(showDetailsEvent.event);
+                detailViewPager.setCurrentItem(i, true);
+                adapter.notifyDataSetChanged();
+                break;
+            }
+        }
+
+    }
 
     public void onEventMainThread(ShowDetailsEvent event) {
         this.day =  event.getDay();
@@ -123,7 +141,6 @@ public class EventDetailPagerFragment extends EventBusFragment {
         adapter.notifyDataSetChanged();
         updateHeader(event.getEvents().get(event.getClickedPosition()));
         detailViewPager.setCurrentItem(event.getClickedPosition());
-
     }
 
     public void onEvent(final ImageDownloadAvailableEvent imgDownloadAvailableEvent) {
@@ -144,5 +161,6 @@ public class EventDetailPagerFragment extends EventBusFragment {
     public void setDay(int day) {
         this.day = day;
     }
+
 
 }

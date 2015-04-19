@@ -19,13 +19,13 @@ public class EventDetailPagerAdapter extends FragmentPagerAdapter{
     public EventDetailPagerAdapter(FragmentManager fm) {
         super(fm);
         events = new ArrayList<NoctisEvent>();
-
     }
 
 
 
     @Override
     public Fragment getItem(int position) {
+        //TODO move this out .. it may be better to retain the instances! but keep in mind that there has to be more than one for the "old" view that gets swiped away
         FragmentEventDetail_ fragment = new FragmentEventDetail_();
         fragment.updateFields(events.get(position));
         return fragment;

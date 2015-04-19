@@ -53,7 +53,7 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 21
+    vBugfix = 22
 }
 
 android {
@@ -97,6 +97,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_6
     }
 
+    String releaseNotes =
+                    "* App can be restarted and skip button still works\n" +
+                    "* Onclick on a marker scrolls to the right eventpage\n" +
+                    "* Swiping through events centers the map to the event\n" +
+                    "* Changed animation vor the detailview to come up\n"
+
     buildTypes {
         release {
             minifyEnabled false
@@ -105,18 +111,14 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
-            ext.betaDistributionReleaseNotes="* Facebook login updated to version 4.0.1\n" +
-                    "* Facebook login uploads usertoken to server\n" +
-                    "* Loginpage cleanup\n"
+            ext.betaDistributionReleaseNotes=releaseNotes
             ext.betaDistributionGroupAliases="noctis-beta"
         }
         crashlyticsRelease{
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            ext.betaDistributionReleaseNotes="* Facebook login updated to version 4.0.1\n" +
-                    "* Facebook login uploads usertoken to server\n" +
-                    "* Loginpage cleanup\n"
+            ext.betaDistributionReleaseNotes=releaseNotes
             ext.betaDistributionGroupAliases="noctis-beta"
 
         }
