@@ -1,7 +1,7 @@
 package com.rosinen.noctis.noctisevents;
 
 import com.rosinen.noctis.Model.NoctisEvent;
-import com.rosinen.noctis.login.event.UserTokenDTO;
+import com.rosinen.noctis.facebook.entity.UserTokenDTO;
 import org.androidannotations.annotations.rest.Get;
 import org.androidannotations.annotations.rest.Post;
 import org.androidannotations.annotations.rest.RequiresHeader;

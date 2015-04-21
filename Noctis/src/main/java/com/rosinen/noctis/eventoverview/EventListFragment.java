@@ -2,8 +2,8 @@ package com.rosinen.noctis.eventoverview;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.*;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.FragmentChangeEvent;
 import com.rosinen.noctis.activity.event.ShowDetailsEvent;
@@ -33,20 +33,31 @@ public class EventListFragment extends EventBusFragment {
 
     private static final int DEFAULT_RADIUS = 100; //TODO check this value -> maybe set in sharedpreffile -> option menu
 
-    @ViewById(R.id.eventListView)
-    ListView list;
+    @ViewById
+    ListView eventListView;
+
+//    @ViewById
+//    TextView listEmptyRefreshBtn;
 
     @ViewById
     SwipeRefreshLayout eventListRefresher;
 
+    @ViewById
+    SwipeRefreshLayout emptySwipeRefresh;
+
+@ViewById
+Button emptyBtn;
+
     @Bean
-    NoctisEventAdapter adapter;
+    NoctisEventAdapter mAdapter;
 
 //    @ViewById
-//    RelativeLayout emptyIndicator;
+//    View emptyIndicator;
 
     @Bean
     MapEventBus mapEventBus;
+
+
 
     /**
      * set day with builder
@@ -58,29 +69,44 @@ public class EventListFragment extends EventBusFragment {
     @FragmentArg
     public int day;
 
+    @Click(R.id.emptyBtn)
+    void clickonemptyBtn(){
+        Log.d(TAG, "clicked me :))");
+        emptySwipeRefresh.setRefreshing(true);
+        requestEventUpdates();
+    }
 
     @AfterViews
     void bindAdapter() {
-        list.setAdapter(adapter);
-        eventListRefresher.setOnRefreshListener(new EventRefreshListener());
-//        list.setEmptyView(emptyIndicator);
-        // workaround to show the loading circle
-//        eventListRefresher.setProgressViewOffset(false, 0,
-//                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
-//        eventListRefresher.setRefreshing(true);
+        EventRefreshListener swipeRefreshListener = new EventRefreshListener();
+
+        eventListRefresher.setOnRefreshListener(swipeRefreshListener);
+        emptySwipeRefresh.setOnRefreshListener(swipeRefreshListener);
+
+        eventListView.setEmptyView(emptySwipeRefresh);
+        eventListView.setAdapter(mAdapter);
+
     }
+
+//    @Click(R.id.listEmptyRefreshBtn)
+//    void emptyListRefreshButtonClicked(){
+//        //TODO disable button and enable when update finished and returned no events
+//        Log.d(TAG,"pls refresh me :)");
+//        eventListRefresher.setRefreshing(true);
+//        requestEventUpdates();
+//    }
 
 
     @ItemClick(R.id.eventListView)
     void itemClicked(int position) {
-//        adapter.getItem(position);
+//        mAdapter.getItem(position);
         //TODO change call of showdetailevent to supply the event directly else nullpointer can occur because of to late calls to the list
-//        new FragmentChangeEvent(new ShowDetailsEvent(adapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
+//        new FragmentChangeEvent(new ShowDetailsEvent(mAdapter.getNoctisEventList(),position),true, R.layout.event_list_fragment);
 //        EventDetailPagerFragment.
-        mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(adapter.getNoctisEventList().get(position).getCoords(),16)); //TODO get from config file
+        mapEventBus.getEventBus().post(new MoveAndZoomToLocationEvent(mAdapter.getNoctisEventList().get(position).getCoords(),16)); //TODO get from config file
         mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), true, R.id.swipeUpPanel,R.anim.slide_up,R.anim.alpha_fade_out));
 
-        ShowDetailsEvent detailsEvent = new ShowDetailsEvent(adapter.getNoctisEventList(), position, day);
+        ShowDetailsEvent detailsEvent = new ShowDetailsEvent(mAdapter.getNoctisEventList(), position, day);
         mEventBus.postSticky(detailsEvent);
     }
 
@@ -92,12 +118,12 @@ public class EventListFragment extends EventBusFragment {
      */
     public void onEventBackgroundThread(final RequestShowDetailsEvent requestShowDetailsEvent) {
 
-        for (int i = 0; i < adapter.getNoctisEventList().size(); ++i) {
-            if (adapter.getNoctisEventList().get(i).getFacebookId().equals(requestShowDetailsEvent.event.getFacebookId())) {
+        for (int i = 0; i < mAdapter.getNoctisEventList().size(); ++i) {
+            if (mAdapter.getNoctisEventList().get(i).getFacebookId().equals(requestShowDetailsEvent.event.getFacebookId())) {
 
                 mEventBus.post(new FragmentChangeEvent(new EventDetailPagerFragment_(), true, R.id.swipeUpPanel));
 
-                mEventBus.postSticky(new ShowDetailsEvent(adapter.getNoctisEventList(), i, day));
+                mEventBus.postSticky(new ShowDetailsEvent(mAdapter.getNoctisEventList(), i, day));
                 break;
             }
         }
@@ -114,9 +140,10 @@ public class EventListFragment extends EventBusFragment {
      *
      * @param foundLocationEvent
      */
-    public void onEvent(final FoundLocationEvent foundLocationEvent) {
+    public void onEventMainThread(final FoundLocationEvent foundLocationEvent) {
         mEventBus.post(new RequestEventsEvent(foundLocationEvent.coordinate, DEFAULT_RADIUS, day));
         eventListRefresher.setRefreshing(true);
+
     }
 
     /**
@@ -129,19 +156,20 @@ public class EventListFragment extends EventBusFragment {
         if (noctisEventsAvailableEvent.requestEventsEvent.day != day) {
             return;
         }
-        adapter.getNoctisEventList().clear();
-        adapter.getNoctisEventList().addAll(noctisEventsAvailableEvent.eventList);
-//        adapter.setNoctisEventList(noctisEventsAvailableEvent.eventList); //TODO check whether the one or the other is better
-        adapter.notifyDataSetChanged();
+        mAdapter.getNoctisEventList().clear();
+        mAdapter.getNoctisEventList().addAll(noctisEventsAvailableEvent.eventList);
+//        mAdapter.setNoctisEventList(noctisEventsAvailableEvent.eventList); //TODO check whether the one or the other is better
+        mAdapter.notifyDataSetChanged();
         eventListRefresher.setRefreshing(false);
+        emptySwipeRefresh.setRefreshing(false);
 
-        mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(adapter.getNoctisEventList(), day));
-        mEventBus.post(new UpdateEventCount(adapter.getNoctisEventList().size(), day));
+        mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(mAdapter.getNoctisEventList(), day));
+        mEventBus.post(new UpdateEventCount(mAdapter.getNoctisEventList().size(), day));
     }
 
     /**
      * called from Imageservice
-     * it basically only has to notify the adapter that the data has changed
+     * it basically only has to notify the mAdapter that the data has changed
      *
      * @param imgDownloadAvailableEvent
      */
@@ -149,28 +177,19 @@ public class EventListFragment extends EventBusFragment {
         if (imgDownloadAvailableEvent.day != day) {
             return;
         }
-        Log.i(TAG, "image download recieved, updating adapter");
-        adapter.notifyDataSetChanged();
+        Log.i(TAG, "image download recieved, updating mAdapter");
+        mAdapter.notifyDataSetChanged();
     }
 
 
-    /**
-     * OnRefreshListener for NoctisEventListFragment
-     * <p/>
-     * fires a RequestEventsEvent if there is already a location
-     * if not a ToastMeEvent is fired which says that there is no location available
-     */
-    private class EventRefreshListener implements SwipeRefreshLayout.OnRefreshListener {
-        @Override
-        public void onRefresh() {
-            FoundLocationEvent foundLocationEvent = mEventBus.getStickyEvent(FoundLocationEvent.class);
-            if (foundLocationEvent != null) {
-                mEventBus.post(new RequestEventsEvent(foundLocationEvent.coordinate, DEFAULT_RADIUS, day));
-            } else {
-                mEventBus.post(new RequestLocationEvent());
-                mEventBus.post(new ToastMeEvent(getString(R.string.needLocationFirst), Toast.LENGTH_LONG));
-                mEventBus.post(new ToastMeEvent(getString(R.string.locationUpdateRequested), Toast.LENGTH_LONG));
-            }
+    private void requestEventUpdates(){
+        FoundLocationEvent foundLocationEvent = mEventBus.getStickyEvent(FoundLocationEvent.class);
+        if (foundLocationEvent != null) {
+            mEventBus.post(new RequestEventsEvent(foundLocationEvent.coordinate, DEFAULT_RADIUS, day));
+        } else {
+            mEventBus.post(new RequestLocationEvent());
+            mEventBus.post(new ToastMeEvent(getString(R.string.needLocationFirst), Toast.LENGTH_LONG));
+            mEventBus.post(new ToastMeEvent(getString(R.string.locationUpdateRequested), Toast.LENGTH_LONG));
         }
     }
 
@@ -182,6 +201,19 @@ public class EventListFragment extends EventBusFragment {
      */
     public void setDay(int day) {
         this.day = day;
+    }
+
+    /**
+     * OnRefreshListener for NoctisEventListFragment
+     * <p/>
+     * fires a RequestEventsEvent if there is already a location
+     * if not a ToastMeEvent is fired which says that there is no location available
+     */
+    private class EventRefreshListener implements SwipeRefreshLayout.OnRefreshListener {
+        @Override
+        public void onRefresh() {
+            requestEventUpdates();
+        }
     }
 
 }

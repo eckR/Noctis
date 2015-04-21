@@ -25,6 +25,8 @@
 
     <string name="events">Events</string>
 
+    <string name="refresh">Erneut laden...</string>
+
 
 
     <!--Error strings-->
@@ -41,6 +43,7 @@
 
     <string name="unableToGetKeyHash">Unable to get get key hash</string>
 
+    <string name="noNoctisEventsAvailable">Keine Noctis Events verfügbar</string>
 
 
     <!--AlertDialog-->

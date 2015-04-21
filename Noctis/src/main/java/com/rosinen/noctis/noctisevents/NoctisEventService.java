@@ -27,6 +27,6 @@ public class NoctisEventService extends AbstractService implements  INoctisEvent
                                                                         requestEventsEvent.coordinate.latitude,
                                                                         requestEventsEvent.radius,
                                                                         requestEventsEvent.day);
-        mEventBus.post(new NoctisEventsAvailableEvent(requestEventsEvent,events));
+        mEventBus.postSticky(new NoctisEventsAvailableEvent(requestEventsEvent,events));
     }
 }

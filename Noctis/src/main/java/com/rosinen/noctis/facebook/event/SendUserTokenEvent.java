@@ -1,4 +1,4 @@
-package com.rosinen.noctis.login.event;
+package com.rosinen.noctis.facebook.event;
 
 /**
  * Created by Simon on 17.04.2015.

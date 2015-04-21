@@ -6,81 +6,116 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 tools:context="com.rosinen.noctis.eventoverview.EventpagerFragment">
 
-    <TextView android:layout_width="match_parent"
-              android:layout_height="62dp"
-              android:background="@color/g1"/>
-    <ImageView android:layout_width="100dp" android:layout_height="100dp"
-               android:layout_margin="13.33dp"
-               android:src="@drawable/kalender"
-               android:text="999"
-               android:textSize="22dp"
-               android:background="@color/w"
-               android:gravity="center" android:id="@+id/eventImage"/>
-
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:id="@+id/eventLocation"
-              android:layout_marginTop="13.33dp"
-              android:layout_toRightOf="@id/eventImage"
-              android:text="Location"
-              android:textSize="14sp"
-              android:textColor="@color/g3"
-              android:gravity="center"/>
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/eventLocation"
-            android:textSize="17sp"
-            android:layout_marginTop="2dp"
-            android:layout_toRightOf="@id/eventImage"
-            android:text="EventTitle"
-            android:id="@+id/eventTitle"
-            android:textColor="@color/w"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:background="@color/g1"/>
 
-            />
+    <ImageView
+        android:id="@+id/eventImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="13.33dp"
+        android:src="@drawable/kalender"
+        android:text="999"
+        android:textSize="22dp"
+        android:background="@color/w"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/eventLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13.33dp"
+        android:layout_toRightOf="@id/eventImage"
+        android:text="Location"
+        android:textSize="14sp"
+        android:textColor="@color/g3"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/eventTitle"
+        android:layout_toRightOf="@id/eventImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/eventLocation"
+        android:textSize="17sp"
+        android:layout_marginTop="2dp"
+        android:text="EventTitle"
+        android:textColor="@color/w"
+
+        />
 
 
-    
-    <TextView android:layout_width="wrap_content" android:layout_height="34dp"
-            android:text="ZUSAGEN"
-            android:textColor="@color/w"
-            android:textSize="17sp"
-            android:layout_toRightOf="@id/eventImage"
-            android:layout_alignBottom="@id/eventImage"
-            android:padding="7dp"
-            android:background="@color/g3"
-            android:clickable="true"
-            android:id="@+id/eventJoin"
-            />
-    <TextView android:layout_width="wrap_content" android:layout_height="34dp"
-            android:text="ROUTE"
-            android:textColor="@color/w"
-            android:background="@color/g2"
-            android:layout_toRightOf="@id/eventJoin"
-            android:layout_alignBottom="@id/eventJoin"
-            android:padding="7dp"
-            android:textSize="17sp"
-            android:clickable="true"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/eventRoute"/>
-    <ImageView android:layout_width="34dp" android:layout_height="34dp"
-            android:background="@color/com_facebook_blue"
-            android:layout_toRightOf="@id/eventRoute"
-            android:layout_alignBottom="@id/eventRoute"
-            android:scaleType="centerCrop"
-            android:layout_marginLeft="10dp"
-            android:clickable="true"
-            android:src="@drawable/facebook"
-            android:id="@+id/eventFacebook"/>
-    <View android:layout_width="match_parent" android:layout_height="62dp"
-          android:id="@+id/slider"></View>
+    <TextView
+        android:id="@+id/eventJoin"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:text="ZUSAGEN"
+        android:textColor="@color/w"
+        android:textSize="17sp"
+        android:layout_toRightOf="@id/eventImage"
+        android:layout_alignBottom="@id/eventImage"
+        android:padding="7dp"
+        android:background="@color/g3"
+        android:clickable="true"
+        />
+
+    <TextView
+        android:id="@+id/eventRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:text="ROUTE"
+        android:textColor="@color/w"
+        android:background="@color/g2"
+        android:layout_toRightOf="@id/eventJoin"
+        android:layout_alignBottom="@id/eventJoin"
+        android:padding="7dp"
+        android:textSize="17sp"
+        android:clickable="true"
+        android:layout_marginLeft="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/eventFacebook"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:background="@color/com_facebook_blue"
+        android:layout_toRightOf="@id/eventRoute"
+        android:layout_alignBottom="@id/eventRoute"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="10dp"
+
+        android:clickable="true"
+        android:src="@drawable/facebook"
+        />
+    <com.viewpagerindicator.UnderlinePageIndicator
+        android:id="@+id/detailViewPagerIndicator"
+        android:layout_height="4dp"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+
+    <View
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        />
+
     <android.support.v4.view.ViewPager
-            android:id="@+id/detailViewPager"
-            android:layout_alignTop="@id/eventFacebook"
-            android:layout_marginTop="40dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:id="@+id/detailViewPager"
+        android:layout_alignTop="@id/eventFacebook"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
 
     </android.support.v4.view.ViewPager>
+
+
+
 </RelativeLayout>

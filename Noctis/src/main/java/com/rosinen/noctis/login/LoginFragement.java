@@ -17,7 +17,7 @@ import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.ReceiverOnlyEventBusFragment;
 import com.rosinen.noctis.base.SharedPreferences_;
 import com.rosinen.noctis.base.Typefaces;
-import com.rosinen.noctis.login.event.SendUserTokenEvent;
+import com.rosinen.noctis.facebook.event.SendUserTokenEvent;
 import org.androidannotations.annotations.*;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -157,14 +157,6 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
         invisibleFbLoginBtn.setFragment(this);
         invisibleFbLoginBtn.setReadPermissions("user_events");
         invisibleFbLoginBtn.registerCallback(mCallbackManager, mFacebookCallback);
-    }
-
-    private String constructWelcomeMessage(Profile profile) {
-        StringBuffer stringBuffer = new StringBuffer();
-        if (profile != null) {
-            stringBuffer.append("Welcome " + profile.getName());
-        }
-        return stringBuffer.toString();
     }
 
 }

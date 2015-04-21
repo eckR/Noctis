@@ -16,9 +16,11 @@ import com.rosinen.noctis.activity.event.SliderDragViewSetterEvent;
 import com.rosinen.noctis.activity.event.StartActivityEvent;
 import com.rosinen.noctis.base.EventBusFragment;
 import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
+import com.rosinen.noctis.facebook.event.JoinButtonClickedEvent;
 import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.event.MoveAndZoomToLocationEvent;
 import com.rosinen.noctis.noctisevents.event.ImageDownloadAvailableEvent;
+import com.viewpagerindicator.UnderlinePageIndicator;
 import org.androidannotations.annotations.*;
 
 /**
@@ -40,6 +42,9 @@ public class EventDetailPagerFragment extends EventBusFragment {
     ViewPager detailViewPager;
 
     @ViewById
+    UnderlinePageIndicator detailViewPagerIndicator;
+
+    @ViewById
     View slider;
 
     @Bean
@@ -47,8 +52,8 @@ public class EventDetailPagerFragment extends EventBusFragment {
 
     EventDetailPagerAdapter adapter;
 
-    private int day;
 
+    private int day;
 
 
     @AfterViews
@@ -56,7 +61,9 @@ public class EventDetailPagerFragment extends EventBusFragment {
         adapter = new EventDetailPagerAdapter(getChildFragmentManager());
         mEventBus.post(new SliderDragViewSetterEvent(slider));
         detailViewPager.setAdapter(adapter);
-        detailViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+        detailViewPagerIndicator.setViewPager(detailViewPager);
+        detailViewPagerIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -78,6 +85,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
             }
         });
     }
+
     //Onclick for Event Buttons
     @Click(R.id.eventFacebook)
     void facebookButtonClick() {
@@ -98,6 +106,9 @@ public class EventDetailPagerFragment extends EventBusFragment {
     @Click(R.id.eventJoin)
     void eventJoinClick() {
         Log.d("ClickTEst", "Event join clicked");
+        int itemPosition = adapter.getItemPosition(this);
+        NoctisEvent event = adapter.getItemByPosition(itemPosition);
+        mEventBus.post(new JoinButtonClickedEvent(event));
     }
 
     @Click(R.id.eventRoute)
@@ -107,9 +118,9 @@ public class EventDetailPagerFragment extends EventBusFragment {
         String url;
         try {
             context.getPackageManager().getPackageInfo("com.google.android.apps.maps", 0);
-            url="http://maps.google.com/maps?daddr="+event.getCoords().latitude+","+event.getCoords().longitude;
+            url = "http://maps.google.com/maps?daddr=" + event.getCoords().latitude + "," + event.getCoords().longitude;
         } catch (PackageManager.NameNotFoundException e) {
-            url="geo:" + event.getCoords().latitude + "," + event.getCoords().longitude;
+            url = "geo:" + event.getCoords().latitude + "," + event.getCoords().longitude;
         }
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -122,10 +133,10 @@ public class EventDetailPagerFragment extends EventBusFragment {
      *
      * @param showDetailsEvent
      */
-    public void onEventMainThread(final RequestShowDetailsEvent showDetailsEvent){
+    public void onEventMainThread(final RequestShowDetailsEvent showDetailsEvent) {
 
-        for (int i = 0; i < adapter.getCount(); ++i){
-            if (adapter.getItemByPosition(i).getFacebookId().equals(showDetailsEvent.event.getFacebookId())){
+        for (int i = 0; i < adapter.getCount(); ++i) {
+            if (adapter.getItemByPosition(i).getFacebookId().equals(showDetailsEvent.event.getFacebookId())) {
                 updateHeader(showDetailsEvent.event);
                 detailViewPager.setCurrentItem(i, true);
                 adapter.notifyDataSetChanged();
@@ -136,7 +147,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
     }
 
     public void onEventMainThread(ShowDetailsEvent event) {
-        this.day =  event.getDay();
+        this.day = event.getDay();
         adapter.setNoctisEventList(event.getEvents());
         adapter.notifyDataSetChanged();
         updateHeader(event.getEvents().get(event.getClickedPosition()));

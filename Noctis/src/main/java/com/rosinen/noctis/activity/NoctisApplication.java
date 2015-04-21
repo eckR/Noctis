@@ -55,9 +55,9 @@ public class NoctisApplication extends Application {
                 Log.e(TAG, Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
-
+            Log.e(TAG, e.toString());
         } catch (NoSuchAlgorithmException e) {
-
+            Log.e(TAG, e.toString());
         }
     }
 

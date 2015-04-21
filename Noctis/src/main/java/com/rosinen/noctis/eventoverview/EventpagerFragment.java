@@ -43,7 +43,7 @@ public class EventpagerFragment extends EventBusFragment {
     ViewPager viewPager;
 
     @ViewById
-    PagerSlidingTabStrip pagerHeader;
+    PagerSlidingTabStrip pagerHeaderIndicator;
 
     @ViewById
     TextView eventCount;
@@ -55,15 +55,7 @@ public class EventpagerFragment extends EventBusFragment {
 
     private List<EventListFragment> eventListFragments = new ArrayList<EventListFragment>(3);
 
-    public void onEventMainThread(UpdateEventCount updateEventCount){
 
-        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
-
-        if(updateEventCount.day == page){
-            eventCount.setText(updateEventCount.count + "");
-        }
-
-    }
 
     @Override
     public void onCreate(Bundle savendInstanceState) {
@@ -73,17 +65,10 @@ public class EventpagerFragment extends EventBusFragment {
         }
         eventPagerAdapter = new EventPagerAdapter(getChildFragmentManager(),eventListFragments);
 
-
-
         //Fix Touch Bug for header
-
-
         mEventBus.postSticky(new EventListPageChangedEvent(0));
 
-
     }
-
-
 
     @AfterViews
     void afterViews(){
@@ -92,10 +77,20 @@ public class EventpagerFragment extends EventBusFragment {
 
         PagerListener pgList = new PagerListener();
 
-        pagerHeader.setViewPager(viewPager);
-        pagerHeader.setOnPageChangeListener(pgList);
+        pagerHeaderIndicator.setViewPager(viewPager);
+        pagerHeaderIndicator.setOnPageChangeListener(pgList);
         mEventBus.postSticky(new SliderDragViewSetterEvent(eventPagerDragHandle));
 
+    }
+
+
+    public void onEventMainThread(UpdateEventCount updateEventCount){
+
+        int page = mEventBus.getStickyEvent(EventListPageChangedEvent.class).page;
+
+        if(updateEventCount.day == page){
+            eventCount.setText(updateEventCount.count + "");
+        }
     }
 
 
@@ -118,7 +113,7 @@ public class EventpagerFragment extends EventBusFragment {
 
             //TODO think of fireing an event here!!
             //or maybe not because the counter has to be refreshed too
-            List<NoctisEvent> noctisEventList = eventListFragments.get(position).adapter.getNoctisEventList();
+            List<NoctisEvent> noctisEventList = eventListFragments.get(position).mAdapter.getNoctisEventList();
 
             mapEventBus.getEventBus().post(new MarkEventsOnMapEvent(noctisEventList, position));
             EventBus.getDefault().post(new RequestPicturesEvent(noctisEventList, position));

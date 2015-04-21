@@ -135,7 +135,7 @@ public class MockNoctisEventService extends AbstractService implements INoctisEv
         Collections.shuffle(events, new Random(System.currentTimeMillis()));
 
 
-        mEventBus.post(new NoctisEventsAvailableEvent(requestEventsEvent,events));
+        mEventBus.postSticky(new NoctisEventsAvailableEvent(requestEventsEvent,events));
     }
 
 

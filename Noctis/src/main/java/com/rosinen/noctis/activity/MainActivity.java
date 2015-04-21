@@ -11,13 +11,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import com.rosinen.noctis.R;
-import com.rosinen.noctis.Slider.SlidingUpPanelApplier;
 import com.rosinen.noctis.activity.event.*;
 import com.rosinen.noctis.base.ServiceHandler;
 import com.rosinen.noctis.base.SharedPreferences_;
-import com.rosinen.noctis.eventdetail.EventDetailPagerFragment_;
 import com.rosinen.noctis.eventoverview.EventpagerFragment_;
-import com.rosinen.noctis.eventoverview.event.RequestShowDetailsEvent;
 import com.rosinen.noctis.login.LoginFragement_;
 import com.rosinen.noctis.map.MapEventBus;
 import com.rosinen.noctis.map.MapsFragment_;
@@ -110,7 +107,6 @@ public class MainActivity extends FragmentActivity {
 
         onEventMainThread(new FragmentChangeEvent(eventpagerFragment, false, R.id.swipeUpPanel, swipeUpPanel));
 
-
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View view, float v) {
@@ -141,7 +137,7 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
-        
+
         changePadding();
     }
 

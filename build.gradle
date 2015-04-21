@@ -13,9 +13,9 @@ buildscript {
 }
 
 allprojects {
-    repositories {
-        jcenter()
-    }
+//    repositories {
+//        jcenter()
+//    }
 //    let project evaluate its script first
     project.afterEvaluate {
         //only apply to projects that have the android plugin

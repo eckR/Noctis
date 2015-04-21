@@ -20,5 +20,5 @@
     <!-- enabled-->
     <item
         android:state_enabled="true"
-        android:color="#ffffff" />
+        android:color="#ff424242" />
 </selector>

@@ -3,27 +3,36 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_margin="13.33dp"
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="13.33dp"
+        android:background="@color/g3"
+        android:text="Datum termin termin termin"
+        android:textColor="@color/s"
+        android:padding="3dp"
+        android:textSize="15sp"
+        android:id="@+id/textViewEventDate"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginLeft="13.33dp"
+        android:layout_marginRight="13.33dp"
+        android:layout_marginTop="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+
             android:background="@color/g3"
-            android:text="Datum termin termin termin"
+            android:text="Beschreibung"
             android:textColor="@color/s"
             android:padding="3dp"
             android:textSize="15sp"
-            android:id="@+id/textViewEventDate"/>
-    <ScrollView android:layout_width="match_parent" android:layout_height="200dp"
-                android:layout_marginLeft="13.33dp"
-                android:layout_marginRight="13.33dp"
-                android:layout_marginTop="0dp">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-
-
-                  android:background="@color/g3"
-                  android:text="Beschreibung"
-                  android:textColor="@color/s"
-                  android:padding="3dp"
-                  android:textSize="15sp"
-                    android:id="@+id/textViewDescription"/>
+            android:id="@+id/textViewDescription"/>
     </ScrollView>
 
 </LinearLayout>

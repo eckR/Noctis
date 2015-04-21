@@ -1,10 +1,9 @@
 package com.rosinen.noctis.base;
 
 import com.rosinen.noctis.location.LocationService;
-import com.rosinen.noctis.login.FacebookService;
+import com.rosinen.noctis.facebook.FacebookService;
 import com.rosinen.noctis.map.MarkerService;
 import com.rosinen.noctis.noctisevents.ImageService;
-import com.rosinen.noctis.noctisevents.MockNoctisEventService;
 import com.rosinen.noctis.noctisevents.NoctisEventService;
 import hugo.weaving.DebugLog;
 import org.androidannotations.annotations.AfterInject;

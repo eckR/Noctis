@@ -1,6 +1,5 @@
-package com.rosinen.noctis.login;
+package com.rosinen.noctis.facebook;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 import com.facebook.AccessToken;
@@ -9,8 +8,9 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.rosinen.noctis.activity.event.ToastMeEvent;
 import com.rosinen.noctis.base.AbstractService;
-import com.rosinen.noctis.login.event.SendUserTokenEvent;
-import com.rosinen.noctis.login.event.UserTokenDTO;
+import com.rosinen.noctis.facebook.event.JoinButtonClickedEvent;
+import com.rosinen.noctis.facebook.event.SendUserTokenEvent;
+import com.rosinen.noctis.facebook.entity.UserTokenDTO;
 import com.rosinen.noctis.noctisevents.NoctisRestHandler;
 import hugo.weaving.DebugLog;
 import org.androidannotations.annotations.AfterInject;
@@ -62,12 +62,24 @@ public class FacebookService extends AbstractService{
         mProfileTracker.startTracking();
     }
 
+    /**
+     * called from the login fragment and the tokentracker
+     * @param event
+     */
     @DebugLog
     public void onEventBackgroundThread(SendUserTokenEvent event){
         Log.d(TAG, "Sending Usertoken: " + event.userToken);
         noctisRestHandler.postFBUserToken(new UserTokenDTO(event.userToken));
     }
 
+    /**
+     * called from the eventdetail fragment
+     * @param buttonClickedEvent
+     */
+    @DebugLog
+    public void onEventBackgroundThread(final JoinButtonClickedEvent buttonClickedEvent){
+        Log.d(TAG, "joinbutton clicked for event: " + buttonClickedEvent.event.getFacebookId());
+    }
 
     @Override
     public void onStop() {
