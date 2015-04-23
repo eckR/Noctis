@@ -95,7 +95,7 @@ public class EventDetailPagerFragment extends EventBusFragment {
         Log.d("FBID", fbId);
         try {
             context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://event/" + fbId));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://mEvent/" + fbId));
 
         } catch (PackageManager.NameNotFoundException e) {
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/events/" + fbId));

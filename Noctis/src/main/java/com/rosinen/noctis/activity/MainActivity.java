@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.rosinen.noctis.R;
 import com.rosinen.noctis.activity.event.*;
 import com.rosinen.noctis.base.ServiceHandler;
 import com.rosinen.noctis.base.SharedPreferences_;
+import com.rosinen.noctis.eventdetail.event.RequestCloseDetailViewEvent;
 import com.rosinen.noctis.eventoverview.EventpagerFragment_;
 import com.rosinen.noctis.login.LoginFragement_;
 import com.rosinen.noctis.map.MapEventBus;
@@ -54,7 +56,6 @@ public class MainActivity extends FragmentActivity {
     SharedPreferences_ sharedPrefs;
 
     Animation loginAnimation;
-
 
 
     Fragment mapsFragment = new MapsFragment_();
@@ -98,8 +99,9 @@ public class MainActivity extends FragmentActivity {
         boolean isEventAvailable = mEventBus.getStickyEvent(LoginNavigationEvent.class) != null;
 
         if (!isEventAvailable | sharedPrefs.showLoginScreen().get()) {
+            loginFragment.setVisibility(View.VISIBLE);
             onEventMainThread(new FragmentChangeEvent(new LoginFragement_(), false, R.id.loginFragment, loginFragment));
-        }else {
+        } else {
             loginFragment.setVisibility(View.GONE);
         }
 
@@ -164,7 +166,8 @@ public class MainActivity extends FragmentActivity {
      */
     @DebugLog
     public void onEventMainThread(final FragmentChangeEvent fragmentChangeEvent) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
 
         ft.setCustomAnimations(fragmentChangeEvent.inAnimationRes, fragmentChangeEvent.outAnimationRes);
 
@@ -176,9 +179,12 @@ public class MainActivity extends FragmentActivity {
 
         ft.commit();
 
+        fragmentManager.executePendingTransactions();
+
         for (View view : fragmentChangeEvent.viewsToSetVisible) {
             view.setVisibility(View.VISIBLE);
         }
+        Log.d(TAG, "Backstackcount: " + getSupportFragmentManager().getBackStackEntryCount());
     }
 
     public void onEventMainThread(final SliderDragViewSetterEvent sliderDragViewSetterEvent) {
@@ -188,10 +194,15 @@ public class MainActivity extends FragmentActivity {
 
     /**
      * called from loginpage
+     *
      * @param loginNavigationEvent
      */
     @DebugLog
     public void onEvent(final LoginNavigationEvent loginNavigationEvent) {
+        if (loginFragment.getVisibility() == View.GONE){
+            Log.d(TAG, "Login already happened");
+            return;
+        }
         fadeLoginFragment();
     }
 
@@ -242,6 +253,17 @@ public class MainActivity extends FragmentActivity {
         alert.show();
     }
 
+    public void onEventMainThread(final RequestCloseDetailViewEvent closeDetailViewEvent) {
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        if (supportFragmentManager.getBackStackEntryCount() >= 1) {
+            getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().executePendingTransactions();
+        } else {
+            Log.e(TAG, "I assume that the eventdetailpage should have been shown but the " +
+                    "Noctisevent was null and thus it requests to go back one fragment");
+        }
+    }
+
 //    /**
 //     * TODO in my opinion (simon) this has to be done an other way .. namly change the fragment on the
 //     * TODO eventDetailSwipeUpPanel and apply a proper animation
@@ -250,11 +272,17 @@ public class MainActivity extends FragmentActivity {
 //     */
 //    @DebugLog
 //    public void onEventMainThread(final ShowDetailsEvent event) {
-        //applierDetails.expand();
+    //applierDetails.expand();
 //        showingDetails = true;
 //        Log.d(TAG, "SHOW DETAILS");
 //    }
-    
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.d(TAG, "Backstack after on Backpressed: " + getSupportFragmentManager().getBackStackEntryCount());
+    }
 
     @DebugLog
     @Override

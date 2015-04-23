@@ -55,7 +55,7 @@ apt {
 ext {
     vMajor = 0
     vMinor = 0
-    vBugfix = 23
+    vBugfix = 24
 }
 
 android {
@@ -100,8 +100,8 @@ android {
     }
 
     String releaseNotes =
-            "* Added empty view for days with no events\n" +
-            "* Added viewpagerindicator for eventdetailview\n"
+            "* Fixed loginscreen fades always after return to app\n" +
+            "* Added App logo\n"
 
     buildTypes {
         release {

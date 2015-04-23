@@ -5,6 +5,7 @@ import android.widget.TextView;
 import com.rosinen.noctis.R;
 import com.rosinen.noctis.Model.NoctisEvent;
 import com.rosinen.noctis.base.EventBusFragment;
+import com.rosinen.noctis.eventdetail.event.RequestCloseDetailViewEvent;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
@@ -26,33 +27,46 @@ public class FragmentEventDetail extends EventBusFragment {
     @ViewById(R.id.textViewDescription)
     TextView textViewDescription;
 
-    NoctisEvent event;
+    NoctisEvent mEvent;
 
     public FragmentEventDetail(){
 
 
     }
 
-    public void updateFields(NoctisEvent event) {
-        if (event != null) {
-            Log.d(TAG,"Event should not be null!");
+
+    public void updateFields(final NoctisEvent event) {
+        if (!checkForEvent(event)){
+            return;
         }
-        this.event = event;
+        this.mEvent = event;
     }
 
     @AfterViews
     void updateFields() {
+        if (!checkForEvent(mEvent)){
+            return;
+        }
         SimpleDateFormat simpleDateFormatStart = new SimpleDateFormat("EEEE dd.MM.yyyy HH:mm");
         SimpleDateFormat simpleDateFormatEnd = new SimpleDateFormat("HH:mm");
 
-        if (event.getStart() !=null && event.getEndTime() != null) {
+        if (mEvent.getStart() !=null && mEvent.getEndTime() != null) {
             StringBuilder dateBuilder = new StringBuilder();
-            dateBuilder.append(simpleDateFormatStart.format(event.getStart()));
+            dateBuilder.append(simpleDateFormatStart.format(mEvent.getStart()));
             dateBuilder.append(" - ");
-            dateBuilder.append(simpleDateFormatEnd.format(event.getEndTime()));
+            dateBuilder.append(simpleDateFormatEnd.format(mEvent.getEndTime()));
             textViewEventDate.setText(dateBuilder.toString());
         }
-        textViewDescription.setText(event.getDescription());
+        textViewDescription.setText(mEvent.getDescription());
+    }
+
+    private boolean checkForEvent(NoctisEvent event){
+        if (event == null) {
+            Log.e(TAG, "Event should not be null!");
+            mEventBus.postSticky(new RequestCloseDetailViewEvent());
+            return false;
+        }
+        return  true;
     }
 
     public void onEvent(Object object){}

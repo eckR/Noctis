@@ -76,6 +76,7 @@ public class LoginFragement extends ReceiverOnlyEventBusFragment {
         @Override
         public void onError(FacebookException e) {
             Log.d(TAG, "onError " + e);
+            mEventBus.post(new ToastMeEvent(e.getMessage(),Toast.LENGTH_LONG));
         }
     };
 
